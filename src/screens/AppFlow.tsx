@@ -53,7 +53,7 @@ export function AppFlow() {
     img.onload = () => {
       useCalibrationStore
         .getState()
-        .setPhoto(`${import.meta.env.BASE_URL}wall.jpeg`, img.naturalWidth, img.naturalHeight);
+        .setPhoto(`${import.meta.env.BASE_URL}wall.webp`, img.naturalWidth, img.naturalHeight);
       if (params.has("demo")) {
         useCalibrationStore.getState().setCalibrated(true);
         setScreen("editor");
@@ -61,7 +61,7 @@ export function AppFlow() {
         setScreen("calibrate");
       }
     };
-    img.src = `${import.meta.env.BASE_URL}wall.jpeg`;
+    img.src = `${import.meta.env.BASE_URL}wall.webp`;
   }, []);
 
   if (screen === "landing") {
@@ -83,29 +83,29 @@ export function AppFlow() {
           <>
             {previewMode ? (
               <>
-                <button className="ghost" onClick={() => requestDownload()}>
-                  ⬇ Download image
+                <button className="ghost" onClick={() => requestDownload()} aria-label="Download image">
+                  <span aria-hidden="true">⬇</span> <span className="btn-label">Download image</span>
                 </button>
-                <button className="ghost" onClick={() => setPreviewMode(false)}>
-                  ✎ Back to editing
+                <button className="ghost" onClick={() => setPreviewMode(false)} aria-label="Back to editing">
+                  <span aria-hidden="true">✎</span> <span className="btn-label">Back to editing</span>
                 </button>
-                <button className="primary" onClick={() => setPrintOpen(true)}>
-                  🖨 Print
+                <button className="primary" onClick={() => setPrintOpen(true)} aria-label="Print">
+                  <span aria-hidden="true">🖨</span> <span className="btn-label">Print</span>
                 </button>
               </>
             ) : (
               <>
-                <button className="ghost" onClick={createNew}>
-                  ＋ Create new
+                <button className="ghost" onClick={createNew} aria-label="Create new">
+                  <span aria-hidden="true">＋</span> <span className="btn-label">Create new</span>
                 </button>
-                <button className="ghost" onClick={goCalibrate}>
-                  ← Calibration
+                <button className="ghost" onClick={goCalibrate} aria-label="Calibration">
+                  <span aria-hidden="true">←</span> <span className="btn-label">Calibration</span>
                 </button>
-                <button className="ghost" onClick={() => setPreviewMode(true)}>
-                  👁 Preview
+                <button className="ghost" onClick={() => setPreviewMode(true)} aria-label="Preview">
+                  <span aria-hidden="true">👁</span> <span className="btn-label">Preview</span>
                 </button>
-                <button className="primary" onClick={() => setPrintOpen(true)}>
-                  🖨 Print
+                <button className="primary" onClick={() => setPrintOpen(true)} aria-label="Print">
+                  <span aria-hidden="true">🖨</span> <span className="btn-label">Print</span>
                 </button>
               </>
             )}
@@ -126,7 +126,7 @@ export function AppFlow() {
             {!previewMode && (
               <>
                 <button className="panel-toggle" onClick={() => setPanelOpen(true)}>
-                  🪞 Shapes
+                  <span aria-hidden="true">🪞</span> Shapes
                 </button>
                 <div
                   className={`panel-scrim${panelOpen ? " open" : ""}`}

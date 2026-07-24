@@ -16,8 +16,8 @@ export function ShapeCatalog() {
         <span className="catalog-count mono">{PRESET_COUNT}</span>
         <InfoButton label="How to edit a shape">
           Pick a shape, then drag the dots on the canvas to refine it.
-          Double-tap the outline to add a point; select one and press Delete to
-          remove it.
+          Double-tap the outline to add a point; select one and use the Delete
+          point button (or the Delete key) to remove it.
         </InfoButton>
       </div>
       <PresetPicker />

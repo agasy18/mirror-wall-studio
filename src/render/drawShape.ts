@@ -40,6 +40,8 @@ export interface DrawOpts {
   bboxPx: { x: number; y: number; w: number; h: number };
   /** cm -> px scale, so the LED glow can be a fixed physical size. */
   pxPerCm: number;
+  /** Outline-only stroke. Theme-dependent, so the caller supplies it. */
+  outlineColor?: string;
 }
 
 /** Physical width of the warm backlit LED glow around the mirror edge, in cm. */
@@ -54,7 +56,7 @@ export function drawMirror(
   if (!opts.showMirror) {
     ctx.save();
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = "#e6e9ef";
+    ctx.strokeStyle = opts.outlineColor ?? "#e6e9ef";
     ctx.stroke(path);
     ctx.restore();
     return;

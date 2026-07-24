@@ -98,7 +98,7 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
           <div className="diptych">
             <figure className="diptych-paper">
               <img
-                src={`${import.meta.env.BASE_URL}printed-grid.png`}
+                src={`${import.meta.env.BASE_URL}printed-grid.webp`}
                 alt="Printed sheets taped together into a full-size 64 by 163 cm cutting outline, with page labels, dashed overlap lines and a 10 cm ruler"
                 loading="lazy"
               />
@@ -112,7 +112,7 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
 
             <figure className="diptych-room">
               <img
-                src={`${import.meta.env.BASE_URL}final.jpg`}
+                src={`${import.meta.env.BASE_URL}final.webp`}
                 alt="The finished organic mirror installed on the bedroom wall"
                 loading="lazy"
               />
@@ -124,7 +124,7 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
           <div className="ministrip">
             <figure>
               <img
-                src={`${import.meta.env.BASE_URL}wall.jpeg`}
+                src={`${import.meta.env.BASE_URL}wall.webp`}
                 alt="The bare wall before the mirror"
                 loading="lazy"
               />
@@ -132,7 +132,7 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
             </figure>
             <figure>
               <img
-                src={`${import.meta.env.BASE_URL}editing.png`}
+                src={`${import.meta.env.BASE_URL}editing.webp`}
                 alt="Designing the mirror on the calibrated wall"
                 loading="lazy"
               />
@@ -140,7 +140,7 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
             </figure>
             <figure className="ministrip-final">
               <img
-                src={`${import.meta.env.BASE_URL}final.jpg`}
+                src={`${import.meta.env.BASE_URL}final.webp`}
                 alt="The finished mirror"
                 loading="lazy"
               />

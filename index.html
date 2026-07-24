@@ -2,19 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <!-- Primary SEO -->
-    <title>Mirror Wall Studio — Design a Custom Mirror & Print a 1:1 Cutting Template</title>
+    <!-- Primary SEO. Title is front-loaded with search intent: the brand has no
+         equity yet, and SERPs truncate around 60 characters. -->
+    <title>Custom Mirror Shape Designer — Free 1:1 Printable Template</title>
     <meta
       name="description"
       content="Design an organic wavy mirror on a photo of your wall, then print a full-size (1:1) multi-page cutting template on A4, A3 or Letter paper. Free browser tool — no install."
     />
-    <meta name="keywords" content="custom mirror template, 1:1 printable template, wall mirror designer, irregular mirror shape, cutting template PDF, organic mirror, tile print template" />
     <meta name="author" content="Mirror Wall Studio" />
-    <meta name="theme-color" content="#0a0c10" />
+    <meta name="theme-color" content="#0a0c10" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f5f8" media="(prefers-color-scheme: light)" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://agasy18.github.io/mirror-wall-studio/" />
+
+    <!-- Icons / installability. %BASE_URL% is substituted by Vite, so these stay
+         correct under the /mirror-wall-studio/ subpath. -->
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -24,8 +31,15 @@
       content="Shape a custom mirror on your wall photo and print a true-to-size cutting template across multiple sheets."
     />
     <meta property="og:site_name" content="Mirror Wall Studio" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:url" content="https://agasy18.github.io/mirror-wall-studio/" />
-    <meta property="og:image" content="https://agasy18.github.io/mirror-wall-studio/final.jpg" />
+    <meta property="og:image" content="https://agasy18.github.io/mirror-wall-studio/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="A printed 1:1 paper template next to the finished organic wall mirror it produced"
+    />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -34,16 +48,25 @@
       name="twitter:description"
       content="Shape a custom mirror on your wall photo and print a true-to-size cutting template."
     />
-    <meta name="twitter:image" content="https://agasy18.github.io/mirror-wall-studio/final.jpg" />
+    <meta name="twitter:image" content="https://agasy18.github.io/mirror-wall-studio/og-image.jpg" />
+    <meta
+      name="twitter:image:alt"
+      content="A printed 1:1 paper template next to the finished organic wall mirror it produced"
+    />
 
     <!-- Structured data: SoftwareApplication + How-to -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
+        "@type": ["SoftwareApplication", "WebApplication"],
         "name": "Mirror Wall Studio",
+        "url": "https://agasy18.github.io/mirror-wall-studio/",
+        "image": "https://agasy18.github.io/mirror-wall-studio/og-image.jpg",
+        "screenshot": "https://agasy18.github.io/mirror-wall-studio/editing.webp",
         "applicationCategory": "DesignApplication",
-        "operatingSystem": "Web",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "description": "Design a custom organic mirror on a photo of your wall and export a 1:1 multi-page cutting template for printing.",
         "featureList": [
@@ -60,6 +83,7 @@
         "@context": "https://schema.org",
         "@type": "HowTo",
         "name": "How to design and print a custom mirror template",
+        "totalTime": "PT15M",
         "step": [
           { "@type": "HowToStep", "name": "Photograph the wall", "text": "Take a photo of the wall where the mirror will go." },
           { "@type": "HowToStep", "name": "Calibrate", "text": "Mark a known rectangle on the wall and enter its real size in centimeters to set the scale." },

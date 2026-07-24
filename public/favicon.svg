@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mirror Wall Studio">
+  <defs>
+    <linearGradient id="silver" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#8a97a6" />
+      <stop offset="18%" stop-color="#c3ccd6" />
+      <stop offset="34%" stop-color="#7f8c9c" />
+      <stop offset="50%" stop-color="#f7fbff" />
+      <stop offset="66%" stop-color="#9aa6b4" />
+      <stop offset="100%" stop-color="#6c7887" />
+    </linearGradient>
+    <filter id="warm" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.4" flood-color="#ffcf66" flood-opacity="0.85" />
+    </filter>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0a0c10" />
+  <path
+    d="M32 8 C40 8 43.5 13 42.5 19.5 C41.5 26 36 28 36 32 C36 36 42.5 39 42.5 45.5 C42.5 51.5 38 56 32 56 C26 56 21.5 51.5 21.5 45.5 C21.5 39 28 36 28 32 C28 28 22.5 26 21.5 19.5 C20.5 13 24 8 32 8 Z"
+    fill="url(#silver)"
+    stroke="#5c6673"
+    stroke-width="0.6"
+    filter="url(#warm)"
+  />
+</svg>

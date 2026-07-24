@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useShapeStore } from "../state/useShapeStore";
 import { boundingBox } from "../model/geometry";
 import { DEFAULT_TILE_CONFIG, PAPER_SIZES, paperById, planTiles } from "../model/tiling";
-import { exportTiledPdf } from "../export/tilePdf";
 
 interface Props {
   onClose: () => void;
@@ -14,6 +13,16 @@ export function PrintDialog({ onClose }: Props) {
   const paperId = useShapeStore((s) => s.paperId);
   const setPaper = useShapeStore((s) => s.setPaper);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // A dialog that only closes by clicking the scrim is a keyboard trap.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
   const cfg = useMemo(() => ({ ...DEFAULT_TILE_CONFIG, paper: paperById(paperId) }), [paperId]);
   const { bb, plan, valid } = useMemo(() => {
@@ -23,13 +32,20 @@ export function PrintDialog({ onClose }: Props) {
     return { bb, plan, valid };
   }, [points, cfg]);
 
-  const handleExport = () => {
+  // jsPDF is ~a third of the bundle and is only needed once the user actually
+  // exports, so it is pulled in on demand rather than on first paint.
+  const handleExport = async () => {
     if (!valid) return;
     setBusy(true);
+    setError(null);
     try {
+      const { exportTiledPdf } = await import("../export/tilePdf");
       exportTiledPdf(points, cfg);
       onClose();
-    } finally {
+    } catch {
+      // The PDF code is a lazily-fetched chunk, so this also covers being
+      // offline or holding a stale index after a redeploy.
+      setError("Could not build the PDF. Check your connection and try again.");
       setBusy(false);
     }
   };
@@ -78,9 +94,11 @@ export function PrintDialog({ onClose }: Props) {
           style={{ width: "100%" }}
           disabled={!valid || busy}
           onClick={handleExport}
+          autoFocus
         >
           {busy ? "Generating…" : "Download PDF"}
         </button>
+        {error && <p className="modal-error" role="alert">{error}</p>}
         <p className="modal-fineprint">
           Print at 100% — turn off “fit to page”. Page 1 has a 10 cm ruler to check scale.
         </p>

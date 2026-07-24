@@ -45,6 +45,19 @@ export function ShapeEditor() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 800, h: 600 });
 
+  // Canvas overlays are painted, not styled, so their colors are read out of the
+  // CSS tokens — and the canvas must repaint when the OS color scheme flips.
+  const [themeTick, setThemeTick] = useState(0);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    const onChange = () => setThemeTick((t) => t + 1);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  // A fingertip covers far more of the canvas than a mouse cursor does.
+  const coarsePointer = useRef(window.matchMedia("(pointer: coarse)").matches);
+
   // Fixed cm world: wall rectangle ∪ initial shape bbox + margin. Captured once
   // so the frame never chases the shape as it's edited.
   const [world, setWorld] = useState<WorldRect>(() => {
@@ -142,6 +155,9 @@ export function ShapeEditor() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, size.w, size.h);
 
+    const css = getComputedStyle(document.documentElement);
+    const cssVar = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
+
     // Room photo backdrop. The whole room is drawn, then everything OUTSIDE the
     // calibrated wall rectangle (0,0)-(W,H) is dimmed ("unreachable"), so the
     // design area reads clearly while you still see surrounding context.
@@ -164,7 +180,7 @@ export function ShapeEditor() {
       if (!previewMode) {
         // light scrim over the room (outside the wall rect)
         ctx.save();
-        ctx.fillStyle = "rgba(6,8,12,0.28)";
+        ctx.fillStyle = cssVar("--canvas-scrim", "rgba(6,8,12,0.28)");
         ctx.beginPath();
         ctx.rect(0, 0, size.w, size.h);
         ctx.rect(wx, wy, ww, wh);
@@ -173,7 +189,7 @@ export function ShapeEditor() {
 
         // subtle frame around the reachable wall rectangle
         ctx.save();
-        ctx.strokeStyle = "rgba(124,201,255,0.5)";
+        ctx.strokeStyle = cssVar("--canvas-frame", "rgba(124,201,255,0.5)");
         ctx.lineWidth = 1.5;
         ctx.setLineDash([6, 5]);
         ctx.strokeRect(wx, wy, ww, wh);
@@ -183,7 +199,7 @@ export function ShapeEditor() {
         if (marginCm > 0) {
           const mpx = marginCm * cam.scale;
           ctx.save();
-          ctx.strokeStyle = "rgba(255,207,102,0.5)";
+          ctx.strokeStyle = cssVar("--canvas-margin", "rgba(255,207,102,0.5)");
           ctx.lineWidth = 1;
           ctx.setLineDash([3, 4]);
           ctx.strokeRect(wx + mpx, wy + mpx, ww - mpx * 2, wh - mpx * 2);
@@ -202,7 +218,7 @@ export function ShapeEditor() {
       const gx1 = hasWall ? realWidthCm : world.x + world.w;
       const gy1 = hasWall ? realHeightCm : world.y + world.h;
       ctx.save();
-      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.strokeStyle = cssVar("--canvas-grid", "rgba(255,255,255,0.08)");
       ctx.lineWidth = 1;
       const step = 10;
       const startX = Math.ceil(gx0 / step) * step;
@@ -234,6 +250,7 @@ export function ShapeEditor() {
       showMirror,
       bboxPx: { x: bx, y: by, w: bb.width * cam.scale, h: bb.height * cam.scale },
       pxPerCm: cam.scale,
+      outlineColor: cssVar("--canvas-outline", "#e6e9ef"),
     });
 
     // A4/paper page overlay: how the mirror tiles across sheets at the chosen size
@@ -245,11 +262,11 @@ export function ShapeEditor() {
       const printWcm = plan.printableWmm / 10;
       const printHcm = plan.printableHmm / 10;
       ctx.save();
-      ctx.strokeStyle = "rgba(124,201,255,0.7)";
+      ctx.strokeStyle = cssVar("--canvas-page", "rgba(124,201,255,0.7)");
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 4]);
       ctx.font = "10px sans-serif";
-      ctx.fillStyle = "rgba(124,201,255,0.9)";
+      ctx.fillStyle = cssVar("--canvas-page-label", "rgba(124,201,255,0.9)");
       for (const t of plan.tiles) {
         const [tx, ty] = toPx(cam, bb.minX + t.col * stepXcm, bb.minY + t.row * stepYcm);
         ctx.strokeRect(tx, ty, printWcm * cam.scale, printHcm * cam.scale);
@@ -259,8 +276,10 @@ export function ShapeEditor() {
     }
 
     // handles — only while editing the curve (and never in preview)
-    if (editCurve && !previewMode) drawHandles(ctx, cam, points, selectedId);
-  }, [cam, size, points, selectedId, showMirror, showPhoto, showGrid, showPageOverlay, paperId, marginCm, warped, world, previewMode, editCurve]);
+    if (editCurve && !previewMode) {
+      drawHandles(ctx, cam, points, selectedId, coarsePointer.current ? 11 : 8);
+    }
+  }, [cam, size, points, selectedId, showMirror, showPhoto, showGrid, showPageOverlay, paperId, marginCm, warped, world, previewMode, editCurve, themeTick]);
 
   // Download the current canvas as a PNG when a download is requested.
   useEffect(() => {
@@ -284,6 +303,7 @@ export function ShapeEditor() {
     | { kind: "move"; lastCmX: number; lastCmY: number }
     | null
   >(null);
+  const lastTap = useRef<{ t: number; x: number; y: number } | null>(null);
 
   const pointerCm = (e: { clientX: number; clientY: number }) => {
     const rect = canvasRef.current!.getBoundingClientRect();
@@ -298,9 +318,24 @@ export function ShapeEditor() {
     const [px, py] = pointerPx(e);
     canvasRef.current!.setPointerCapture(e.pointerId);
 
+    // Touch has no dblclick worth relying on (iOS Safari synthesizes it
+    // inconsistently, and the stray second pointerdown can exit edit mode), so
+    // detect the double-tap ourselves.
+    if (e.pointerType === "touch" && editCurve) {
+      const now = performance.now();
+      const lt = lastTap.current;
+      lastTap.current = { t: now, x: e.clientX, y: e.clientY };
+      if (lt && now - lt.t < 320 && Math.hypot(e.clientX - lt.x, e.clientY - lt.y) < 24) {
+        const [cx, cy] = pointerCm(e);
+        addPoint(nearestPointId(points, cx, cy), round(cx), round(cy));
+        lastTap.current = null;
+        return;
+      }
+    }
+
     // While editing, grabbing a handle drags that point.
     if (editCurve) {
-      const hit = hitHandle(cam, points, px, py);
+      const hit = hitHandle(cam, points, px, py, e.pointerType === "touch" ? 24 : 12);
       if (hit) {
         drag.current = { kind: "point", id: hit };
         select(hit);
@@ -356,6 +391,10 @@ export function ShapeEditor() {
 
   useEffect(() => {
     const onKey = (ev: KeyboardEvent) => {
+      // Without this guard, Backspace while editing a number field (the gear
+      // popover's margin input) deletes a control point instead of a digit.
+      const t = ev.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
       if ((ev.key === "Delete" || ev.key === "Backspace") && selectedId) {
         ev.preventDefault();
         deletePoint(selectedId);
@@ -369,13 +408,23 @@ export function ShapeEditor() {
     <div className="stage" ref={wrapRef}>
       <canvas
         ref={canvasRef}
-        className="editor-canvas"
+        className={`editor-canvas${previewMode ? " is-preview" : ""}`}
         style={{ width: size.w, height: size.h, touchAction: "none" }}
+        aria-label="Mirror shape editor: drag the outline or its control points"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onDoubleClick={onDoubleClick}
       />
+      {editCurve && !previewMode && selectedId && (
+        <button
+          className="point-delete"
+          onClick={() => deletePoint(selectedId)}
+          aria-label="Delete the selected control point"
+        >
+          <span aria-hidden="true">🗑</span> Delete point
+        </button>
+      )}
     </div>
   );
 }

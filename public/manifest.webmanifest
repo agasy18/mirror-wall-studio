@@ -1,0 +1,14 @@
+{
+  "name": "Mirror Wall Studio",
+  "short_name": "Mirror Studio",
+  "description": "Design a custom organic mirror on a photo of your wall and print a full-size 1:1 cutting template.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#0a0c10",
+  "theme_color": "#0a0c10",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

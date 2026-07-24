@@ -38,7 +38,7 @@ export function PresetPicker() {
             <svg viewBox={t.viewBox} preserveAspectRatio="xMidYMid meet">
               <path
                 d={t.path}
-                fill={t.id === presetId ? "rgba(124,201,255,0.95)" : "rgba(255,255,255,0.5)"}
+                fill={t.id === presetId ? "var(--accent)" : "var(--canvas-thumb)"}
               />
             </svg>
           </button>
