@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+*.local
+.vite/
+
+# internal planning notes — kept local, not published
+backlog.html
+docs/superpowers/
