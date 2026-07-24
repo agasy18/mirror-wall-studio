@@ -47,9 +47,10 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
               Print the <span className="em">exact shape.</span>
             </h1>
             <p className="lead">
-              Shape an organic mirror right on a photo of your wall, then export a
-              full-size cutting template across ordinary printer paper. Tape the
-              sheets, trace the line, cut the glass — at true 1:1 scale.
+              Shape an organic, irregular mirror right on a photo of your wall, then
+              export a full-size printable cutting template across ordinary printer
+              paper. Tape the sheets, trace the line, cut the glass — a true 1:1 DIY
+              stencil for the glass shop or your own cut.
             </p>
             <div className="cta-row">
               <button className="btn btn-amber" onClick={onLaunch}>
@@ -100,6 +101,8 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
               <img
                 src={`${import.meta.env.BASE_URL}printed-grid.webp`}
                 alt="Printed sheets taped together into a full-size 64 by 163 cm cutting outline, with page labels, dashed overlap lines and a 10 cm ruler"
+                width={800}
+                height={1937}
                 loading="lazy"
               />
               <figcaption className="mono">printed · 3 × 5 sheets · 1:1</figcaption>
@@ -114,6 +117,8 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
               <img
                 src={`${import.meta.env.BASE_URL}final.webp`}
                 alt="The finished organic mirror installed on the bedroom wall"
+                width={1000}
+                height={1446}
                 loading="lazy"
               />
               <figcaption className="mono">installed · on your wall</figcaption>
@@ -125,7 +130,9 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
             <figure>
               <img
                 src={`${import.meta.env.BASE_URL}wall.webp`}
-                alt="The bare wall before the mirror"
+                alt="Empty bedroom wall photographed before designing the custom mirror"
+                width={893}
+                height={1280}
                 loading="lazy"
               />
               <figcaption><b>Before</b></figcaption>
@@ -133,7 +140,9 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
             <figure>
               <img
                 src={`${import.meta.env.BASE_URL}editing.webp`}
-                alt="Designing the mirror on the calibrated wall"
+                alt="Designing the mirror shape on the perspective-corrected wall photo, with draggable control points"
+                width={900}
+                height={1292}
                 loading="lazy"
               />
               <figcaption><b>Designing</b></figcaption>
@@ -141,7 +150,9 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
             <figure className="ministrip-final">
               <img
                 src={`${import.meta.env.BASE_URL}final.webp`}
-                alt="The finished mirror"
+                alt="Finished custom organic wall mirror cut from the printed 1:1 template"
+                width={1000}
+                height={1446}
                 loading="lazy"
               />
               <figcaption><b>After</b></figcaption>
@@ -227,10 +238,60 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
           </ol>
         </section>
 
+        {/* ---------- FAQ ---------- */}
+        <section aria-labelledby="faq-title">
+          <p className="section-eyebrow mono">Questions</p>
+          <h2 className="section-title serif" id="faq-title">Before you print</h2>
+          <div className="faq">
+            <article className="faq-item">
+              <h3 className="serif">How do I print a template at exactly 1:1 scale?</h3>
+              <p>
+                In the print dialog turn off “fit to page” / “shrink oversized pages”
+                and set the scale to 100%. Page 1 carries a 10 cm ruler — measure it
+                with a real ruler before you cut anything. If it measures 10 cm, every
+                other sheet is right too.
+              </p>
+            </article>
+            <article className="faq-item">
+              <h3 className="serif">Can I make an irregular or asymmetrical shape?</h3>
+              <p>
+                Yes — that is the point. Start from one of the {PRESET_COUNT} templates,
+                then drag any control point, double-click the outline to add one, or
+                delete points you don’t want. Nothing is constrained to a symmetry axis.
+              </p>
+            </article>
+            <article className="faq-item">
+              <h3 className="serif">What paper sizes can I use?</h3>
+              <p>
+                A4, Letter, A3, Legal and A2, in portrait. The page count updates as you
+                switch, so you can trade sheet size against how many pages you tape
+                together. Sheets overlap by 10 mm with registration crosses to align on.
+              </p>
+            </article>
+            <article className="faq-item">
+              <h3 className="serif">How do I get the glass cut from the template?</h3>
+              <p>
+                Tape the printed sheets into one full-size stencil, cut along the
+                outline, and hand that paper shape to a glazier — it is the physical
+                pattern they work from. The finished size is printed on page 1 so you
+                can quote the job without re-measuring.
+              </p>
+            </article>
+            <article className="faq-item">
+              <h3 className="serif">Does my photo get uploaded anywhere?</h3>
+              <p>
+                No. Everything runs in your browser — the photo, the calibration and the
+                PDF are all generated on your own device and stored only there. There is
+                no account and no server to upload to.
+              </p>
+            </article>
+          </div>
+        </section>
+
         {/* ---------- CLOSING CTA ---------- */}
-        <section>
+        <section aria-labelledby="closing-title">
           <div className="closing reveal">
-            <h2 className="serif">Ready to fit a mirror to your wall?</h2>
+            <h2 className="serif" id="closing-title">Ready to fit a mirror to your wall?</h2>
             <p>Design it in minutes and walk away with a template you can cut to.</p>
             <button className="btn btn-amber" onClick={onLaunch}>
               {hasSavedWork ? "Resume your design →" : "Start designing →"}
