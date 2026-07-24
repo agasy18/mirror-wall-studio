@@ -10,12 +10,19 @@ export interface PaperSize {
   hmm: number; // portrait height
 }
 
-/** Common paper sizes in portrait orientation (mm). */
+/**
+ * Common paper sizes in portrait orientation (mm).
+ *
+ * Letter and Legal are exact, not rounded: these become the PDF MediaBox, and a
+ * box that disagrees with the physical sheet is exactly what makes a driver
+ * "scale to fit". At 279 instead of 279.4 that is 0.14% — 2.4 mm over a 1730 mm
+ * mirror, on a product whose whole promise is 1:1.
+ */
 export const PAPER_SIZES: PaperSize[] = [
   { id: "a4", name: "A4", wmm: 210, hmm: 297 },
-  { id: "letter", name: "Letter", wmm: 216, hmm: 279 },
+  { id: "letter", name: "Letter", wmm: 215.9, hmm: 279.4 },
   { id: "a3", name: "A3", wmm: 297, hmm: 420 },
-  { id: "legal", name: "Legal", wmm: 216, hmm: 356 },
+  { id: "legal", name: "Legal", wmm: 215.9, hmm: 355.6 },
   { id: "a2", name: "A2", wmm: 420, hmm: 594 },
 ];
 
@@ -75,6 +82,15 @@ export function planTiles(
   const paper = cfg.paper ?? A4;
   const printableWmm = paper.wmm - 2 * cfg.pageMarginMm;
   const printableHmm = paper.hmm - 2 * cfg.pageMarginMm;
+
+  if (printableWmm <= 0 || printableHmm <= 0) {
+    throw new Error("Page margins leave no printable area");
+  }
+  // An overlap at least as wide as the printable area gives a zero or negative
+  // step, and Math.ceil(x / 0) is Infinity — an unbounded tile loop.
+  if (cfg.overlapMm >= printableWmm || cfg.overlapMm >= printableHmm) {
+    throw new Error("Overlap must be smaller than the printable area");
+  }
 
   const stepXmm = printableWmm - cfg.overlapMm;
   const stepYmm = printableHmm - cfg.overlapMm;

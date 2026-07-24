@@ -3,6 +3,10 @@ import type { BBox, ShapePoint } from "./shape";
 
 /** Bounding box of a set of points (cm). */
 export function boundingBox(points: ShapePoint[]): BBox {
+  return bboxOf(points);
+}
+
+function bboxOf(points: { x: number; y: number }[]): BBox {
   if (points.length === 0) {
     return { minX: 0, minY: 0, maxX: 0, maxY: 0, width: 0, height: 0 };
   }
@@ -17,6 +21,63 @@ export function boundingBox(points: ShapePoint[]): BBox {
     if (p.y > maxY) maxY = p.y;
   }
   return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
+}
+
+/**
+ * Sample the closed Catmull-Rom spline that `buildSmoothClosedPath` describes.
+ * Single source of truth for the curve, so the screen, the measurements and the
+ * PDF can never drift apart.
+ */
+export function sampleClosedSpline(
+  points: { x: number; y: number }[],
+  steps = 24,
+  tension = 1,
+): { x: number; y: number }[] {
+  const n = points.length;
+  if (n < 3) return points.map((p) => ({ x: p.x, y: p.y }));
+
+  const k = tension / 6;
+  const out: { x: number; y: number }[] = [];
+  for (let i = 0; i < n; i++) {
+    const p0 = points[(i - 1 + n) % n];
+    const p1 = points[i];
+    const p2 = points[(i + 1) % n];
+    const p3 = points[(i + 2) % n];
+
+    const c1x = p1.x + (p2.x - p0.x) * k;
+    const c1y = p1.y + (p2.y - p0.y) * k;
+    const c2x = p2.x - (p3.x - p1.x) * k;
+    const c2y = p2.y - (p3.y - p1.y) * k;
+
+    for (let s = 0; s < steps; s++) {
+      const t = s / steps;
+      const mt = 1 - t;
+      const a = mt * mt * mt;
+      const b = 3 * mt * mt * t;
+      const c = 3 * mt * t * t;
+      const d = t * t * t;
+      out.push({
+        x: a * p1.x + b * c1x + c * c2x + d * p2.x,
+        y: a * p1.y + b * c1y + c * c2y + d * p2.y,
+      });
+    }
+  }
+  out.push({ x: out[0].x, y: out[0].y });
+  return out;
+}
+
+/**
+ * Bounding box of the DRAWN OUTLINE, not of the control points.
+ *
+ * A Catmull-Rom spline overshoots its control points — for the "peanut" preset
+ * by 18 mm — so the control-point bbox understates the real glass. Anything
+ * that states a physical size or decides how much paper to cover must measure
+ * this, or the outline prints off the edge of the page and the quoted size is
+ * wrong on the glass order.
+ */
+export function curveBounds(points: { x: number; y: number }[], steps = 24): BBox {
+  if (points.length === 0) return bboxOf([]);
+  return bboxOf(sampleClosedSpline(points, steps));
 }
 
 /**

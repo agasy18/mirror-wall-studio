@@ -1,5 +1,5 @@
 import { jsPDF } from "jspdf";
-import { buildSmoothClosedPath, boundingBox } from "../model/geometry";
+import { buildSmoothClosedPath, curveBounds, sampleClosedSpline } from "../model/geometry";
 import type { ShapePoint } from "../model/shape";
 import { DEFAULT_TILE_CONFIG, planTiles, type TileConfig } from "../model/tiling";
 
@@ -11,7 +11,10 @@ const CM_TO_MM = 10;
  * crosses, an overlap cut line, and a label. Page 1 gets a 10cm ruler check.
  */
 export function exportTiledPdf(points: ShapePoint[], cfg: TileConfig = DEFAULT_TILE_CONFIG) {
-  const bb = boundingBox(points);
+  // Measured on the drawn curve, not the control points: the spline overshoots
+  // them, and shifting/paginating by the control bbox pushed part of the
+  // outline off the page and understated the finished size.
+  const bb = curveBounds(points);
   if (bb.width <= 0 || bb.height <= 0) {
     throw new Error("Shape has no area to export");
   }
@@ -117,7 +120,7 @@ function drawPathSegments(
   offsetX: number,
   offsetY: number,
 ) {
-  const sampled = samplePath(points, 24);
+  const sampled = sampleClosedSpline(points, 24);
   if (sampled.length < 2) return;
   doc.setDrawColor(0, 0, 0);
   let prev = sampled[0];
@@ -126,51 +129,6 @@ function drawPathSegments(
     doc.line(prev.x + offsetX, prev.y + offsetY, cur.x + offsetX, cur.y + offsetY);
     prev = cur;
   }
-}
-
-/**
- * Sample the same Catmull-Rom closed spline the screen uses, so the printed
- * outline matches the preview exactly. `steps` points per segment.
- */
-function samplePath(points: { x: number; y: number }[], steps: number) {
-  const n = points.length;
-  if (n < 3) return points;
-  const out: { x: number; y: number }[] = [];
-  const k = 1 / 6;
-  for (let i = 0; i < n; i++) {
-    const p0 = points[(i - 1 + n) % n];
-    const p1 = points[i];
-    const p2 = points[(i + 1) % n];
-    const p3 = points[(i + 2) % n];
-    const c1x = p1.x + (p2.x - p0.x) * k;
-    const c1y = p1.y + (p2.y - p0.y) * k;
-    const c2x = p2.x - (p3.x - p1.x) * k;
-    const c2y = p2.y - (p3.y - p1.y) * k;
-    for (let s = 0; s < steps; s++) {
-      const t = s / steps;
-      out.push(cubic(p1, { x: c1x, y: c1y }, { x: c2x, y: c2y }, p2, t));
-    }
-  }
-  out.push(out[0]);
-  return out;
-}
-
-function cubic(
-  p0: { x: number; y: number },
-  p1: { x: number; y: number },
-  p2: { x: number; y: number },
-  p3: { x: number; y: number },
-  t: number,
-) {
-  const mt = 1 - t;
-  const a = mt * mt * mt;
-  const b = 3 * mt * mt * t;
-  const c = 3 * mt * t * t;
-  const d = t * t * t;
-  return {
-    x: a * p0.x + b * p1.x + c * p2.x + d * p3.x,
-    y: a * p0.y + b * p1.y + c * p2.y + d * p3.y,
-  };
 }
 
 function cross(doc: jsPDF, x: number, y: number, size: number) {

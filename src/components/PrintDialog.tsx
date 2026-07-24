@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useShapeStore } from "../state/useShapeStore";
-import { boundingBox } from "../model/geometry";
+import { curveBounds } from "../model/geometry";
 import { DEFAULT_TILE_CONFIG, PAPER_SIZES, paperById, planTiles } from "../model/tiling";
 
 interface Props {
@@ -26,7 +26,7 @@ export function PrintDialog({ onClose }: Props) {
 
   const cfg = useMemo(() => ({ ...DEFAULT_TILE_CONFIG, paper: paperById(paperId) }), [paperId]);
   const { bb, plan, valid } = useMemo(() => {
-    const bb = boundingBox(points);
+    const bb = curveBounds(points);
     const valid = bb.width > 0 && bb.height > 0 && points.length >= 3;
     const plan = valid ? planTiles(bb.width * 10, bb.height * 10, cfg) : null;
     return { bb, plan, valid };

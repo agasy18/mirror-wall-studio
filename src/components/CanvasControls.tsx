@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useShapeStore } from "../state/useShapeStore";
-import { boundingBox } from "../model/geometry";
+import { curveBounds } from "../model/geometry";
 import { RepeatButton, ToggleRow } from "./controls";
 
 /**
@@ -20,7 +20,21 @@ export function CanvasControls() {
   const setMargin = useShapeStore((s) => s.setMargin);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const bb = boundingBox(points);
+  const bb = curveBounds(points);
+
+  // Changing the margin re-fits and re-centers the shape, so committing on every
+  // keystroke rescaled it once per digit — and an empty field parsed as 0,
+  // blowing the mirror up to the whole wall. Hold a draft, commit deliberately.
+  const [marginDraft, setMarginDraft] = useState(String(marginCm));
+  useEffect(() => setMarginDraft(String(marginCm)), [marginCm]);
+  const commitMargin = () => {
+    const v = Number(marginDraft);
+    if (marginDraft.trim() === "" || !Number.isFinite(v) || v < 0) {
+      setMarginDraft(String(marginCm)); // reject, restore the live value
+      return;
+    }
+    setMargin(v);
+  };
 
   return (
     <>
@@ -52,8 +66,12 @@ export function CanvasControls() {
                 type="number"
                 min={0}
                 step={0.5}
-                value={marginCm}
-                onChange={(e) => setMargin(Number(e.target.value))}
+                value={marginDraft}
+                onChange={(e) => setMarginDraft(e.target.value)}
+                onBlur={commitMargin}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitMargin();
+                }}
               />
               <span className="margin-unit">cm from each edge</span>
             </div>

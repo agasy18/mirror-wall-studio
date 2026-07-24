@@ -3,7 +3,7 @@ import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 import { nextPointId, type ShapePoint } from "../model/shape";
 import { MIRROR_PRESETS, makePresetById } from "../data/presetShapes";
-import { boundingBox } from "../model/geometry";
+import { curveBounds } from "../model/geometry";
 import { useCalibrationStore } from "./useCalibrationStore";
 
 /**
@@ -13,7 +13,7 @@ import { useCalibrationStore } from "./useCalibrationStore";
  * margins, so new mirrors always fit without manual repositioning.
  */
 function fitToWall(points: ShapePoint[], marginCm: number): ShapePoint[] {
-  const bb = boundingBox(points);
+  const bb = curveBounds(points);
   if (bb.width <= 0 || bb.height <= 0) return points;
   const cal = useCalibrationStore.getState();
   const wallW = cal.realWidthCm || bb.width;
