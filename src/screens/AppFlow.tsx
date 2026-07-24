@@ -7,6 +7,7 @@ import { PrintDialog } from "../components/PrintDialog";
 import { Landing } from "./Landing";
 import { useCalibrationStore } from "../state/useCalibrationStore";
 import { useShapeStore } from "../state/useShapeStore";
+import { cancelPendingWrites } from "../state/debouncedStorage";
 
 type Screen = "landing" | "calibrate" | "editor";
 
@@ -39,6 +40,9 @@ export function AppFlow() {
   // the ONLY reset — everything else is kept in localStorage across reloads.
   const createNew = () => {
     if (!confirm("Start over? This clears your photo, calibration and shape.")) return;
+    // Storage writes are debounced, so drop anything still queued first —
+    // otherwise it flushes on unload and restores what we just deleted.
+    cancelPendingWrites();
     localStorage.removeItem("mirror-calibration");
     localStorage.removeItem("mirror-shape");
     location.reload();

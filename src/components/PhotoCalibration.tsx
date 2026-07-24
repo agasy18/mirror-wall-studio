@@ -46,7 +46,14 @@ export function PhotoCalibration({ onDone }: Props) {
     reader.onload = () => {
       const dataUrl = reader.result as string;
       const img = new Image();
-      img.onload = () => setPhoto(dataUrl, img.naturalWidth, img.naturalHeight);
+      img.onload = () => {
+        // A modern phone photo is 3-5 MB, which as base64 blows past the ~5 MB
+        // localStorage quota. The persist write is synchronous, so the throw
+        // propagates out of the store action and strands the user on this
+        // screen. Downscale to something a wall backdrop actually needs.
+        const { url, w, h } = downscale(img);
+        setPhoto(url, w, h);
+      };
       img.onerror = () =>
         alert("Could not read that image. Please choose a different photo.");
       img.src = dataUrl;
@@ -63,12 +70,22 @@ export function PhotoCalibration({ onDone }: Props) {
       setImgReady(false);
       return;
     }
+    let cancelled = false;
     const img = new Image();
     img.onload = () => {
+      if (cancelled) return; // a rapid photo swap must not land a stale image
       imgRef.current = img;
       setImgReady(true);
     };
+    img.onerror = () => {
+      if (cancelled) return;
+      imgRef.current = null;
+      setImgReady(false);
+    };
     img.src = photoSrc;
+    return () => {
+      cancelled = true;
+    };
   }, [photoSrc]);
 
   // Track container size.
@@ -170,7 +187,12 @@ export function PhotoCalibration({ onDone }: Props) {
   const canDone = !!photoSrc && quadValid && sizeValid;
 
   const handleDone = () => {
-    setCalibrated(true);
+    try {
+      setCalibrated(true);
+    } catch {
+      // Persistence is best-effort (private mode, a full quota). Moving to the
+      // editor must never depend on the write succeeding.
+    }
     onDone();
   };
 
@@ -188,7 +210,9 @@ export function PhotoCalibration({ onDone }: Props) {
             if (file) onFile(file);
           }}
         />
-        <div className="dropzone" role="button" tabIndex={0} onClick={openFilePicker}>
+        {/* Not a focusable role="button": it had no key handler, so it was a
+            dead tab stop. The real button inside carries the keyboard path. */}
+        <div className="dropzone" onClick={openFilePicker}>
           <div className="drop-icon">🖼️</div>
           <h3>Load your wall photo</h3>
           <div>Choose a photo of the wall where the mirror will go.</div>
@@ -294,4 +318,32 @@ function SizeField({ which }: { which: "w" | "h" }) {
       }}
     />
   );
+}
+
+/**
+ * Shrink a photo to something a wall backdrop actually needs, so the persisted
+ * data URL stays well inside the localStorage quota. Returns the original
+ * untouched if it is already small enough or if the canvas encode fails.
+ */
+const MAX_PHOTO_PX = 1600;
+
+function downscale(img: HTMLImageElement): { url: string; w: number; h: number } {
+  const { naturalWidth: w, naturalHeight: h } = img;
+  const scale = Math.min(1, MAX_PHOTO_PX / Math.max(w, h));
+  if (scale >= 1) return { url: img.src, w, h };
+
+  const cw = Math.max(1, Math.round(w * scale));
+  const ch = Math.max(1, Math.round(h * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = cw;
+  canvas.height = ch;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return { url: img.src, w, h };
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(img, 0, 0, cw, ch);
+  try {
+    return { url: canvas.toDataURL("image/jpeg", 0.82), w: cw, h: ch };
+  } catch {
+    return { url: img.src, w, h }; // tainted canvas or unsupported type
+  }
 }

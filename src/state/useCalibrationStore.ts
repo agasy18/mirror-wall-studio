@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 import type { Pt } from "../model/homography";
+import { debouncedLocalStorage } from "./debouncedStorage";
 
 export type Corner = "tl" | "tr" | "br" | "bl";
 
@@ -83,6 +84,7 @@ export const useCalibrationStore = create<CalibrationState>()(
   })),
   {
     name: "mirror-calibration",
+    storage: debouncedLocalStorage(),
     // photoSrc must be a data URL (not a blob: URL) to survive reload — callers
     // convert the picked file to a data URL before setPhoto.
   },

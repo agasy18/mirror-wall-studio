@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 import { nextPointId, type ShapePoint } from "../model/shape";
 import { MIRROR_PRESETS, makePresetById } from "../data/presetShapes";
 import { curveBounds } from "../model/geometry";
+import { debouncedLocalStorage } from "./debouncedStorage";
 import { useCalibrationStore } from "./useCalibrationStore";
 
 /**
@@ -191,6 +192,7 @@ export const useShapeStore = create<ShapeState>()(
   })),
   {
     name: "mirror-shape",
+    storage: debouncedLocalStorage(),
     // Persist only the durable design state; keep transient UI out of storage.
     partialize: (s) => ({
       points: s.points,
