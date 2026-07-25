@@ -74,9 +74,6 @@ loaded from `public/` at runtime must be referenced as
 `` `${import.meta.env.BASE_URL}file.png` `` — a bare `/file.png` works locally
 but 404s on Pages.
 
-## License
-
-[MIT](LICENSE) © 2026 Aghasi Poghosyan
 
 ## Search engines
 
@@ -90,3 +87,7 @@ nothing is blocked.
 Bing, Yandex, Seznam and Naver be notified of changes without an account.
 Google retired its sitemap ping endpoint in 2023 and needs the sitemap submitted
 through Search Console by hand.
+
+## License
+
+[MIT](LICENSE) © 2026 Aghasi Poghosyan
