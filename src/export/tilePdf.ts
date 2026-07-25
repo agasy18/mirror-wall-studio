@@ -2,6 +2,8 @@ import { jsPDF } from "jspdf";
 import { clipPolylineToRect, curveBounds, sampleClosedSpline } from "../model/geometry";
 import type { ShapePoint } from "../model/shape";
 import { DEFAULT_TILE_CONFIG, planTiles, type TileConfig, type TilePlan } from "../model/tiling";
+import { APP_NAME, APP_URL, APP_URL_LABEL } from "../model/brand";
+import { encodeQr, qrRuns } from "../model/qr";
 
 const CM_TO_MM = 10;
 
@@ -11,7 +13,16 @@ const CM_TO_MM = 10;
  * page after it is a template tile carrying registration crosses, an overlap
  * cut line and a label.
  */
-export function exportTiledPdf(points: ShapePoint[], cfg: TileConfig = DEFAULT_TILE_CONFIG) {
+export interface ExportOptions {
+  /** Print a QR to the app, plus a one-line credit, on the cover sheet. */
+  watermark?: boolean;
+}
+
+export function exportTiledPdf(
+  points: ShapePoint[],
+  cfg: TileConfig = DEFAULT_TILE_CONFIG,
+  opts: ExportOptions = {},
+) {
   // Measured on the drawn curve, not the control points: the spline overshoots
   // them, and shifting/paginating by the control bbox pushed part of the
   // outline off the page and understated the finished size.
@@ -41,7 +52,16 @@ export function exportTiledPdf(points: ShapePoint[], cfg: TileConfig = DEFAULT_T
   // jsPDF accepts an explicit [w,h] mm format for any paper size.
   const doc = new jsPDF({ unit: "mm", format: [pw, ph], orientation: "portrait" });
 
-  drawCoverPage(doc, { m, pw, ph, plan, shapeCm, paperName: cfg.paper.name, cfg });
+  drawCoverPage(doc, {
+    m,
+    pw,
+    ph,
+    plan,
+    shapeCm,
+    paperName: cfg.paper.name,
+    cfg,
+    watermark: opts.watermark ?? false,
+  });
 
   plan.tiles.forEach((tile, i) => {
     doc.addPage([pw, ph], "portrait");
@@ -128,6 +148,7 @@ function drawCoverPage(
     shapeCm: string;
     paperName: string;
     cfg: TileConfig;
+    watermark: boolean;
   },
 ) {
   const { m, pw, plan, shapeCm, paperName, cfg } = opts;
@@ -217,6 +238,7 @@ function drawCoverPage(
     cellH = availH / plan.rows;
     cellW = cellH / aspect;
   }
+  const mapTop = y;
   doc.setDrawColor(150, 150, 150);
   doc.setLineWidth(0.2);
   doc.setFontSize(7);
@@ -232,6 +254,47 @@ function drawCoverPage(
       });
     }
   }
+
+  // --- credit + QR, in the gutter the sheet map leaves free ---
+  if (opts.watermark) {
+    const mapRight = m + cellW * plan.cols;
+    const gutter = pw - m - mapRight - 6;
+    const block = Math.min(34, gutter);
+    // Only if it genuinely fits beside the map; a cramped, clipped QR that
+    // will not scan is worse than leaving the cover sheet alone.
+    if (block >= 22) {
+      drawCredit(doc, pw - m - block, mapTop, block);
+    }
+  }
+}
+
+/** QR to the app plus a one-line credit, drawn into a `size` mm square block. */
+function drawCredit(doc: jsPDF, x: number, y: number, size: number) {
+  const code = encodeQr(APP_URL);
+  // 4 modules of quiet zone, as the QR spec requires — scanners use it to find
+  // the code's edge, and printed on a busy sheet it is not optional.
+  const QUIET = 4;
+  const mod = size / (code.size + QUIET * 2);
+
+  doc.setFillColor(255, 255, 255);
+  doc.rect(x, y, size, size, "F");
+  doc.setFillColor(0, 0, 0);
+  for (const run of qrRuns(code)) {
+    doc.rect(x + (run.col + QUIET) * mod, y + (run.row + QUIET) * mod, run.len * mod, mod, "F");
+  }
+
+  let ty = y + size + 3.5;
+  doc.setFontSize(7.5);
+  doc.setTextColor(90, 90, 90);
+  doc.text("Made with", x, ty);
+  ty += 3.6;
+  doc.setFontSize(8.5);
+  doc.setTextColor(0, 0, 0);
+  doc.text(APP_NAME, x, ty);
+  ty += 3.6;
+  doc.setFontSize(6.5);
+  doc.setTextColor(120, 120, 120);
+  doc.text(APP_URL_LABEL, x, ty);
 }
 
 function cross(doc: jsPDF, x: number, y: number, size: number) {

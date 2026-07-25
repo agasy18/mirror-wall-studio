@@ -98,8 +98,15 @@ export function AppFlow() {
                 <button className="ghost" onClick={() => setPreviewMode(false)} aria-label="Back to editing">
                   <span aria-hidden="true">✎</span> <span className="btn-label">Back to editing</span>
                 </button>
-                <button className="primary" onClick={() => setPrintOpen(true)} aria-label="Print">
-                  <span aria-hidden="true">🖨</span> <span className="btn-label">Print</span>
+                {/* "Print" read as "send to a printer"; this downloads a PDF
+                    you print later, so the label says what you actually get. */}
+                <button
+                  className="primary"
+                  onClick={() => setPrintOpen(true)}
+                  aria-label="Download printable PDF"
+                >
+                  <span aria-hidden="true">📄</span>{" "}
+                  <span className="btn-label">Get PDF</span>
                 </button>
               </>
             ) : (
@@ -113,8 +120,15 @@ export function AppFlow() {
                 <button className="ghost" onClick={() => setPreviewMode(true)} aria-label="Preview">
                   <span aria-hidden="true">👁</span> <span className="btn-label">Preview</span>
                 </button>
-                <button className="primary" onClick={() => setPrintOpen(true)} aria-label="Print">
-                  <span aria-hidden="true">🖨</span> <span className="btn-label">Print</span>
+                {/* "Print" read as "send to a printer"; this downloads a PDF
+                    you print later, so the label says what you actually get. */}
+                <button
+                  className="primary"
+                  onClick={() => setPrintOpen(true)}
+                  aria-label="Download printable PDF"
+                >
+                  <span aria-hidden="true">📄</span>{" "}
+                  <span className="btn-label">Get PDF</span>
                 </button>
               </>
             )}

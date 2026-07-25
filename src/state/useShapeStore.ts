@@ -83,6 +83,12 @@ export interface ViewToggles {
   showMirror: boolean;
   showPageOverlay: boolean;
   showPhoto: boolean;
+  /**
+   * Credit the app on the things that leave it: the app name on the downloaded
+   * image, a QR to the app on the printed template. One switch for both, since
+   * from the user's side it is one decision.
+   */
+  showWatermark: boolean;
 }
 
 interface ShapeState {
@@ -140,6 +146,7 @@ export const useShapeStore = create<ShapeState>()(
       showMirror: true,
       showPageOverlay: false,
       showPhoto: true,
+      showWatermark: true,
     },
 
     movePoint: (id, x, y) =>
@@ -275,6 +282,13 @@ export const useShapeStore = create<ShapeState>()(
       toggles: s.toggles,
       shapeEdited: s.shapeEdited,
     }),
+    // The default shallow merge swaps `toggles` out wholesale, so every toggle
+    // added after a user's last visit would arrive undefined — reading as off,
+    // no matter what its default says. Merge the object, not just the state.
+    merge: (persisted, current) => {
+      const p = (persisted ?? {}) as Partial<ShapeState>;
+      return { ...current, ...p, toggles: { ...current.toggles, ...(p.toggles ?? {}) } };
+    },
   },
   ),
 );

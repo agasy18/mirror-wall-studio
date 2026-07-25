@@ -17,6 +17,7 @@ import {
 import { DEFAULT_TILE_CONFIG, paperById, planTiles } from "../model/tiling";
 import { warpRoom, type WarpedRoom } from "../render/warpPhoto";
 import { drawHandles, drawMirror, hitHandle, shapePath } from "../render/drawShape";
+import { drawWatermark } from "../render/watermark";
 import { toPx } from "../model/camera";
 
 const MARGIN_CM = 25;
@@ -33,6 +34,7 @@ export function ShapeEditor() {
   const showPhoto = useShapeStore((s) => s.toggles.showPhoto);
   const showGrid = useShapeStore((s) => s.toggles.showGrid);
   const showPageOverlay = useShapeStore((s) => s.toggles.showPageOverlay);
+  const showWatermark = useShapeStore((s) => s.toggles.showWatermark);
   const paperId = useShapeStore((s) => s.paperId);
   const previewMode = useShapeStore((s) => s.previewMode);
   const editCurve = useShapeStore((s) => s.editCurve);
@@ -262,13 +264,21 @@ export function ShapeEditor() {
     // mirror shape
     const bb = boundingBox(points);
     const [bx, by] = toPx(cam, bb.minX, bb.minY);
+    const bboxPx = { x: bx, y: by, w: bb.width * cam.scale, h: bb.height * cam.scale };
     const path = shapePath(cam, points);
     drawMirror(ctx, path, {
       showMirror,
-      bboxPx: { x: bx, y: by, w: bb.width * cam.scale, h: bb.height * cam.scale },
+      bboxPx,
       pxPerCm: cam.scale,
       outlineColor: cssVar("--canvas-outline", "#e6e9ef"),
     });
+
+    // Preview mode is the only place the canvas can be downloaded, so the
+    // watermark is drawn there and nowhere else — what you see saved is exactly
+    // what is on screen, and the editor stays uncluttered while you work.
+    if (previewMode && showWatermark) {
+      drawWatermark(ctx, path, bboxPx);
+    }
 
     // A4/paper page overlay: how the mirror tiles across sheets at the chosen size
     if (showPageOverlay && !previewMode && bb.width > 0 && bb.height > 0) {
@@ -296,7 +306,7 @@ export function ShapeEditor() {
     if (editCurve && !previewMode) {
       drawHandles(ctx, cam, points, selectedId, coarsePointer.current ? 11 : 8);
     }
-  }, [cam, size, points, selectedId, showMirror, showPhoto, showGrid, showPageOverlay, paperId, marginCm, warped, world, previewMode, editCurve, themeTick]);
+  }, [cam, size, points, selectedId, showMirror, showPhoto, showGrid, showPageOverlay, showWatermark, paperId, marginCm, warped, world, previewMode, editCurve, themeTick]);
 
   // Download the current canvas as a PNG when a download is requested.
   useEffect(() => {

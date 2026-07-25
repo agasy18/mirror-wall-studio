@@ -531,6 +531,29 @@ input:focus { border-color: var(--accent); }
 .modal-fineprint { font-size: 11.5px; color: var(--text-faint); margin: 10px 0 0; text-align: center; }
 .modal-error { font-size: 12.5px; color: var(--danger); margin: 10px 0 0; text-align: center; }
 
+/* watermark opt-out, right where the export happens */
+.modal-check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--text);
+  margin: 0 0 14px;
+  cursor: pointer;
+}
+.modal-check input { margin: 2px 0 0; flex: none; accent-color: var(--accent); }
+.modal-check-sub {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-faint);
+  margin-top: 3px;
+}
+/* A fingertip needs a real target, and the sub-line only crowds a phone. */
+@media (pointer: coarse) {
+  .modal-check { padding: 4px 0; }
+  .modal-check input { width: 20px; height: 20px; }
+}
+
 /* mono utility */
 .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
 

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useShapeStore } from "../state/useShapeStore";
 import { curveBounds } from "../model/geometry";
 import { DEFAULT_TILE_CONFIG, PAPER_SIZES, paperById, planTiles } from "../model/tiling";
+import { APP_NAME } from "../model/brand";
 
 interface Props {
   onClose: () => void;
@@ -12,6 +13,8 @@ export function PrintDialog({ onClose }: Props) {
   const points = useShapeStore((s) => s.points);
   const paperId = useShapeStore((s) => s.paperId);
   const setPaper = useShapeStore((s) => s.setPaper);
+  const showWatermark = useShapeStore((s) => s.toggles.showWatermark);
+  const setToggle = useShapeStore((s) => s.setToggle);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +43,7 @@ export function PrintDialog({ onClose }: Props) {
     setError(null);
     try {
       const { exportTiledPdf } = await import("../export/tilePdf");
-      exportTiledPdf(points, cfg);
+      exportTiledPdf(points, cfg, { watermark: showWatermark });
       onClose();
     } catch {
       // The PDF code is a lazily-fetched chunk, so this also covers being
@@ -88,6 +91,21 @@ export function PrintDialog({ onClose }: Props) {
             ? <>Exports <b>{plan.pageCount}</b> {cfg.paper.name} pages ({plan.cols} × {plan.rows}) · 10 mm overlap · Portrait</>
             : "Shape has no area to print."}
         </div>
+
+        <label className="modal-check">
+          <input
+            type="checkbox"
+            checked={showWatermark}
+            onChange={(e) => setToggle("showWatermark", e.target.checked)}
+          />
+          <span>
+            Add a QR to {APP_NAME} on the cover sheet
+            <span className="modal-check-sub">
+              So anyone who sees your template can find the app. Also stamps the
+              app name on downloaded images.
+            </span>
+          </span>
+        </label>
 
         <button
           className="primary"

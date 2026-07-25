@@ -60,6 +60,7 @@ export function CanvasControls() {
             <ToggleRow k="showGrid" label="Cm grid (10 cm)" toggles={toggles} set={setToggle} />
             <ToggleRow k="showPhoto" label="Wall backdrop" toggles={toggles} set={setToggle} />
             <ToggleRow k="showPageOverlay" label="Page overlay" toggles={toggles} set={setToggle} />
+            <ToggleRow k="showWatermark" label="Watermark on exports" toggles={toggles} set={setToggle} />
             <div className="pop-title" style={{ marginTop: 10 }}>Safe margin</div>
             <div className="margin-row">
               <input
