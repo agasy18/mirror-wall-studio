@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useShapeStore } from "../state/useShapeStore";
 import { useCalibrationStore, cornersAsArray } from "../state/useCalibrationStore";
-import { boundingBox, nearestSegmentIndex } from "../model/geometry";
-import { isQuadValid } from "../model/homography";
+import { boundingBox, nearestSegmentIndex, sampleClosedSpline } from "../model/geometry";
+import { applyHomography, computeHomography, isQuadValid } from "../model/homography";
 import {
   applyView,
   clampPan,
@@ -94,9 +94,14 @@ export function ShapeEditor() {
   // calibration corners / typed size change). The wall rectangle occupies
   // (0,0)-(W,H) cm; the rest of the room extends around it and is drawn dimmed.
   const [warped, setWarped] = useState<WarpedRoom | null>(null);
+  // The untouched photo, kept alongside the straightened one: preview puts the
+  // mirror back into the original perspective rather than showing the
+  // flattened wall, which is what the room actually looks like.
+  const [photoImg, setPhotoImg] = useState<HTMLImageElement | null>(null);
   useEffect(() => {
     if (!photoSrc || !calibrated) {
       setWarped(null);
+      setPhotoImg(null);
       return;
     }
     const quad = cornersAsArray(corners);
@@ -105,6 +110,7 @@ export function ShapeEditor() {
     const img = new Image();
     img.onload = () => {
       if (cancelled) return;
+      setPhotoImg(img);
       setWarped(warpRoom(img, quad, realWidthCm, realHeightCm));
     };
     img.src = photoSrc;
@@ -112,6 +118,24 @@ export function ShapeEditor() {
       cancelled = true;
     };
   }, [photoSrc, calibrated, corners, realWidthCm, realHeightCm]);
+
+  /**
+   * cm -> original photo pixels: the inverse of the straightening applied for
+   * editing. The calibrated wall rectangle (0,0)-(W,H) cm is exactly the quad
+   * the user dragged onto the photo, so mapping between them is the same
+   * homography read the other way round.
+   */
+  const cmToPhoto = useMemo(() => {
+    const quad = cornersAsArray(corners);
+    if (!isQuadValid(quad) || realWidthCm <= 0 || realHeightCm <= 0) return null;
+    const wallRect = [
+      { x: 0, y: 0 },
+      { x: realWidthCm, y: 0 },
+      { x: realWidthCm, y: realHeightCm },
+      { x: 0, y: realHeightCm },
+    ];
+    return computeHomography(wallRect, quad);
+  }, [corners, realWidthCm, realHeightCm]);
 
   // Once the room warp loads, expand the fixed world to include the room
   // context (clamped so a wildly skewed room doesn't make the wall tiny).
@@ -178,6 +202,58 @@ export function ShapeEditor() {
 
     const css = getComputedStyle(document.documentElement);
     const cssVar = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
+
+    // ---- preview: the real photo, with the mirror put back in perspective ----
+    // Editing happens on a straightened wall because that is the only place
+    // centimetres are square. A preview of that flattened wall is not what the
+    // room looks like, so preview undoes the straightening instead: the photo
+    // is drawn untouched and the outline is pushed back through the calibration
+    // homography, so the mirror sits on the wall at the angle it was shot from.
+    if (previewMode && photoImg && cmToPhoto && photoImg.naturalWidth > 0) {
+      const { naturalWidth: pw, naturalHeight: ph } = photoImg;
+      const photoCam = applyView(
+        fitCamera({ x: 0, y: 0, w: pw, h: ph }, size.w, size.h),
+        view,
+        size.w,
+        size.h,
+      );
+      const [ox, oy] = toPx(photoCam, 0, 0);
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(photoImg, ox, oy, pw * photoCam.scale, ph * photoCam.scale);
+
+      // Sample the curve in cm, then carry every sample through the homography:
+      // a projective map does not preserve Béziers, so the curve is flattened
+      // first and warped point by point rather than warping its control points.
+      const samples = sampleClosedSpline(points, 24);
+      const path = new Path2D();
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      samples.forEach((p, i) => {
+        const q = applyHomography(cmToPhoto, p);
+        const [sx, sy] = toPx(photoCam, q.x, q.y);
+        if (sx < minX) minX = sx;
+        if (sx > maxX) maxX = sx;
+        if (sy < minY) minY = sy;
+        if (sy > maxY) maxY = sy;
+        if (i === 0) path.moveTo(sx, sy);
+        else path.lineTo(sx, sy);
+      });
+      path.closePath();
+
+      if (maxX > minX && maxY > minY) {
+        const bboxPx = { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
+        drawMirror(ctx, path, {
+          showMirror,
+          bboxPx,
+          // The mirror's on-screen scale now comes from the photo, not the cm
+          // camera: pass the width it actually occupies so the glass highlight
+          // and edge treatment keep their proportions.
+          pxPerCm: bboxPx.w / Math.max(1, boundingBox(points).width),
+          outlineColor: cssVar("--canvas-outline", "#e6e9ef"),
+        });
+        if (showWatermark) drawWatermark(ctx, path, bboxPx);
+      }
+      return;
+    }
 
     // Room photo backdrop. The whole room is drawn, then everything OUTSIDE the
     // calibrated wall rectangle (0,0)-(W,H) is dimmed ("unreachable"), so the
@@ -308,7 +384,7 @@ export function ShapeEditor() {
     if (editCurve && !previewMode) {
       drawHandles(ctx, cam, points, selectedId, coarsePointer.current ? 11 : 8);
     }
-  }, [cam, size, points, selectedId, showMirror, showPhoto, showGrid, showPageOverlay, showWatermark, paperId, marginCm, warped, world, previewMode, editCurve, themeTick]);
+  }, [cam, size, points, selectedId, showMirror, showPhoto, showGrid, showPageOverlay, showWatermark, paperId, marginCm, warped, world, previewMode, editCurve, themeTick, photoImg, cmToPhoto, view]);
 
   // Download the current canvas as a PNG when a download is requested.
   useEffect(() => {
@@ -370,6 +446,19 @@ export function ShapeEditor() {
     const [px, py] = pointerPx(e);
     canvasRef.current!.setPointerCapture(e.pointerId);
     pointers.current.set(e.pointerId, { x: px, y: py });
+
+    // Preview is a picture, not an editor. Pinch and pan still work so the
+    // room can be inspected, but nothing here may reshape or move the mirror —
+    // in perspective the pointer no longer maps to centimetres anyway.
+    if (previewMode) {
+      if (pointers.current.size === 2) {
+        const c = centroid();
+        pinch.current = { dist: spread(), cx: c.x, cy: c.y, view };
+        return;
+      }
+      panDrag.current = { x: px, y: py, panX: view.panX, panY: view.panY, moved: false };
+      return;
+    }
 
     // Second finger down: abandon whatever single-pointer gesture was running
     // and pinch instead, so a shape drag never fights a zoom.
@@ -488,7 +577,8 @@ export function ShapeEditor() {
 
     if (panDrag.current) {
       // A press on empty space that never moved is a click: leave edit mode.
-      if (!panDrag.current.moved) {
+      // In preview there is no edit mode to leave.
+      if (!panDrag.current.moved && !previewMode) {
         if (editCurve) setEditCurve(false);
         select(null);
       }

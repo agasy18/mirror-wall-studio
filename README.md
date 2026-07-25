@@ -41,6 +41,11 @@ npm run build    # typecheck + production build
    - Toggle the glassy backlit **mirror effect**, the **cm grid**, the
      straightened **wall backdrop** and the **A4 page overlay**, or change the
      **safe margin** kept clear inside the marked area.
+   - **Preview** drops the straightening and puts the mirror back into the
+     original photo: the outline is pushed through the calibration homography,
+     so it sits on the wall at the angle the room was shot from. Editing still
+     happens on the straightened wall, because that is the only place
+     centimetres are square.
    - **Export tiled PDF** → a 1:1 A4 portrait PDF (~4×7 = 28 pages for a
      68×173 cm mirror) with 10 mm overlap bands, registration crosses, page
      labels, and a 10 cm verification ruler on page 1.
