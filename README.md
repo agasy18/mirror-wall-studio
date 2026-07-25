@@ -90,6 +90,14 @@ single key so the canvas keeps its height, and the wordmark drops to its glyph.
 - `src/components/` — `PhotoCalibration`, `CalibrationRect`, `ShapeEditor`,
   `MirrorDefs`, `ExportPanel`.
 - `src/export/tilePdf.ts` — jsPDF 1:1 tiled export.
+- `src/render/warpPhoto.ts` — the straightening. Canvas 2D has no projective
+  transform, so the photo is redrawn as a mesh of affine triangles. The mesh
+  must be **fine**: an affine map matches the homography only at the three
+  corners it was solved from, so a two-triangle mesh lined up only at the
+  photo's corners and put the straightened wall 68 px out of place on average
+  (123 px worst) for a typical off-axis shot. A 48×48 mesh brings that to ~2 px,
+  costing ~40 ms once per calibration. `warpMesh.test.ts` measures the error
+  directly and would fail if the mesh were coarsened.
 
 ## Deploying
 
