@@ -112,6 +112,119 @@ export function buildSmoothClosedPath(points: ShapePoint[], tension = 1): string
   return d;
 }
 
+/**
+ * Index of the ring segment (i -> i+1) nearest to a point, by true
+ * point-to-segment distance.
+ *
+ * Picking the nearest *vertex* and splicing after it is wrong: a click on the
+ * segment BEFORE that vertex inserts on the far side of the ring, and the
+ * closed spline crosses itself.
+ */
+export function nearestSegmentIndex(points: { x: number; y: number }[], x: number, y: number) {
+  const n = points.length;
+  if (n < 2) return 0;
+
+  let best = 0;
+  let bestD = Infinity;
+  for (let i = 0; i < n; i++) {
+    const a = points[i];
+    const b = points[(i + 1) % n];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len2 = dx * dx + dy * dy;
+    // Degenerate segment: fall back to the distance to its start point.
+    const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / len2));
+    const px = a.x + t * dx;
+    const py = a.y + t * dy;
+    const d = (x - px) ** 2 + (y - py) ** 2;
+    if (d < bestD) {
+      bestD = d;
+      best = i;
+    }
+  }
+  return best;
+}
+
+/**
+ * Clip a polyline to an axis-aligned rectangle (Liang–Barsky per segment),
+ * returning the runs that survive. Used so each printed tile carries only the
+ * ink that belongs to it.
+ */
+export function clipPolylineToRect(
+  pts: { x: number; y: number }[],
+  rect: { x: number; y: number; w: number; h: number },
+): { x: number; y: number }[][] {
+  const runs: { x: number; y: number }[][] = [];
+  let run: { x: number; y: number }[] = [];
+  const x1 = rect.x;
+  const y1 = rect.y;
+  const x2 = rect.x + rect.w;
+  const y2 = rect.y + rect.h;
+
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const seg = clipSegment(pts[i], pts[i + 1], x1, y1, x2, y2);
+    if (!seg) {
+      if (run.length > 1) runs.push(run);
+      run = [];
+      continue;
+    }
+    const [a, b] = seg;
+    if (run.length === 0) {
+      run.push(a, b);
+    } else {
+      const last = run[run.length - 1];
+      // Continue the run only if this segment starts where the previous ended.
+      if (Math.abs(last.x - a.x) < 1e-9 && Math.abs(last.y - a.y) < 1e-9) {
+        run.push(b);
+      } else {
+        if (run.length > 1) runs.push(run);
+        run = [a, b];
+      }
+    }
+  }
+  if (run.length > 1) runs.push(run);
+  return runs;
+}
+
+function clipSegment(
+  p: { x: number; y: number },
+  q: { x: number; y: number },
+  xmin: number,
+  ymin: number,
+  xmax: number,
+  ymax: number,
+): [{ x: number; y: number }, { x: number; y: number }] | null {
+  const dx = q.x - p.x;
+  const dy = q.y - p.y;
+
+  // Canonical Liang–Barsky: for each boundary, P is the direction component
+  // against the edge normal and Q the signed distance from it.
+  const P = [-dx, dx, -dy, dy];
+  const Q = [p.x - xmin, xmax - p.x, p.y - ymin, ymax - p.y];
+
+  let t0 = 0;
+  let t1 = 1;
+  for (let i = 0; i < 4; i++) {
+    if (P[i] === 0) {
+      if (Q[i] < 0) return null; // parallel to this edge and outside it
+      continue;
+    }
+    const r = Q[i] / P[i];
+    if (P[i] < 0) {
+      if (r > t1) return null;
+      if (r > t0) t0 = r;
+    } else {
+      if (r < t0) return null;
+      if (r < t1) t1 = r;
+    }
+  }
+
+  return [
+    { x: p.x + t0 * dx, y: p.y + t0 * dy },
+    { x: p.x + t1 * dx, y: p.y + t1 * dy },
+  ];
+}
+
 export interface Frame {
   x: number;
   y: number;

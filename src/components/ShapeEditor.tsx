@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useShapeStore } from "../state/useShapeStore";
 import { useCalibrationStore, cornersAsArray } from "../state/useCalibrationStore";
-import { boundingBox } from "../model/geometry";
+import { boundingBox, nearestSegmentIndex } from "../model/geometry";
 import { isQuadValid } from "../model/homography";
 import { fitCamera, toCm, type WorldRect } from "../model/camera";
 import { DEFAULT_TILE_CONFIG, paperById, planTiles } from "../model/tiling";
@@ -327,7 +327,7 @@ export function ShapeEditor() {
       lastTap.current = { t: now, x: e.clientX, y: e.clientY };
       if (lt && now - lt.t < 320 && Math.hypot(e.clientX - lt.x, e.clientY - lt.y) < 24) {
         const [cx, cy] = pointerCm(e);
-        addPoint(nearestPointId(points, cx, cy), round(cx), round(cy));
+        addPointOnCurve(cx, cy);
         lastTap.current = null;
         return;
       }
@@ -382,11 +382,19 @@ export function ShapeEditor() {
     drag.current = null;
   };
 
+  // Insert into the segment the pointer is actually on. Splicing after the
+  // nearest VERTEX puts the point on the wrong side of the ring whenever the
+  // click lands on the segment before it, and the closed spline self-crosses.
+  const addPointOnCurve = (cx: number, cy: number) => {
+    if (points.length === 0) return;
+    const seg = nearestSegmentIndex(points, cx, cy);
+    addPoint(points[seg].id, round(cx), round(cy));
+  };
+
   const onDoubleClick = (e: React.MouseEvent) => {
     if (!editCurve) return; // adding points only while editing the curve
     const [cx, cy] = pointerCm(e);
-    const afterId = nearestPointId(points, cx, cy);
-    addPoint(afterId, round(cx), round(cy));
+    addPointOnCurve(cx, cy);
   };
 
   useEffect(() => {
@@ -427,19 +435,6 @@ export function ShapeEditor() {
       )}
     </div>
   );
-}
-
-function nearestPointId(points: { id: string; x: number; y: number }[], x: number, y: number) {
-  let best = points[0]?.id ?? "";
-  let bestD = Infinity;
-  for (const p of points) {
-    const d = (p.x - x) ** 2 + (p.y - y) ** 2;
-    if (d < bestD) {
-      bestD = d;
-      best = p.id;
-    }
-  }
-  return best;
 }
 
 function round(v: number) {
