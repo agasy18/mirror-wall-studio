@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useShapeStore } from "../state/useShapeStore";
-import { curveBounds } from "../model/geometry";
+import { curveBounds, sampleClosedSpline } from "../model/geometry";
 import { DEFAULT_TILE_CONFIG, PAPER_SIZES, paperById, planTiles } from "../model/tiling";
+import { sheetsToPrint } from "../export/sheets";
 import { APP_NAME } from "../model/brand";
 
 interface Props {
@@ -16,6 +17,7 @@ export function PrintDialog({ onClose }: Props) {
   const paperId = useShapeStore((s) => s.paperId);
   const setPaper = useShapeStore((s) => s.setPaper);
   const showWatermark = useShapeStore((s) => s.toggles.showWatermark);
+  const skipBlank = useShapeStore((s) => s.toggles.skipBlankSheets);
   const setToggle = useShapeStore((s) => s.setToggle);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,12 +32,25 @@ export function PrintDialog({ onClose }: Props) {
   }, [onClose]);
 
   const cfg = useMemo(() => ({ ...DEFAULT_TILE_CONFIG, paper: paperById(paperId) }), [paperId]);
-  const { bb, plan, valid } = useMemo(() => {
+  const { bb, plan, valid, outline } = useMemo(() => {
     const bb = curveBounds(points);
     const valid = bb.width > 0 && bb.height > 0 && points.length >= 3;
     const plan = valid ? planTiles(bb.width * 10, bb.height * 10, cfg) : null;
-    return { bb, plan, valid };
+    // Same sampling the PDF uses, in the same mm coordinates, so the sheet
+    // count quoted here is the one the export produces.
+    const outline = valid
+      ? sampleClosedSpline(points.map((p) => ({ x: (p.x - bb.minX) * 10, y: (p.y - bb.minY) * 10 })), 24)
+      : [];
+    return { bb, plan, valid, outline };
   }, [points, cfg]);
+
+  /** Sheets a given paper size really produces, blank ones dropped if asked. */
+  const sheetCount = (p: (typeof PAPER_SIZES)[number]) => {
+    if (!valid) return null;
+    const pl = planTiles(bb.width * 10, bb.height * 10, { ...DEFAULT_TILE_CONFIG, paper: p });
+    return { plan: pl, count: sheetsToPrint(outline, pl, skipBlank).length };
+  };
+  const printedCount = plan ? sheetsToPrint(outline, plan, skipBlank).length : 0;
 
   // jsPDF is ~a third of the bundle and is only needed once the user actually
   // exports, so it is pulled in on demand rather than on first paint.
@@ -45,7 +60,7 @@ export function PrintDialog({ onClose }: Props) {
     setError(null);
     try {
       const { exportTiledPdf } = await import("../export/tilePdf");
-      exportTiledPdf(points, cfg, { watermark: showWatermark });
+      exportTiledPdf(points, cfg, { watermark: showWatermark, skipBlank });
       onClose();
     } catch {
       // The PDF code is a lazily-fetched chunk, so this also covers being
@@ -78,7 +93,7 @@ export function PrintDialog({ onClose }: Props) {
 
         <div className="paper-grid">
           {PAPER_SIZES.map((p) => {
-            const pl = valid ? planTiles(bb.width * 10, bb.height * 10, { ...DEFAULT_TILE_CONFIG, paper: p }) : null;
+            const pl = sheetCount(p);
             return (
               <button
                 key={p.id}
@@ -89,7 +104,7 @@ export function PrintDialog({ onClose }: Props) {
                 <span className="paper-dim mono">{p.wmm}×{p.hmm} mm</span>
                 {pl && (
                   <span className="paper-pages mono">
-                    {t("print.pages", { count: pl.pageCount })}
+                    {t("print.pages", { count: pl.count })}
                   </span>
                 )}
               </button>
@@ -102,9 +117,9 @@ export function PrintDialog({ onClose }: Props) {
             <Trans
               i18nKey="print.readout"
               components={{ b: <b /> }}
-              count={plan.pageCount}
+              count={printedCount}
               values={{
-                count: plan.pageCount,
+                count: printedCount,
                 paper: cfg.paper.name,
                 cols: plan.cols,
                 rows: plan.rows,
@@ -115,6 +130,18 @@ export function PrintDialog({ onClose }: Props) {
             t("print.noArea")
           )}
         </div>
+
+        <label className="modal-check">
+          <input
+            type="checkbox"
+            checked={skipBlank}
+            onChange={(e) => setToggle("skipBlankSheets", e.target.checked)}
+          />
+          <span>
+            {t("print.skipBlankLabel")}
+            <span className="modal-check-sub">{t("print.skipBlankSub")}</span>
+          </span>
+        </label>
 
         <label className="modal-check">
           <input

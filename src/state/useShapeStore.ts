@@ -89,6 +89,11 @@ export interface ViewToggles {
    * from the user's side it is one decision.
    */
   showWatermark: boolean;
+  /**
+   * Leave sheets the outline never crosses out of the PDF. A print setting
+   * rather than a view one, but it is a remembered on/off just like the rest.
+   */
+  skipBlankSheets: boolean;
 }
 
 interface ShapeState {
@@ -147,6 +152,7 @@ export const useShapeStore = create<ShapeState>()(
       showPageOverlay: false,
       showPhoto: true,
       showWatermark: true,
+      skipBlankSheets: true,
     },
 
     movePoint: (id, x, y) =>

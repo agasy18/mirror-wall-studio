@@ -134,10 +134,14 @@
     "preview": "Aperçu",
     "shapes": "Formes",
     "moreInfo": "Plus d’infos",
-    "close": "Fermer"
+    "close": "Fermer",
+    "saveProject": "Enregistrer le fichier",
+    "openProject": "Ouvrir un fichier",
+    "file": "Fichier"
   },
   "confirm": {
-    "startOver": "Recommencer ? Cela efface votre photo, le calibrage et la forme."
+    "startOver": "Recommencer ? Cela efface votre photo, le calibrage et la forme.",
+    "openProject": "Ouvrir un fichier de projet ? Cela remplacera votre photo, votre calibrage et votre forme actuels."
   },
   "calibrate": {
     "dropTitle": "Chargez votre photo de mur",
@@ -215,8 +219,18 @@
     "generating": "Génération…",
     "error": "Impossible de créer le PDF. Vérifiez votre connexion et réessayez.",
     "fineprint": "Imprimez à 100% — désactivez « ajuster à la page ». La page 1 comporte une règle de 10 cm pour vérifier l’échelle.",
-    "watermarkLabel": "Ajouter un QR vers {{app}} sur la page de garde",
+    "watermarkLabel": "Ajouter un QR vers {{app}} dans le miroir imprimé",
     "watermarkSub": "Pour que quiconque voit votre patron puisse trouver l’application. Ajoute aussi le nom de l’app sur les images téléchargées.",
-    "pdfLanguageNote": "Le PDF lui-même est en anglais."
+    "pdfLanguageNote": "Le PDF lui-même est en anglais.",
+    "skipBlankLabel": "Ignorer les feuilles vides",
+    "skipBlankSub": "Les feuilles que le contour ne traverse pas ne sont pas incluses dans le PDF."
+  },
+  "project": {
+    "err": {
+      "notJson": "Ce fichier n’est pas un fichier de projet : ce n’est pas du JSON valide.",
+      "notProject": "Ce JSON n’a pas été enregistré par cette application.",
+      "tooNew": "Ce fichier a été enregistré avec une version plus récente de l’application. Rechargez la page et réessayez.",
+      "corrupt": "Ce fichier de projet est endommagé et n’a pas pu être ouvert."
+    }
   }
 }

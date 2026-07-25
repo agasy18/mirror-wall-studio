@@ -134,10 +134,14 @@
     "preview": "Prévia",
     "shapes": "Formas",
     "moreInfo": "Mais informações",
-    "close": "Fechar"
+    "close": "Fechar",
+    "saveProject": "Salvar arquivo",
+    "openProject": "Abrir arquivo",
+    "file": "Arquivo"
   },
   "confirm": {
-    "startOver": "Começar de novo? Isso apaga sua foto, calibração e forma."
+    "startOver": "Começar de novo? Isso apaga sua foto, calibração e forma.",
+    "openProject": "Abrir um arquivo de projeto? Isso substitui sua foto, calibração e forma atuais."
   },
   "calibrate": {
     "dropTitle": "Carregue a foto da sua parede",
@@ -215,8 +219,18 @@
     "generating": "Gerando…",
     "error": "Não foi possível gerar o PDF. Verifique sua conexão e tente de novo.",
     "fineprint": "Imprima em 100% — desligue “ajustar à página”. A página 1 tem uma régua de 10 cm para conferir a escala.",
-    "watermarkLabel": "Adicionar um QR do {{app}} na folha de capa",
+    "watermarkLabel": "Adicionar um QR do {{app}} dentro do espelho impresso",
     "watermarkSub": "Assim quem vir seu molde consegue achar o app. Também marca o nome do app nas imagens baixadas.",
-    "pdfLanguageNote": "O PDF em si está em inglês."
+    "pdfLanguageNote": "O PDF em si está em inglês.",
+    "skipBlankLabel": "Pular folhas em branco",
+    "skipBlankSub": "Folhas que o contorno não atravessa ficam de fora do PDF."
+  },
+  "project": {
+    "err": {
+      "notJson": "Esse arquivo não é um arquivo de projeto — não é JSON válido.",
+      "notProject": "Esse JSON não foi salvo por este aplicativo.",
+      "tooNew": "Esse arquivo foi salvo por uma versão mais recente do aplicativo. Recarregue a página e tente de novo.",
+      "corrupt": "Esse arquivo de projeto está danificado e não pôde ser aberto."
+    }
   }
 }

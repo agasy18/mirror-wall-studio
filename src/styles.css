@@ -205,7 +205,9 @@ input:focus { border-color: var(--accent); }
   border-bottom: 1px solid var(--border);
   background: linear-gradient(to bottom, var(--topbar-1), var(--topbar-2));
   backdrop-filter: blur(14px);
-  z-index: 30;
+  /* Above the canvas overlays (30/31): the file menu drops out of this bar and
+     over the stage, and at an equal z-index the later DOM node won. */
+  z-index: 50;
 }
 .brand { display: flex; align-items: center; gap: 10px; }
 .brand-mark {
@@ -474,6 +476,23 @@ input:focus { border-color: var(--accent); }
   background: var(--panel-solid); border: 1px solid var(--border-strong);
   box-shadow: var(--shadow);
 }
+
+/* ---------- file menu (top bar) ---------- */
+.filemenu { position: relative; display: inline-flex; }
+.filemenu-pop {
+  /* Anchored to the button's leading edge: the trigger sits mid-bar and only
+     ~46px wide on a phone, so a trailing-anchored 190px menu hung off-screen. */
+  position: absolute; top: calc(100% + 8px); inset-inline-start: 0;
+  min-width: 190px; display: flex; flex-direction: column; gap: 2px;
+}
+.menu-item {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; padding: 9px 10px; border: none; border-radius: 8px;
+  background: transparent; color: var(--text);
+  font-size: 13.5px; text-align: start; white-space: nowrap; cursor: pointer;
+}
+.menu-item:hover { background: var(--wash); }
+.menu-sep { height: 1px; margin: 4px 2px; background: var(--border); }
 
 /* ---------- info (ⓘ) button + popover ---------- */
 .info-wrap { position: relative; display: inline-flex; }

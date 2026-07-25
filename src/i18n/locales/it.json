@@ -134,10 +134,14 @@
     "preview": "Anteprima",
     "shapes": "Forme",
     "moreInfo": "Altre info",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "saveProject": "Salva file",
+    "openProject": "Apri file",
+    "file": "File"
   },
   "confirm": {
-    "startOver": "Ricominciare? Verranno cancellate la foto, la calibrazione e la forma."
+    "startOver": "Ricominciare? Verranno cancellate la foto, la calibrazione e la forma.",
+    "openProject": "Aprire un file di progetto? Sostituirà la foto, la calibrazione e la forma attuali."
   },
   "calibrate": {
     "dropTitle": "Carica la foto della parete",
@@ -215,8 +219,18 @@
     "generating": "Generazione…",
     "error": "Impossibile generare il PDF. Controlla la connessione e riprova.",
     "fineprint": "Stampa al 100% e disattiva «adatta alla pagina». La pagina 1 ha un righello da 10 cm per verificare la scala.",
-    "watermarkLabel": "Aggiungi un QR a {{app}} sul foglio di copertina",
+    "watermarkLabel": "Aggiungi un QR a {{app}} dentro lo specchio stampato",
     "watermarkSub": "Così chi vede la tua sagoma può trovare l’app. Stampa anche il nome dell’app sulle immagini scaricate.",
-    "pdfLanguageNote": "Il PDF è in inglese."
+    "pdfLanguageNote": "Il PDF è in inglese.",
+    "skipBlankLabel": "Salta i fogli vuoti",
+    "skipBlankSub": "I fogli che il contorno non attraversa non finiscono nel PDF."
+  },
+  "project": {
+    "err": {
+      "notJson": "Questo file non è un file di progetto: non è JSON valido.",
+      "notProject": "Questo JSON non è stato salvato da questa app.",
+      "tooNew": "Questo file è stato salvato con una versione più recente dell’app. Ricarica la pagina e riprova.",
+      "corrupt": "Questo file di progetto è danneggiato e non è stato possibile aprirlo."
+    }
   }
 }

@@ -133,10 +133,14 @@
     "preview": "Vorschau",
     "shapes": "Formen",
     "moreInfo": "Mehr Infos",
-    "close": "Schließen"
+    "close": "Schließen",
+    "saveProject": "Datei speichern",
+    "openProject": "Datei öffnen",
+    "file": "Datei"
   },
   "confirm": {
-    "startOver": "Neu beginnen? Das löscht dein Foto, die Kalibrierung und die Form."
+    "startOver": "Neu beginnen? Das löscht dein Foto, die Kalibrierung und die Form.",
+    "openProject": "Projektdatei öffnen? Das ersetzt dein aktuelles Foto, die Kalibrierung und die Form."
   },
   "calibrate": {
     "dropTitle": "Wandfoto laden",
@@ -212,8 +216,18 @@
     "generating": "Wird erstellt…",
     "error": "Das PDF konnte nicht erstellt werden. Prüfe deine Verbindung und versuch es erneut.",
     "fineprint": "Bei 100% drucken — „an Seite anpassen“ ausschalten. Seite 1 hat ein 10-cm-Lineal zur Maßstabsprüfung.",
-    "watermarkLabel": "QR-Code zu {{app}} auf das Deckblatt setzen",
+    "watermarkLabel": "QR-Code zu {{app}} in den gedruckten Spiegel setzen",
     "watermarkSub": "Damit jeder, der deine Schablone sieht, die App findet. Stempelt den App-Namen auch auf heruntergeladene Bilder.",
-    "pdfLanguageNote": "Das PDF selbst ist auf Englisch."
+    "pdfLanguageNote": "Das PDF selbst ist auf Englisch.",
+    "skipBlankLabel": "Leere Blätter überspringen",
+    "skipBlankSub": "Blätter, durch die die Kontur nicht verläuft, kommen nicht ins PDF."
+  },
+  "project": {
+    "err": {
+      "notJson": "Diese Datei ist keine Projektdatei – sie ist kein gültiges JSON.",
+      "notProject": "Dieses JSON stammt nicht aus dieser App.",
+      "tooNew": "Diese Datei wurde mit einer neueren Version der App gespeichert. Lade die Seite neu und versuche es erneut.",
+      "corrupt": "Diese Projektdatei ist beschädigt und konnte nicht geöffnet werden."
+    }
   }
 }

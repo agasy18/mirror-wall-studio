@@ -5,12 +5,14 @@ import { ShapeEditor } from "../components/ShapeEditor";
 import { ShapeCatalog } from "../components/ShapeCatalog";
 import { CanvasControls } from "../components/CanvasControls";
 import { PrintDialog } from "../components/PrintDialog";
+import { FileMenu } from "../components/FileMenu";
 import { LanguagePicker } from "../components/LanguagePicker";
 import { Landing } from "./Landing";
 import { APP_NAME } from "../model/brand";
 import { useCalibrationStore } from "../state/useCalibrationStore";
 import { useShapeStore } from "../state/useShapeStore";
 import { cancelPendingWrites } from "../state/debouncedStorage";
+import type { Project } from "../state/project";
 
 type Screen = "landing" | "calibrate" | "editor";
 
@@ -43,6 +45,13 @@ export function AppFlow() {
   const goCalibrate = () => {
     setPreviewMode(false);
     setScreen("calibrate");
+  };
+
+  // A file with no finished calibration drops the user on the calibration
+  // screen rather than into an editor with no wall behind it.
+  const openLoaded = (p: Project) => {
+    setPreviewMode(false);
+    setScreen(p.wall.calibrated && p.wall.photo ? "editor" : "calibrate");
   };
 
   // Explicit "Create new": clear all persisted state and start over. This is
@@ -124,10 +133,7 @@ export function AppFlow() {
               </>
             ) : (
               <>
-                <button className="ghost" onClick={createNew} aria-label={t("actions.createNew")}>
-                  <span aria-hidden="true">＋</span>{" "}
-                  <span className="btn-label">{t("actions.createNew")}</span>
-                </button>
+                <FileMenu onCreateNew={createNew} onLoaded={openLoaded} />
                 <button className="ghost" onClick={goCalibrate} aria-label={t("actions.calibration")}>
                   <span aria-hidden="true">←</span>{" "}
                   <span className="btn-label">{t("actions.calibration")}</span>

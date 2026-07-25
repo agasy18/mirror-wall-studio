@@ -133,10 +133,14 @@
     "preview": "Preview",
     "shapes": "Shapes",
     "moreInfo": "More info",
-    "close": "Close"
+    "close": "Close",
+    "saveProject": "Save file",
+    "openProject": "Open file",
+    "file": "File"
   },
   "confirm": {
-    "startOver": "Start over? This clears your photo, calibration and shape."
+    "startOver": "Start over? This clears your photo, calibration and shape.",
+    "openProject": "Open a project file? This replaces your current photo, calibration and shape."
   },
   "calibrate": {
     "dropTitle": "Load your wall photo",
@@ -212,8 +216,18 @@
     "generating": "Generating…",
     "error": "Could not build the PDF. Check your connection and try again.",
     "fineprint": "Print at 100% — turn off “fit to page”. Page 1 has a 10 cm ruler to check scale.",
-    "watermarkLabel": "Add a QR to {{app}} on the cover sheet",
+    "watermarkLabel": "Add a QR to {{app}} inside the printed mirror",
     "watermarkSub": "So anyone who sees your template can find the app. Also stamps the app name on downloaded images.",
-    "pdfLanguageNote": "The PDF itself is in English."
+    "pdfLanguageNote": "The PDF itself is in English.",
+    "skipBlankLabel": "Skip blank sheets",
+    "skipBlankSub": "Sheets the outline never crosses are left out of the PDF."
+  },
+  "project": {
+    "err": {
+      "notJson": "That file is not a project file — it is not valid JSON.",
+      "notProject": "That JSON was not saved by this app.",
+      "tooNew": "That file was saved by a newer version of the app. Reload the page and try again.",
+      "corrupt": "That project file is damaged and could not be opened."
+    }
   }
 }

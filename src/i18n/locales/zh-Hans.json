@@ -132,10 +132,14 @@
     "preview": "预览",
     "shapes": "形状",
     "moreInfo": "更多信息",
-    "close": "关闭"
+    "close": "关闭",
+    "saveProject": "保存文件",
+    "openProject": "打开文件",
+    "file": "文件"
   },
   "confirm": {
-    "startOver": "重新开始？这会清除你的照片、校准和形状。"
+    "startOver": "重新开始？这会清除你的照片、校准和形状。",
+    "openProject": "打开项目文件？这会替换当前的照片、校准和形状。"
   },
   "calibrate": {
     "dropTitle": "载入墙面照片",
@@ -209,8 +213,18 @@
     "generating": "生成中…",
     "error": "无法生成 PDF。请检查网络连接后重试。",
     "fineprint": "按 100% 打印——关掉“适合页面大小”。第 1 页有 10 cm 标尺可核对比例。",
-    "watermarkLabel": "在封面页加上 {{app}} 的二维码",
+    "watermarkLabel": "在打印的镜面内加上 {{app}} 的二维码",
     "watermarkSub": "这样看到模板的人都能找到这个工具。下载的图片上也会印上应用名称。",
-    "pdfLanguageNote": "PDF 文件本身为英文。"
+    "pdfLanguageNote": "PDF 文件本身为英文。",
+    "skipBlankLabel": "跳过空白纸张",
+    "skipBlankSub": "轮廓不经过的纸张不会放入 PDF。"
+  },
+  "project": {
+    "err": {
+      "notJson": "该文件不是项目文件——不是有效的 JSON。",
+      "notProject": "该 JSON 不是本应用保存的。",
+      "tooNew": "该文件由更新版本的应用保存。请刷新页面后重试。",
+      "corrupt": "该项目文件已损坏，无法打开。"
+    }
   }
 }

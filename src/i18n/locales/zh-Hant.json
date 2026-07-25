@@ -132,10 +132,14 @@
     "preview": "預覽",
     "shapes": "形狀",
     "moreInfo": "更多資訊",
-    "close": "關閉"
+    "close": "關閉",
+    "saveProject": "儲存檔案",
+    "openProject": "開啟檔案",
+    "file": "檔案"
   },
   "confirm": {
-    "startOver": "重新開始？這會清除你的照片、校準與形狀。"
+    "startOver": "重新開始？這會清除你的照片、校準與形狀。",
+    "openProject": "開啟專案檔案？這會取代目前的照片、校正與形狀。"
   },
   "calibrate": {
     "dropTitle": "載入牆面照片",
@@ -209,8 +213,18 @@
     "generating": "產生中…",
     "error": "無法產生 PDF。請檢查網路連線後重試。",
     "fineprint": "以 100% 列印——關掉「符合頁面大小」。第 1 頁有 10 cm 標尺可核對比例。",
-    "watermarkLabel": "在封面頁加上 {{app}} 的 QR Code",
+    "watermarkLabel": "在列印的鏡面內加上 {{app}} 的 QR Code",
     "watermarkSub": "這樣看到範本的人都能找到這個工具。下載的圖片上也會印上應用程式名稱。",
-    "pdfLanguageNote": "PDF 檔案本身為英文。"
+    "pdfLanguageNote": "PDF 檔案本身為英文。",
+    "skipBlankLabel": "略過空白紙張",
+    "skipBlankSub": "輪廓未經過的紙張不會放入 PDF。"
+  },
+  "project": {
+    "err": {
+      "notJson": "該檔案不是專案檔案——不是有效的 JSON。",
+      "notProject": "該 JSON 不是本應用程式儲存的。",
+      "tooNew": "該檔案由較新版本的應用程式儲存。請重新整理頁面後再試。",
+      "corrupt": "該專案檔案已損毀，無法開啟。"
+    }
   }
 }

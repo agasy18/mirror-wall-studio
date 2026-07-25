@@ -47,16 +47,60 @@ npm run build    # typecheck + production build
      so it sits on the wall at the angle the room was shot from. Editing still
      happens on the straightened wall, because that is the only place
      centimetres are square.
-   - **Export tiled PDF** → a 1:1 A4 portrait PDF (~4×7 = 28 pages for a
-     68×173 cm mirror) with 10 mm overlap bands, registration crosses, page
-     labels, and a 10 cm verification ruler on page 1.
+   - **Export tiled PDF** → a 1:1 portrait PDF (~4×7 = 28 sheets for a
+     68×173 cm mirror, fewer once the blank ones are dropped) with 10 mm
+     overlap bands, join ticks, page labels, and a cover sheet.
+   - **Save file / Open file** — the whole design as one JSON: the wall photo,
+     the calibration rectangle and its real size, and the outline.
 
 ## Printing the template
 
 - Print at **100%** — turn OFF "fit to page" / "shrink to fit".
-- Measure the 10 cm ruler on page 1 with a real ruler to confirm scale.
-- Trim along the dashed overlap lines and tape sheets together using the
-  registration crosses.
+- Measure the 10 cm ruler on the cover sheet with a real ruler to confirm scale.
+- Each sheet names the edges to trim. Cut those, lay the sheet on top of its
+  left and upper neighbours so its cut edge follows their dotted line and the
+  short ticks meet end to end, and tape the seam.
+
+### How the sheets join
+
+Each sheet is trimmed on its **leading** edges — left if it has a neighbour to
+the left, top if it has one above — and laid **on top** of those neighbours. Its
+first column of ink starts exactly at the cut, so the outline runs straight off
+one sheet and onto the next.
+
+Trimming the *trailing* edge instead, which is what this did originally and what
+it looks like the overlap band is for, quietly destroys the template: the next
+sheet still carries its own 10 mm unprintable margin on its leading edge, so
+laying it down covers the last 10 mm of the sheet underneath with blank paper. A
+white band at every seam, straight through the line you are supposed to cut
+along — about 6% of the outline, in stretches up to 13 mm.
+
+`assembly.test.ts` exports a real PDF, reads the pages back
+(`pdfPages.ts`), lays the sheets out the way the cover tells the user to and
+checks the outline is still one unbroken curve. Paper is treated as opaque, so
+a sheet that covers its neighbour's ink fails the test — page-by-page geometry
+was always right, and only stacking the sheets shows the bug.
+
+Every seam carries marks on **both** sheets: a dotted "the next sheet's edge
+goes here" line on the one underneath, a dashed "cut here" line on the one on
+top, and a pair of ticks running up to the seam from each side that form one
+straight line only when the two are aligned. Two ticks per seam pin down
+rotation as well as position. (Before, the only marks were registration crosses
+at each sheet's own printable corners: the trailing ones were cut off and the
+leading ones ended up underneath the next sheet, so there was nothing left to
+line up against.)
+
+### Blank sheets
+
+By default, a sheet whose kept area the outline never crosses is left out — the
+corners of the grid on a rounded mirror, and the middle of a big one. For a
+68×173 cm mirror on A4 that is 28 sheets down to 20. The cover's overview map
+shades the ones that were dropped so the grid still reads. Turn the option off
+in the print dialog to get a solid sheet of paper with no holes in the middle.
+
+The cover sheet opens with what you are about to print: finished size, glass
+area, outline length, paper, sheet count and grid, then the scale ruler, the
+assembly steps, and a scale drawing of the mirror laid over the sheet map.
 
 The optional QR goes **inside the outline on the template sheets**, not on the
 cover — the cover is read once and binned, while the paper inside the outline is
@@ -89,7 +133,13 @@ single key so the canvas keeps its height, and the wordmark drops to its glyph.
   middleware, edits via actions.
 - `src/components/` — `PhotoCalibration`, `CalibrationRect`, `ShapeEditor`,
   `MirrorDefs`, `ExportPanel`.
-- `src/export/tilePdf.ts` — jsPDF 1:1 tiled export.
+- `src/export/tilePdf.ts` — jsPDF 1:1 tiled export; `sheets.ts` (which sheets
+  are worth printing, kept without jsPDF so the print dialog can count them),
+  `pdfPages.ts` (read a built PDF back, for the assembly test).
+- `src/state/project.ts` — the save/open file format. Everything a file carries
+  becomes app state, so it is validated rather than trusted, and the photo is
+  only accepted as an inline `data:` URL — a project that could point the app at
+  a remote image would let whoever sent it learn when it was opened.
 - `src/render/warpPhoto.ts` — the straightening. Canvas 2D has no projective
   transform, so the photo is redrawn as a mesh of affine triangles. The mesh
   must be **fine**: an affine map matches the homography only at the three
