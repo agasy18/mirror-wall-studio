@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PhotoCalibration } from "../components/PhotoCalibration";
 import { ShapeEditor } from "../components/ShapeEditor";
 import { ShapeCatalog } from "../components/ShapeCatalog";
 import { CanvasControls } from "../components/CanvasControls";
 import { PrintDialog } from "../components/PrintDialog";
+import { LanguagePicker } from "../components/LanguagePicker";
 import { Landing } from "./Landing";
+import { APP_NAME } from "../model/brand";
 import { useCalibrationStore } from "../state/useCalibrationStore";
 import { useShapeStore } from "../state/useShapeStore";
 import { cancelPendingWrites } from "../state/debouncedStorage";
@@ -17,6 +20,7 @@ function hasSavedWork() {
 }
 
 export function AppFlow() {
+  const { t } = useTranslation();
   // Landing first for new visitors; jump straight in if there's saved work.
   const [screen, setScreen] = useState<Screen>("landing");
   const [panelOpen, setPanelOpen] = useState(
@@ -44,7 +48,7 @@ export function AppFlow() {
   // Explicit "Create new": clear all persisted state and start over. This is
   // the ONLY reset — everything else is kept in localStorage across reloads.
   const createNew = () => {
-    if (!confirm("Start over? This clears your photo, calibration and shape.")) return;
+    if (!confirm(t("confirm.startOver"))) return;
     // Storage writes are debounced, so drop anything still queued first —
     // otherwise it flushes on unload and restores what we just deleted.
     cancelPendingWrites();
@@ -82,53 +86,69 @@ export function AppFlow() {
       <div className="topbar">
         <div className="brand">
           <div className="brand-mark" />
-          <h1>Mirror Wall Studio</h1>
+          <h1>{APP_NAME}</h1>
         </div>
         <span className="step-badge">
-          {screen === "calibrate" ? "1 · Calibrate wall" : "2 · Design & print"}
+          {screen === "calibrate" ? t("steps.calibrate") : t("steps.design")}
         </span>
         <div className="spacer" />
+        <LanguagePicker className="lang-picker--bar" />
         {screen === "editor" && (
           <>
             {previewMode ? (
               <>
-                <button className="ghost" onClick={() => requestDownload()} aria-label="Download image">
-                  <span aria-hidden="true">⬇</span> <span className="btn-label">Download image</span>
+                <button
+                  className="ghost"
+                  onClick={() => requestDownload()}
+                  aria-label={t("actions.downloadImage")}
+                >
+                  <span aria-hidden="true">⬇</span>{" "}
+                  <span className="btn-label">{t("actions.downloadImage")}</span>
                 </button>
-                <button className="ghost" onClick={() => setPreviewMode(false)} aria-label="Back to editing">
-                  <span aria-hidden="true">✎</span> <span className="btn-label">Back to editing</span>
+                <button
+                  className="ghost"
+                  onClick={() => setPreviewMode(false)}
+                  aria-label={t("actions.backToEditing")}
+                >
+                  <span aria-hidden="true">✎</span>{" "}
+                  <span className="btn-label">{t("actions.backToEditing")}</span>
                 </button>
-                {/* "Print" read as "send to a printer"; this downloads a PDF
-                    you print later, so the label says what you actually get. */}
                 <button
                   className="primary"
                   onClick={() => setPrintOpen(true)}
-                  aria-label="Download printable PDF"
+                  aria-label={t("actions.getPdfAria")}
                 >
                   <span aria-hidden="true">📄</span>{" "}
-                  <span className="btn-label">Get PDF</span>
+                  <span className="btn-label">{t("actions.getPdf")}</span>
                 </button>
               </>
             ) : (
               <>
-                <button className="ghost" onClick={createNew} aria-label="Create new">
-                  <span aria-hidden="true">＋</span> <span className="btn-label">Create new</span>
+                <button className="ghost" onClick={createNew} aria-label={t("actions.createNew")}>
+                  <span aria-hidden="true">＋</span>{" "}
+                  <span className="btn-label">{t("actions.createNew")}</span>
                 </button>
-                <button className="ghost" onClick={goCalibrate} aria-label="Calibration">
-                  <span aria-hidden="true">←</span> <span className="btn-label">Calibration</span>
+                <button className="ghost" onClick={goCalibrate} aria-label={t("actions.calibration")}>
+                  <span aria-hidden="true">←</span>{" "}
+                  <span className="btn-label">{t("actions.calibration")}</span>
                 </button>
-                <button className="ghost" onClick={() => setPreviewMode(true)} aria-label="Preview">
-                  <span aria-hidden="true">👁</span> <span className="btn-label">Preview</span>
+                <button
+                  className="ghost"
+                  onClick={() => setPreviewMode(true)}
+                  aria-label={t("actions.preview")}
+                >
+                  <span aria-hidden="true">👁</span>{" "}
+                  <span className="btn-label">{t("actions.preview")}</span>
                 </button>
                 {/* "Print" read as "send to a printer"; this downloads a PDF
                     you print later, so the label says what you actually get. */}
                 <button
                   className="primary"
                   onClick={() => setPrintOpen(true)}
-                  aria-label="Download printable PDF"
+                  aria-label={t("actions.getPdfAria")}
                 >
                   <span aria-hidden="true">📄</span>{" "}
-                  <span className="btn-label">Get PDF</span>
+                  <span className="btn-label">{t("actions.getPdf")}</span>
                 </button>
               </>
             )}
@@ -149,7 +169,7 @@ export function AppFlow() {
             {!previewMode && (
               <>
                 <button className="panel-toggle" onClick={() => setPanelOpen(true)}>
-                  <span aria-hidden="true">🪞</span> Shapes
+                  <span aria-hidden="true">🪞</span> {t("actions.shapes")}
                 </button>
                 <div
                   className={`panel-scrim${panelOpen ? " open" : ""}`}

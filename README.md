@@ -80,9 +80,35 @@ loaded from `public/` at runtime must be referenced as
 but 404s on Pages.
 
 
+## Languages
+
+The UI ships in 13 languages (`src/i18n/locales/`). Each one is a **real URL**,
+not a client-side mode: English at `/`, everything else at `/de/`, `/zh-Hans/`,
+`/pt-BR/` and so on. `scripts/inject-prerender.mjs` renders the landing page
+once per language into its own `index.html`, with a translated `<title>` and
+description, a self-referencing canonical, and reciprocal `hreflang` links — so
+each language is separately indexable by crawlers that never run JavaScript.
+
+The language is read off the path, so the page that was served and the language
+React renders can never disagree. A first-time visitor on `/` is redirected once
+to their browser's language; after that the URL wins. Switching language from
+the picker does not reload — it swaps the bundle and rewrites the URL, so you
+do not lose your design mid-edit.
+
+Only English is bundled; the other twelve are lazy chunks (8–18 kB each).
+`src/i18n/locales.test.ts` guards the set: every bundle must cover every key,
+keep every `{{placeholder}}` and inline tag, and use exactly the CLDR plural
+categories its language actually has (Russian's four, Arabic's six, Japanese's
+one) — checked against `Intl.PluralRules`.
+
+The **PDF is English-only**. jsPDF's built-in fonts are Latin-1; Cyrillic, CJK,
+Devanagari and Arabic would need an embedded font file (megabytes for CJK), so
+the template's instructions stay in English and the UI says so.
+
 ## Search engines
 
-`public/sitemap.xml` lists the single canonical URL. There is deliberately no
+`dist/sitemap.xml` is generated at build time and lists every language URL with
+its full set of `xhtml:link` alternates. There is deliberately no
 `robots.txt`: it is a per-origin file, so one served from
 `/mirror-wall-studio/` would be ignored by every crawler — it would have to live
 at the `agasy18.github.io` root. A missing `robots.txt` means "allow all", so

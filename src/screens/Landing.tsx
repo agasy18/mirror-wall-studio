@@ -1,7 +1,10 @@
 import { useMemo } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { MIRROR_PRESETS, presetToPoints } from "../data/presetShapes";
 import { boundingBox, buildSmoothClosedPath } from "../model/geometry";
 import { PRESET_COUNT } from "../components/PresetPicker";
+import { LanguagePicker } from "../components/LanguagePicker";
+import { APP_NAME } from "../model/brand";
 import "../landing.css";
 
 interface Props {
@@ -15,6 +18,9 @@ interface Props {
  * drawing" — silver form, warm backlight, cm ruler — the page's signature.
  */
 export function Landing({ onLaunch, hasSavedWork }: Props) {
+  const { t } = useTranslation();
+  const cta = hasSavedWork ? t("cta.resume") : t("cta.start");
+
   const hero = useMemo(() => {
     const pts = presetToPoints(MIRROR_PRESETS[0]); // the "Wave" shape
     const bb = boundingBox(pts);
@@ -29,11 +35,12 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
       <header className="landing-nav">
         <span className="wordmark">
           <span className="glyph" aria-hidden="true" />
-          <span className="serif">Mirror Wall Studio</span>
+          <span className="serif">{APP_NAME}</span>
         </span>
         <span className="spacer" />
+        <LanguagePicker />
         <button className="btn btn-amber" onClick={onLaunch}>
-          {hasSavedWork ? "Resume your design" : "Start designing"}
+          {cta}
         </button>
       </header>
 
@@ -41,28 +48,26 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
         {/* ---------- HERO ---------- */}
         <section className="hero" aria-labelledby="hero-title">
           <div className="reveal">
-            <p className="eyebrow mono">Custom mirror · 1:1 paper template</p>
+            <p className="eyebrow mono">{t("landing.hero.eyebrow")}</p>
             <h1 className="serif" id="hero-title">
-              Design the mirror.<br />
-              Print the <span className="em">exact shape.</span>
+              <Trans
+                i18nKey="landing.hero.title"
+                components={{ br: <br />, em: <span className="em" /> }}
+              />
             </h1>
-            <p className="lead">
-              Shape an organic, irregular mirror right on a photo of your wall, then
-              export a full-size printable cutting template across ordinary printer
-              paper. Tape the sheets, trace the line, cut the glass — a true 1:1 DIY
-              stencil for the glass shop or your own cut.
-            </p>
+            <p className="lead">{t("landing.hero.lead")}</p>
             <div className="cta-row">
               <button className="btn btn-amber" onClick={onLaunch}>
-                {hasSavedWork ? "Resume your design →" : "Start designing →"}
+                {cta} <span className="btn-arrow" aria-hidden="true">→</span>
               </button>
-              <span className="cta-note">Free · runs in your browser · nothing to install</span>
+              <span className="cta-note">{t("landing.hero.ctaNote")}</span>
             </div>
           </div>
 
-          <figure className="hero-figure reveal" aria-label="Shop drawing of a custom wavy mirror with a backlit edge">
+          <figure className="hero-figure reveal" aria-label={t("landing.hero.figureAlt")}>
             <div className="ruler mono" aria-hidden="true">
-              <span>0</span><span>40</span><span>80</span><span>120</span><span>173 cm</span>
+              <span>0</span><span>40</span><span>80</span><span>120</span>
+              <span>{t("landing.hero.rulerEnd")}</span>
             </div>
             <svg className="plate" viewBox={hero.viewBox} preserveAspectRatio="xMidYMid meet" role="img">
               <defs>
@@ -81,18 +86,15 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
               <path d={hero.d} fill="url(#lp-silver)" stroke="#5c6673" strokeWidth="0.5"
                     filter="url(#lp-glow)" vectorEffect="non-scaling-stroke" />
             </svg>
-            <figcaption className="mono">wave · 68 × 173 cm</figcaption>
+            <figcaption className="mono">{t("landing.hero.caption")}</figcaption>
           </figure>
         </section>
 
         {/* ---------- STORY: template ↔ installed mirror, one composition ---------- */}
         <section aria-labelledby="story-title">
-          <p className="section-eyebrow mono">Paper today, mirror tomorrow</p>
-          <h2 className="section-title serif" id="story-title">The template becomes the mirror</h2>
-          <p className="section-intro">
-            One organic shape, two forms of the same 64&nbsp;×&nbsp;163&nbsp;cm outline:
-            the sheets you print and tape, and the finished mirror on the wall.
-          </p>
+          <p className="section-eyebrow mono">{t("landing.story.eyebrow")}</p>
+          <h2 className="section-title serif" id="story-title">{t("landing.story.title")}</h2>
+          <p className="section-intro">{t("landing.story.intro")}</p>
 
           {/* the "single jelly": paper template and installed mirror share one frame,
               joined by a live cm rule, with the shape flowing between them. */}
@@ -100,28 +102,28 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
             <figure className="diptych-paper">
               <img
                 src={`${import.meta.env.BASE_URL}printed-grid.webp`}
-                alt="Printed sheets taped together into a full-size 64 by 163 cm cutting outline, with page labels, dashed overlap lines and a 10 cm ruler"
+                alt={t("landing.story.paperAlt")}
                 width={800}
                 height={1937}
                 loading="lazy"
               />
-              <figcaption className="mono">printed · 3 × 5 sheets · 1:1</figcaption>
+              <figcaption className="mono">{t("landing.story.paperCaption")}</figcaption>
             </figure>
 
             <div className="diptych-arrow" aria-hidden="true">
-              <span className="rule mono">64 × 163 cm</span>
+              <span className="rule mono">{t("landing.story.rule")}</span>
               <span className="arrow">→</span>
             </div>
 
             <figure className="diptych-room">
               <img
                 src={`${import.meta.env.BASE_URL}final.webp`}
-                alt="The finished organic mirror installed on the bedroom wall"
+                alt={t("landing.story.roomAlt")}
                 width={1000}
                 height={1446}
                 loading="lazy"
               />
-              <figcaption className="mono">installed · on your wall</figcaption>
+              <figcaption className="mono">{t("landing.story.roomCaption")}</figcaption>
             </figure>
           </div>
 
@@ -130,180 +132,122 @@ export function Landing({ onLaunch, hasSavedWork }: Props) {
             <figure>
               <img
                 src={`${import.meta.env.BASE_URL}wall.webp`}
-                alt="Empty bedroom wall photographed before designing the custom mirror"
+                alt={t("landing.story.beforeAlt")}
                 width={893}
                 height={1280}
                 loading="lazy"
               />
-              <figcaption><b>Before</b></figcaption>
+              <figcaption><b>{t("landing.story.before")}</b></figcaption>
             </figure>
             <figure>
               <img
                 src={`${import.meta.env.BASE_URL}editing.webp`}
-                alt="Designing the mirror shape on the perspective-corrected wall photo, with draggable control points"
+                alt={t("landing.story.designingAlt")}
                 width={900}
                 height={1292}
                 loading="lazy"
               />
-              <figcaption><b>Designing</b></figcaption>
+              <figcaption><b>{t("landing.story.designing")}</b></figcaption>
             </figure>
             <figure className="ministrip-final">
               <img
                 src={`${import.meta.env.BASE_URL}final.webp`}
-                alt="Finished custom organic wall mirror cut from the printed 1:1 template"
+                alt={t("landing.story.afterAlt")}
                 width={1000}
                 height={1446}
                 loading="lazy"
               />
-              <figcaption><b>After</b></figcaption>
+              <figcaption><b>{t("landing.story.after")}</b></figcaption>
             </figure>
           </div>
         </section>
 
         {/* ---------- FEATURES ---------- */}
         <section aria-labelledby="feat-title">
-          <p className="section-eyebrow mono">What's inside</p>
-          <h2 className="section-title serif" id="feat-title">Built for an exact result</h2>
+          <p className="section-eyebrow mono">{t("landing.features.eyebrow")}</p>
+          <h2 className="section-title serif" id="feat-title">{t("landing.features.title")}</h2>
           <div className="features">
             <article className="feature">
               <span className="fx" aria-hidden="true">📐</span>
-              <h3 className="serif">True 1:1 export</h3>
-              <p>Every sheet carries registration marks, overlap guides and a 10 cm ruler so you can confirm the scale before you cut.</p>
+              <h3 className="serif">{t("landing.features.exact.title")}</h3>
+              <p>{t("landing.features.exact.body")}</p>
             </article>
             <article className="feature">
               <span className="fx" aria-hidden="true">🪞</span>
-              <h3 className="serif">{PRESET_COUNT} shape templates</h3>
-              <p>Organic waves, pebbles, pills and more — or draw your own by dragging smooth control points.</p>
+              <h3 className="serif">{t("landing.features.templates.title", { count: PRESET_COUNT })}</h3>
+              <p>{t("landing.features.templates.body")}</p>
             </article>
             <article className="feature">
               <span className="fx" aria-hidden="true">🧭</span>
-              <h3 className="serif">Perspective calibration</h3>
-              <p>Your angled wall photo is straightened to head-on, so the mirror you place is the mirror you get.</p>
+              <h3 className="serif">{t("landing.features.perspective.title")}</h3>
+              <p>{t("landing.features.perspective.body")}</p>
             </article>
             <article className="feature">
               <span className="fx" aria-hidden="true">🖨️</span>
-              <h3 className="serif">Any paper size</h3>
-              <p>Tile across A4, Letter, A3, Legal or A2 — the page count updates live as you choose.</p>
+              <h3 className="serif">{t("landing.features.paper.title")}</h3>
+              <p>{t("landing.features.paper.body")}</p>
             </article>
             <article className="feature">
               <span className="fx" aria-hidden="true">👁️</span>
-              <h3 className="serif">In-room preview</h3>
-              <p>See the finished mirror on your wall with its warm backlit glow, then download the image to share.</p>
+              <h3 className="serif">{t("landing.features.preview.title")}</h3>
+              <p>{t("landing.features.preview.body")}</p>
             </article>
             <article className="feature">
               <span className="fx" aria-hidden="true">💾</span>
-              <h3 className="serif">Your work is kept</h3>
-              <p>Photo, calibration and shape are saved in your browser — come back any time and pick up where you left off.</p>
+              <h3 className="serif">{t("landing.features.saved.title")}</h3>
+              <p>{t("landing.features.saved.body")}</p>
             </article>
           </div>
         </section>
 
         {/* ---------- HOW IT WORKS (a real 4-step sequence) — placed lower ---------- */}
         <section aria-labelledby="how-title">
-          <p className="section-eyebrow mono">How it works</p>
-          <h2 className="section-title serif" id="how-title">Four steps to a mirror that fits your wall</h2>
-          <p className="section-intro">
-            The whole thing is grounded in real centimeters, so what you print is
-            what you cut — no guesswork, no scaling surprises.
-          </p>
+          <p className="section-eyebrow mono">{t("landing.how.eyebrow")}</p>
+          <h2 className="section-title serif" id="how-title">{t("landing.how.title")}</h2>
+          <p className="section-intro">{t("landing.how.intro")}</p>
           <ol className="steps">
-            <li className="step">
-              <span className="num serif">1</span>
-              <div>
-                <h3 className="serif">Photograph the wall</h3>
-                <p>Snap the spot where the mirror will hang. Any phone photo works.</p>
-              </div>
-            </li>
-            <li className="step">
-              <span className="num serif">2</span>
-              <div>
-                <h3 className="serif">Calibrate the scale</h3>
-                <p>Mark a rectangle you know the real size of and type it in centimeters. The photo is straightened to a head-on view at true scale.</p>
-              </div>
-            </li>
-            <li className="step">
-              <span className="num serif">3</span>
-              <div>
-                <h3 className="serif">Design the shape</h3>
-                <p>Start from {PRESET_COUNT} templates, then drag the curve, move and scale it until it sits exactly right on your wall.</p>
-              </div>
-            </li>
-            <li className="step">
-              <span className="num serif">4</span>
-              <div>
-                <h3 className="serif">Print at 1:1</h3>
-                <p>Export a full-size PDF tiled across A4, A3 or Letter. Print at 100%, tape the sheets, trace the outline.</p>
-              </div>
-            </li>
+            {(["s1", "s2", "s3", "s4"] as const).map((s, i) => (
+              <li className="step" key={s}>
+                <span className="num serif">{i + 1}</span>
+                <div>
+                  <h3 className="serif">{t(`landing.how.${s}.title`)}</h3>
+                  <p>{t(`landing.how.${s}.body`, { count: PRESET_COUNT })}</p>
+                </div>
+              </li>
+            ))}
           </ol>
         </section>
 
         {/* ---------- FAQ ---------- */}
         <section aria-labelledby="faq-title">
-          <p className="section-eyebrow mono">Questions</p>
-          <h2 className="section-title serif" id="faq-title">Before you print</h2>
+          <p className="section-eyebrow mono">{t("landing.faq.eyebrow")}</p>
+          <h2 className="section-title serif" id="faq-title">{t("landing.faq.title")}</h2>
           <div className="faq">
-            <article className="faq-item">
-              <h3 className="serif">How do I print a template at exactly 1:1 scale?</h3>
-              <p>
-                In the print dialog turn off “fit to page” / “shrink oversized pages”
-                and set the scale to 100%. Page 1 carries a 10 cm ruler — measure it
-                with a real ruler before you cut anything. If it measures 10 cm, every
-                other sheet is right too.
-              </p>
-            </article>
-            <article className="faq-item">
-              <h3 className="serif">Can I make an irregular or asymmetrical shape?</h3>
-              <p>
-                Yes — that is the point. Start from one of the {PRESET_COUNT} templates,
-                then drag any control point, double-click the outline to add one, or
-                delete points you don’t want. Nothing is constrained to a symmetry axis.
-              </p>
-            </article>
-            <article className="faq-item">
-              <h3 className="serif">What paper sizes can I use?</h3>
-              <p>
-                A4, Letter, A3, Legal and A2, in portrait. The page count updates as you
-                switch, so you can trade sheet size against how many pages you tape
-                together. Sheets overlap by 10 mm with registration crosses to align on.
-              </p>
-            </article>
-            <article className="faq-item">
-              <h3 className="serif">How do I get the glass cut from the template?</h3>
-              <p>
-                Tape the printed sheets into one full-size stencil, cut along the
-                outline, and hand that paper shape to a glazier — it is the physical
-                pattern they work from. The finished size is printed on page 1 so you
-                can quote the job without re-measuring.
-              </p>
-            </article>
-            <article className="faq-item">
-              <h3 className="serif">Does my photo get uploaded anywhere?</h3>
-              <p>
-                No. Everything runs in your browser — the photo, the calibration and the
-                PDF are all generated on your own device and stored only there. There is
-                no account and no server to upload to.
-              </p>
-            </article>
+            {(["q1", "q2", "q3", "q4", "q5"] as const).map((q) => (
+              <article className="faq-item" key={q}>
+                <h3 className="serif">{t(`landing.faq.${q}.q`)}</h3>
+                <p>{t(`landing.faq.${q}.a`, { count: PRESET_COUNT })}</p>
+              </article>
+            ))}
           </div>
         </section>
 
         {/* ---------- CLOSING CTA ---------- */}
         <section aria-labelledby="closing-title">
           <div className="closing reveal">
-            <h2 className="serif" id="closing-title">Ready to fit a mirror to your wall?</h2>
-            <p>Design it in minutes and walk away with a template you can cut to.</p>
+            <h2 className="serif" id="closing-title">{t("landing.closing.title")}</h2>
+            <p>{t("landing.closing.body")}</p>
             <button className="btn btn-amber" onClick={onLaunch}>
-              {hasSavedWork ? "Resume your design →" : "Start designing →"}
+              {cta} <span className="btn-arrow" aria-hidden="true">→</span>
             </button>
           </div>
         </section>
       </main>
 
       <footer className="landing-footer">
-        <span className="serif">Mirror Wall Studio</span>
+        <span className="serif">{APP_NAME}</span>
         <span className="spacer" />
-        <span className="mono">1 unit = 1 cm · print at 100%</span>
+        <span className="mono">{t("landing.footer.note")}</span>
       </footer>
     </div>
   );

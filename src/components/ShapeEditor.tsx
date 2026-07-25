@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useShapeStore } from "../state/useShapeStore";
 import { useCalibrationStore, cornersAsArray } from "../state/useCalibrationStore";
 import { boundingBox, nearestSegmentIndex } from "../model/geometry";
@@ -28,6 +29,7 @@ const MARGIN_CM = 25;
  * resize only rescales the camera and everything stays locked together.
  */
 export function ShapeEditor() {
+  const { t } = useTranslation();
   const points = useShapeStore((s) => s.points);
   const selectedId = useShapeStore((s) => s.selectedId);
   const showMirror = useShapeStore((s) => s.toggles.showMirror);
@@ -554,7 +556,7 @@ export function ShapeEditor() {
         ref={canvasRef}
         className={`editor-canvas${previewMode ? " is-preview" : ""}`}
         style={{ width: size.w, height: size.h, touchAction: "none" }}
-        aria-label="Mirror shape editor: drag the outline or its control points"
+        aria-label={t("editor.canvasAria")}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -562,17 +564,17 @@ export function ShapeEditor() {
         onDoubleClick={onDoubleClick}
       />
       {zoomed && !previewMode && (
-        <button className="view-reset mono" onClick={resetView} aria-label="Reset the view to fit">
-          {view.zoom.toFixed(1)}× · reset view
+        <button className="view-reset mono" onClick={resetView} aria-label={t("editor.resetView")}>
+          {t("editor.resetViewLabel", { zoom: view.zoom.toFixed(1) })}
         </button>
       )}
       {editCurve && !previewMode && selectedId && (
         <button
           className="point-delete"
           onClick={() => deletePoint(selectedId)}
-          aria-label="Delete the selected control point"
+          aria-label={t("editor.deletePointAria")}
         >
-          <span aria-hidden="true">🗑</span> Delete point
+          <span aria-hidden="true">🗑</span> {t("editor.deletePoint")}
         </button>
       )}
     </div>

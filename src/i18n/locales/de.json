@@ -1,0 +1,219 @@
+{
+  "meta": {
+    "title": "Spiegelform entwerfen — gratis 1:1-Schablone",
+    "description": "Entwirf eine organische, unregelmäßige Spiegelform auf einem Wandfoto und exportiere eine gratis 1:1-Schablone für normales Papier. Läuft im Browser."
+  },
+  "lang": {
+    "label": "Sprache",
+    "choose": "Sprache wählen"
+  },
+  "cta": {
+    "start": "Jetzt entwerfen",
+    "resume": "Entwurf fortsetzen"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Individueller Spiegel · 1:1-Papierschablone",
+      "title": "Entwirf den Spiegel.<br/>Drucke die <em>exakte Form.</em>",
+      "lead": "Forme einen organischen, unregelmäßigen Spiegel direkt auf einem Foto deiner Wand und exportiere dann eine Schnittschablone in Originalgröße, gekachelt über normales Druckerpapier. Blätter zusammenkleben, Linie nachziehen, Glas schneiden — eine echte 1:1-Schablone für den Glaser oder deinen eigenen Schnitt.",
+      "ctaNote": "Kostenlos · läuft im Browser · keine Installation",
+      "figureAlt": "Werkzeichnung eines individuellen Wellenspiegels mit hinterleuchteter Kante",
+      "rulerEnd": "173 cm",
+      "caption": "Welle · 68 × 173 cm"
+    },
+    "story": {
+      "eyebrow": "Heute Papier, morgen Spiegel",
+      "title": "Aus der Schablone wird der Spiegel",
+      "intro": "Eine organische Form, zwei Gestalten derselben Kontur mit 64 × 163 cm: die Blätter, die du druckst und zusammenklebst, und der fertige Spiegel an der Wand.",
+      "paperAlt": "Gedruckte Blätter, zu einer Schnittkontur in Originalgröße von 64 mal 163 cm zusammengeklebt, mit Seitenbeschriftung, gestrichelten Überlappungslinien und einem 10-cm-Lineal",
+      "paperCaption": "gedruckt · 3 × 5 Blätter · 1:1",
+      "rule": "64 × 163 cm",
+      "roomAlt": "Der fertige organische Spiegel an der Schlafzimmerwand montiert",
+      "roomCaption": "montiert · an deiner Wand",
+      "beforeAlt": "Leere Schlafzimmerwand, fotografiert vor dem Entwurf des individuellen Spiegels",
+      "before": "Vorher",
+      "designingAlt": "Entwurf der Spiegelform auf dem perspektivisch korrigierten Wandfoto mit verschiebbaren Kontrollpunkten",
+      "designing": "Entwurf",
+      "afterAlt": "Fertiger organischer Wandspiegel, geschnitten nach der gedruckten 1:1-Schablone",
+      "after": "Nachher"
+    },
+    "features": {
+      "eyebrow": "Was drin ist",
+      "title": "Gebaut für ein exaktes Ergebnis",
+      "exact": {
+        "title": "Echter 1:1-Export",
+        "body": "Jedes Blatt hat Passkreuze, Überlappungshilfen und ein 10-cm-Lineal, damit du den Maßstab vor dem Schneiden prüfen kannst."
+      },
+      "templates": {
+        "title_one": "{{count}} Formvorlage",
+        "title_other": "{{count}} Formvorlagen",
+        "body": "Organische Wellen, Kiesel, Kapseln und mehr — oder zeichne deine eigene Form, indem du weiche Kontrollpunkte ziehst."
+      },
+      "perspective": {
+        "title": "Perspektivkalibrierung",
+        "body": "Dein schräg aufgenommenes Wandfoto wird auf Frontalsicht entzerrt — der Spiegel, den du platzierst, ist der Spiegel, den du bekommst."
+      },
+      "paper": {
+        "title": "Jedes Papierformat",
+        "body": "Kachle über A4, Letter, A3, Legal oder A2 — die Seitenzahl aktualisiert sich live bei der Auswahl."
+      },
+      "preview": {
+        "title": "Vorschau im Raum",
+        "body": "Sieh den fertigen Spiegel mit warmem Hinterleuchten an deiner Wand und lade das Bild zum Teilen herunter."
+      },
+      "saved": {
+        "title": "Deine Arbeit bleibt erhalten",
+        "body": "Foto, Kalibrierung und Form werden in deinem Browser gespeichert — komm jederzeit zurück und mach da weiter, wo du aufgehört hast."
+      }
+    },
+    "how": {
+      "eyebrow": "So funktioniert es",
+      "title": "Vier Schritte zum Spiegel, der an deine Wand passt",
+      "intro": "Alles steht auf echten Zentimetern: Was du druckst, ist was du schneidest — kein Schätzen, keine Maßstabsüberraschungen.",
+      "s1": {
+        "title": "Wand fotografieren",
+        "body": "Fotografiere die Stelle, an der der Spiegel hängen soll. Jedes Handyfoto genügt."
+      },
+      "s2": {
+        "title": "Maßstab kalibrieren",
+        "body": "Markiere ein Rechteck, dessen echte Größe du kennst, und gib sie in Zentimetern ein. Das Foto wird auf eine frontale Ansicht im echten Maßstab entzerrt."
+      },
+      "s3": {
+        "title": "Form entwerfen",
+        "body": "Starte mit {{count}} Vorlagen, zieh dann an der Kurve, verschiebe und skaliere sie, bis sie genau richtig an deiner Wand sitzt."
+      },
+      "s4": {
+        "title": "1:1 drucken",
+        "body": "Exportiere ein PDF in Originalgröße, gekachelt über A4, A3 oder Letter. Bei 100% drucken, Blätter zusammenkleben, Kontur nachziehen."
+      }
+    },
+    "faq": {
+      "eyebrow": "Fragen",
+      "title": "Bevor du druckst",
+      "q1": {
+        "q": "Wie drucke ich eine Schablone in genau 1:1?",
+        "a": "Schalte im Druckdialog „an Seite anpassen“ / „übergroße Seiten verkleinern“ aus und setze den Maßstab auf 100%. Seite 1 trägt ein 10-cm-Lineal — miss es mit einem echten Lineal, bevor du etwas schneidest. Sind es 10 cm, stimmt auch jedes andere Blatt."
+      },
+      "q2": {
+        "q": "Kann ich eine unregelmäßige oder asymmetrische Form machen?",
+        "a": "Ja — genau darum geht es. Starte mit einer der {{count}} Vorlagen, zieh dann an jedem Kontrollpunkt, doppelklicke auf die Kontur, um einen hinzuzufügen, oder lösche Punkte, die du nicht willst. Nichts ist an eine Symmetrieachse gebunden."
+      },
+      "q3": {
+        "q": "Welche Papierformate kann ich verwenden?",
+        "a": "A4, Letter, A3, Legal und A2, im Hochformat. Die Seitenzahl aktualisiert sich beim Wechseln, sodass du Blattgröße gegen die Anzahl der zusammengeklebten Seiten abwägen kannst. Die Blätter überlappen 10 mm und haben Passkreuze zum Ausrichten."
+      },
+      "q4": {
+        "q": "Wie lasse ich das Glas nach der Schablone schneiden?",
+        "a": "Klebe die gedruckten Blätter zu einer Schablone in Originalgröße zusammen, schneide entlang der Kontur und gib diese Papierform einem Glaser — sie ist die physische Vorlage, nach der er arbeitet. Das Endmaß steht auf Seite 1, sodass du den Auftrag ohne Nachmessen anfragen kannst."
+      },
+      "q5": {
+        "q": "Wird mein Foto irgendwohin hochgeladen?",
+        "a": "Nein. Alles läuft in deinem Browser — Foto, Kalibrierung und PDF entstehen auf deinem eigenen Gerät und bleiben nur dort. Es gibt kein Konto und keinen Server, auf den etwas hochgeladen wird."
+      }
+    },
+    "closing": {
+      "title": "Bereit für einen Spiegel, der an deine Wand passt?",
+      "body": "Entwirf ihn in Minuten und nimm eine Schablone mit, nach der du schneiden kannst."
+    },
+    "footer": {
+      "note": "1 Einheit = 1 cm · bei 100% drucken"
+    }
+  },
+  "steps": {
+    "calibrate": "1 · Wand kalibrieren",
+    "design": "2 · Entwerfen & drucken"
+  },
+  "actions": {
+    "downloadImage": "Bild herunterladen",
+    "backToEditing": "Zurück zum Bearbeiten",
+    "getPdf": "PDF holen",
+    "getPdfAria": "Druckfertiges PDF herunterladen",
+    "createNew": "Neu anlegen",
+    "calibration": "Kalibrierung",
+    "preview": "Vorschau",
+    "shapes": "Formen",
+    "moreInfo": "Mehr Infos",
+    "close": "Schließen"
+  },
+  "confirm": {
+    "startOver": "Neu beginnen? Das löscht dein Foto, die Kalibrierung und die Form."
+  },
+  "calibrate": {
+    "dropTitle": "Wandfoto laden",
+    "dropBody": "Wähle ein Foto der Wand, an die der Spiegel soll.",
+    "choosePhoto": "Foto wählen…",
+    "hintTitle": "Lege das Rechteck in den Bereich, den du spiegeln willst.",
+    "hintSub": "Zieh die 4 Ecken auf ein echtes Rechteck an der Wand und gib dessen wahre Größe ein. Mit <b>Fertig</b> wird das Foto entzerrt, sodass du auf einer frontalen Wand entwirfst.",
+    "dismissHint": "Hinweis ausblenden",
+    "panelTitle": "Wand kalibrieren",
+    "panelHint": "Gib die echte Größe des gezeichneten Rechtecks ein. Das verankert den ganzen Entwurf in Zentimetern.",
+    "width": "Rechteckbreite",
+    "height": "Rechteckhöhe",
+    "done": "Fertig — entzerren & entwerfen →",
+    "quadInvalid": "Korrigiere die Ecken — das Rechteck muss eine richtige (konvexe) Form sein.",
+    "differentPhoto": "Anderes Foto wählen",
+    "errImage": "Dieses Bild konnte nicht gelesen werden. Bitte wähle ein anderes Foto.",
+    "errFile": "Diese Datei konnte nicht gelesen werden. Bitte wähle ein anderes Foto."
+  },
+  "editor": {
+    "canvasAria": "Editor für die Spiegelform: zieh die Kontur oder ihre Kontrollpunkte",
+    "sizeAria": "Spiegelgröße",
+    "unit": "cm",
+    "viewSettings": "Ansichtseinstellungen",
+    "viewTitle": "Ansicht",
+    "toggles": {
+      "mirror": "Spiegeleffekt",
+      "grid": "cm-Raster (10 cm)",
+      "photo": "Wandhintergrund",
+      "pageOverlay": "Seitenraster",
+      "watermark": "Wasserzeichen im Export"
+    },
+    "safeMargin": "Sicherheitsabstand",
+    "marginUnit": "cm von jeder Kante",
+    "moveScaleAria": "Verschieben und skalieren",
+    "scale": "Skalieren",
+    "move": "Verschieben",
+    "larger": "Größer",
+    "smaller": "Kleiner",
+    "up": "Hoch",
+    "down": "Runter",
+    "left": "Links",
+    "right": "Rechts",
+    "resetView": "Ansicht auf Passform zurücksetzen",
+    "resetViewLabel": "{{zoom}}× · Ansicht zurücksetzen",
+    "deletePoint": "Punkt löschen",
+    "deletePointAria": "Ausgewählten Kontrollpunkt löschen"
+  },
+  "catalog": {
+    "title": "Spiegel wählen",
+    "infoLabel": "So bearbeitest du eine Form",
+    "infoBody": "Wähle eine Form und zieh dann die Punkte auf der Fläche, um sie zu verfeinern. Doppeltippe auf die Kontur, um einen Punkt hinzuzufügen; wähle einen aus und entferne ihn mit „Punkt löschen“ (oder der Entf-Taste).",
+    "reset": "Diese Form zurücksetzen",
+    "useShape": "Form {{name}} verwenden"
+  },
+  "shapes": {
+    "wave": "Welle",
+    "pebble": "Kiesel",
+    "peanut": "Erdnuss",
+    "leaf": "Blatt",
+    "pill": "Kapsel",
+    "boulder": "Felsbrocken",
+    "generated": "Form {{number}}"
+  },
+  "print": {
+    "title": "Drucke deine 1:1-Schablone",
+    "sub": "Dein Spiegel ist <b>{{size}}</b>. Wähle ein Papierformat — gedruckt wird über mehrere Blätter, die du zusammenklebst.",
+    "pages_one": "{{count}} Seite",
+    "pages_other": "{{count}} Seiten",
+    "readout_one": "Exportiert <b>{{count}}</b> {{paper}}-Seite ({{cols}} × {{rows}}) · {{overlap}} mm Überlappung · Hochformat",
+    "readout_other": "Exportiert <b>{{count}}</b> {{paper}}-Seiten ({{cols}} × {{rows}}) · {{overlap}} mm Überlappung · Hochformat",
+    "noArea": "Die Form hat keine Fläche zum Drucken.",
+    "download": "PDF herunterladen",
+    "generating": "Wird erstellt…",
+    "error": "Das PDF konnte nicht erstellt werden. Prüfe deine Verbindung und versuch es erneut.",
+    "fineprint": "Bei 100% drucken — „an Seite anpassen“ ausschalten. Seite 1 hat ein 10-cm-Lineal zur Maßstabsprüfung.",
+    "watermarkLabel": "QR-Code zu {{app}} auf das Deckblatt setzen",
+    "watermarkSub": "Damit jeder, der deine Schablone sieht, die App findet. Stempelt den App-Namen auch auf heruntergeladene Bilder.",
+    "pdfLanguageNote": "Das PDF selbst ist auf Englisch."
+  }
+}

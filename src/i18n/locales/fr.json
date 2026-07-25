@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "title": "Miroir sur mesure — patron imprimable 1:1 gratuit",
+    "description": "Dessinez un miroir organique sur une photo de votre mur et exportez un patron de découpe 1:1 gratuit sur papier ordinaire. Tout reste dans le navigateur."
+  },
+  "lang": {
+    "label": "Langue",
+    "choose": "Choisir une langue"
+  },
+  "cta": {
+    "start": "Commencer la conception",
+    "resume": "Reprendre votre conception"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Miroir sur mesure · patron papier 1:1",
+      "title": "Concevez le miroir.<br/>Imprimez la <em>forme exacte.</em>",
+      "lead": "Modelez un miroir organique et irrégulier directement sur une photo de votre mur, puis exportez un patron de découpe grandeur réelle réparti sur du papier d’imprimante ordinaire. Scotchez les feuilles, tracez la ligne, coupez le verre — un vrai gabarit 1:1 pour le vitrier ou pour votre propre découpe.",
+      "ctaNote": "Gratuit · fonctionne dans votre navigateur · rien à installer",
+      "figureAlt": "Plan d’atelier d’un miroir ondulé sur mesure à bord rétroéclairé",
+      "rulerEnd": "173 cm",
+      "caption": "vague · 68 × 173 cm"
+    },
+    "story": {
+      "eyebrow": "Le papier aujourd’hui, le miroir demain",
+      "title": "Le patron devient le miroir",
+      "intro": "Une seule forme organique, deux états d’un même contour de 64 × 163 cm : les feuilles que vous imprimez et scotchez, et le miroir fini sur le mur.",
+      "paperAlt": "Feuilles imprimées scotchées ensemble en un contour de découpe grandeur réelle de 64 sur 163 cm, avec repères de page, lignes de chevauchement en pointillés et une règle de 10 cm",
+      "paperCaption": "imprimé · 3 × 5 feuilles · 1:1",
+      "rule": "64 × 163 cm",
+      "roomAlt": "Le miroir organique fini installé sur le mur de la chambre",
+      "roomCaption": "installé · sur votre mur",
+      "beforeAlt": "Mur de chambre vide photographié avant la conception du miroir sur mesure",
+      "before": "Avant",
+      "designingAlt": "Conception de la forme du miroir sur la photo de mur redressée, avec des points de contrôle déplaçables",
+      "designing": "Conception",
+      "afterAlt": "Miroir mural organique sur mesure terminé, découpé à partir du patron 1:1 imprimé",
+      "after": "Après"
+    },
+    "features": {
+      "eyebrow": "Ce qu’il y a dedans",
+      "title": "Conçu pour un résultat exact",
+      "exact": {
+        "title": "Export 1:1 fidèle",
+        "body": "Chaque feuille porte des croix de repérage, des guides de chevauchement et une règle de 10 cm pour vérifier l’échelle avant de couper."
+      },
+      "templates": {
+        "title_one": "{{count}} modèle de forme",
+        "title_many": "{{count}} modèles de forme",
+        "title_other": "{{count}} modèles de forme",
+        "body": "Vagues organiques, galets, pilules et plus — ou dessinez la vôtre en déplaçant des points de contrôle lissés."
+      },
+      "perspective": {
+        "title": "Calibrage de la perspective",
+        "body": "Votre photo de mur prise de biais est redressée de face : le miroir que vous placez est celui que vous obtenez."
+      },
+      "paper": {
+        "title": "Tout format de papier",
+        "body": "Répartissez sur A4, Letter, A3, Legal ou A2 — le nombre de pages se met à jour en direct selon votre choix."
+      },
+      "preview": {
+        "title": "Aperçu dans la pièce",
+        "body": "Voyez le miroir fini sur votre mur avec sa lueur chaude rétroéclairée, puis téléchargez l’image à partager."
+      },
+      "saved": {
+        "title": "Votre travail est conservé",
+        "body": "Photo, calibrage et forme sont enregistrés dans votre navigateur — revenez quand vous voulez et reprenez où vous en étiez."
+      }
+    },
+    "how": {
+      "eyebrow": "Comment ça marche",
+      "title": "Quatre étapes vers un miroir à la mesure de votre mur",
+      "intro": "Tout repose sur de vrais centimètres : ce que vous imprimez est ce que vous coupez — pas d’approximation, pas de mauvaise surprise d’échelle.",
+      "s1": {
+        "title": "Photographiez le mur",
+        "body": "Prenez l’endroit où le miroir sera accroché. N’importe quelle photo de téléphone convient."
+      },
+      "s2": {
+        "title": "Calibrez l’échelle",
+        "body": "Marquez un rectangle dont vous connaissez la taille réelle et saisissez-la en centimètres. La photo est redressée en vue de face, à l’échelle réelle."
+      },
+      "s3": {
+        "title": "Dessinez la forme",
+        "body": "Partez de {{count}} modèles, puis tirez la courbe, déplacez-la et redimensionnez-la jusqu’à ce qu’elle tombe juste sur votre mur."
+      },
+      "s4": {
+        "title": "Imprimez en 1:1",
+        "body": "Exportez un PDF grandeur réelle réparti sur A4, A3 ou Letter. Imprimez à 100%, scotchez les feuilles, tracez le contour."
+      }
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "title": "Avant d’imprimer",
+      "q1": {
+        "q": "Comment imprimer un patron exactement à l’échelle 1:1 ?",
+        "a": "Dans la boîte de dialogue d’impression, désactivez « ajuster à la page » / « réduire les pages hors format » et réglez l’échelle sur 100%. La page 1 porte une règle de 10 cm — mesurez-la avec une vraie règle avant de couper quoi que ce soit. Si elle fait 10 cm, toutes les autres feuilles sont bonnes aussi."
+      },
+      "q2": {
+        "q": "Puis-je faire une forme irrégulière ou asymétrique ?",
+        "a": "Oui — c’est tout l’intérêt. Partez de l’un des {{count}} modèles, puis tirez n’importe quel point de contrôle, double-cliquez sur le contour pour en ajouter un, ou supprimez les points dont vous ne voulez pas. Rien n’est contraint à un axe de symétrie."
+      },
+      "q3": {
+        "q": "Quels formats de papier puis-je utiliser ?",
+        "a": "A4, Letter, A3, Legal et A2, en portrait. Le nombre de pages se met à jour quand vous changez de format : vous pouvez arbitrer entre la taille des feuilles et le nombre de pages à scotcher. Les feuilles se chevauchent de 10 mm, avec des croix de repérage pour les aligner."
+      },
+      "q4": {
+        "q": "Comment faire découper le verre à partir du patron ?",
+        "a": "Scotchez les feuilles imprimées en un seul gabarit grandeur réelle, coupez le long du contour et confiez cette forme en papier à un vitrier — c’est le patron physique sur lequel il travaille. La taille finie est imprimée sur la page 1, vous pouvez donc faire chiffrer le travail sans remesurer."
+      },
+      "q5": {
+        "q": "Ma photo est-elle envoyée quelque part ?",
+        "a": "Non. Tout fonctionne dans votre navigateur — la photo, le calibrage et le PDF sont générés sur votre propre appareil et stockés uniquement là. Il n’y a ni compte ni serveur vers lequel envoyer quoi que ce soit."
+      }
+    },
+    "closing": {
+      "title": "Prêt à ajuster un miroir à votre mur ?",
+      "body": "Concevez-le en quelques minutes et repartez avec un patron sur lequel découper."
+    },
+    "footer": {
+      "note": "1 unité = 1 cm · imprimez à 100%"
+    }
+  },
+  "steps": {
+    "calibrate": "1 · Calibrer le mur",
+    "design": "2 · Concevoir & imprimer"
+  },
+  "actions": {
+    "downloadImage": "Télécharger l’image",
+    "backToEditing": "Retour à l’édition",
+    "getPdf": "Obtenir le PDF",
+    "getPdfAria": "Télécharger le PDF imprimable",
+    "createNew": "Nouveau projet",
+    "calibration": "Calibrage",
+    "preview": "Aperçu",
+    "shapes": "Formes",
+    "moreInfo": "Plus d’infos",
+    "close": "Fermer"
+  },
+  "confirm": {
+    "startOver": "Recommencer ? Cela efface votre photo, le calibrage et la forme."
+  },
+  "calibrate": {
+    "dropTitle": "Chargez votre photo de mur",
+    "dropBody": "Choisissez une photo du mur où ira le miroir.",
+    "choosePhoto": "Choisir une photo…",
+    "hintTitle": "Placez le rectangle dans la zone où ira le miroir.",
+    "hintSub": "Amenez les 4 coins sur un vrai rectangle du mur et saisissez sa taille réelle. Avec <b>Terminé</b>, la photo est redressée pour que vous dessiniez sur un mur vu de face.",
+    "dismissHint": "Masquer l’astuce",
+    "panelTitle": "Calibrer le mur",
+    "panelHint": "Saisissez la taille réelle du rectangle que vous avez tracé. C’est ce qui ancre toute la conception en centimètres.",
+    "width": "Largeur du rectangle",
+    "height": "Hauteur du rectangle",
+    "done": "Terminé — redresser & concevoir →",
+    "quadInvalid": "Corrigez les coins — le rectangle doit former une figure convexe.",
+    "differentPhoto": "Choisir une autre photo",
+    "errImage": "Impossible de lire cette image. Choisissez une autre photo.",
+    "errFile": "Impossible de lire ce fichier. Choisissez une autre photo."
+  },
+  "editor": {
+    "canvasAria": "Éditeur de forme du miroir : déplacez le contour ou ses points de contrôle",
+    "sizeAria": "Taille du miroir",
+    "unit": "cm",
+    "viewSettings": "Réglages d’affichage",
+    "viewTitle": "Affichage",
+    "toggles": {
+      "mirror": "Effet miroir",
+      "grid": "Grille en cm (10 cm)",
+      "photo": "Fond de mur",
+      "pageOverlay": "Grille des pages",
+      "watermark": "Filigrane sur les exports"
+    },
+    "safeMargin": "Marge de sécurité",
+    "marginUnit": "cm depuis chaque bord",
+    "moveScaleAria": "Déplacer et redimensionner",
+    "scale": "Échelle",
+    "move": "Déplacer",
+    "larger": "Plus grand",
+    "smaller": "Plus petit",
+    "up": "Haut",
+    "down": "Bas",
+    "left": "Gauche",
+    "right": "Droite",
+    "resetView": "Réinitialiser la vue pour tout voir",
+    "resetViewLabel": "{{zoom}}× · réinitialiser la vue",
+    "deletePoint": "Supprimer le point",
+    "deletePointAria": "Supprimer le point de contrôle sélectionné"
+  },
+  "catalog": {
+    "title": "Choisissez un miroir",
+    "infoLabel": "Comment modifier une forme",
+    "infoBody": "Choisissez une forme, puis déplacez les points sur le canevas pour l’affiner. Double-tapez le contour pour ajouter un point ; sélectionnez-en un et utilisez le bouton « Supprimer le point » (ou la touche Suppr) pour l’enlever.",
+    "reset": "Réinitialiser cette forme",
+    "useShape": "Utiliser la forme {{name}}"
+  },
+  "shapes": {
+    "wave": "Vague",
+    "pebble": "Galet",
+    "peanut": "Cacahuète",
+    "leaf": "Feuille",
+    "pill": "Pilule",
+    "boulder": "Rocher",
+    "generated": "Forme {{number}}"
+  },
+  "print": {
+    "title": "Imprimez votre patron 1:1",
+    "sub": "Votre miroir mesure <b>{{size}}</b>. Choisissez un format de papier — l’impression se répartit sur plusieurs feuilles à scotcher.",
+    "pages_one": "{{count}} page",
+    "pages_many": "{{count}} pages",
+    "pages_other": "{{count}} pages",
+    "readout_one": "Exporte <b>{{count}}</b> page {{paper}} ({{cols}} × {{rows}}) · chevauchement de {{overlap}} mm · portrait",
+    "readout_many": "Exporte <b>{{count}}</b> pages {{paper}} ({{cols}} × {{rows}}) · chevauchement de {{overlap}} mm · portrait",
+    "readout_other": "Exporte <b>{{count}}</b> pages {{paper}} ({{cols}} × {{rows}}) · chevauchement de {{overlap}} mm · portrait",
+    "noArea": "La forme n’a aucune surface à imprimer.",
+    "download": "Télécharger le PDF",
+    "generating": "Génération…",
+    "error": "Impossible de créer le PDF. Vérifiez votre connexion et réessayez.",
+    "fineprint": "Imprimez à 100% — désactivez « ajuster à la page ». La page 1 comporte une règle de 10 cm pour vérifier l’échelle.",
+    "watermarkLabel": "Ajouter un QR vers {{app}} sur la page de garde",
+    "watermarkSub": "Pour que quiconque voit votre patron puisse trouver l’application. Ajoute aussi le nom de l’app sur les images téléchargées.",
+    "pdfLanguageNote": "Le PDF lui-même est en anglais."
+  }
+}

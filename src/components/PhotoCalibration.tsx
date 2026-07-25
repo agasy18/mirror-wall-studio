@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
   cornersAsArray,
   useCalibrationStore,
@@ -19,6 +20,7 @@ const CORNER_ORDER: Corner[] = ["tl", "tr", "br", "bl"];
  * only rescales the camera, so the photo and the handles never desync.
  */
 export function PhotoCalibration({ onDone }: Props) {
+  const { t } = useTranslation();
   const photoSrc = useCalibrationStore((s) => s.photoSrc);
   const photoW = useCalibrationStore((s) => s.photoW);
   const photoH = useCalibrationStore((s) => s.photoH);
@@ -54,12 +56,10 @@ export function PhotoCalibration({ onDone }: Props) {
         const { url, w, h } = downscale(img);
         setPhoto(url, w, h);
       };
-      img.onerror = () =>
-        alert("Could not read that image. Please choose a different photo.");
+      img.onerror = () => alert(t("calibrate.errImage"));
       img.src = dataUrl;
     };
-    reader.onerror = () =>
-      alert("Could not read that file. Please choose a different photo.");
+    reader.onerror = () => alert(t("calibrate.errFile"));
     reader.readAsDataURL(file);
   };
 
@@ -214,8 +214,8 @@ export function PhotoCalibration({ onDone }: Props) {
             dead tab stop. The real button inside carries the keyboard path. */}
         <div className="dropzone" onClick={openFilePicker}>
           <div className="drop-icon">🖼️</div>
-          <h3>Load your wall photo</h3>
-          <div>Choose a photo of the wall where the mirror will go.</div>
+          <h3>{t("calibrate.dropTitle")}</h3>
+          <div>{t("calibrate.dropBody")}</div>
           <div style={{ marginTop: 20 }}>
             <button
               className="primary"
@@ -225,7 +225,7 @@ export function PhotoCalibration({ onDone }: Props) {
                 openFilePicker();
               }}
             >
-              Choose photo…
+              {t("calibrate.choosePhoto")}
             </button>
           </div>
         </div>
@@ -240,16 +240,14 @@ export function PhotoCalibration({ onDone }: Props) {
           <div className="calib-hint-banner">
             <button
               className="hint-close"
-              aria-label="Dismiss hint"
+              aria-label={t("calibrate.dismissHint")}
               onClick={() => setHintDismissed(true)}
             >
               ✕
             </button>
-            Place the rectangle inside the area you want to mirror.
+            {t("calibrate.hintTitle")}
             <div className="sub">
-              Drag the 4 corners onto a real rectangle on the wall and type its
-              true size. On <b>Done</b>, the photo is straightened so you design
-              on a head-on wall.
+              <Trans i18nKey="calibrate.hintSub" components={{ b: <b /> }} />
             </div>
           </div>
         )}
@@ -265,35 +263,32 @@ export function PhotoCalibration({ onDone }: Props) {
 
       <div className="sidepanel sidepanel--docked">
         <div className="panel-section">
-          <h2>Calibrate wall</h2>
-          <div className="hint">
-            Type the real-world size of the rectangle you drew. This grounds the
-            whole design in centimeters.
-          </div>
+          <h2>{t("calibrate.panelTitle")}</h2>
+          <div className="hint">{t("calibrate.panelHint")}</div>
           <div className="row" style={{ marginTop: 12 }}>
-            <label>Rectangle width</label>
+            <label>{t("calibrate.width")}</label>
             <SizeField which="w" />
           </div>
           <div className="row">
-            <label>Rectangle height</label>
+            <label>{t("calibrate.height")}</label>
             <SizeField which="h" />
           </div>
         </div>
 
         <div className="panel-section">
           <button className="primary" style={{ width: "100%" }} disabled={!canDone} onClick={handleDone}>
-            Done — straighten &amp; design →
+            {t("calibrate.done")}
           </button>
           {!quadValid && (
             <div className="hint" style={{ marginTop: 10, borderLeftColor: "var(--danger)" }}>
-              Fix the corners — the rectangle must be a proper (convex) shape.
+              {t("calibrate.quadInvalid")}
             </div>
           )}
         </div>
 
         <div className="panel-section">
           <button className="ghost" style={{ width: "100%" }} onClick={() => useCalibrationStore.getState().clearPhoto()}>
-            Choose a different photo
+            {t("calibrate.differentPhoto")}
           </button>
         </div>
       </div>

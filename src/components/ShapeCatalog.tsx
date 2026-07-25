@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { PresetPicker, PRESET_COUNT } from "./PresetPicker";
 import { useShapeStore } from "../state/useShapeStore";
 import { InfoButton } from "./controls";
@@ -8,21 +9,18 @@ import { InfoButton } from "./controls";
  * the top bar.
  */
 export function ShapeCatalog() {
+  const { t } = useTranslation();
   const resetPreset = useShapeStore((s) => s.resetPreset);
   return (
     <div className="panel-section catalog-section">
       <div className="catalog-head">
-        <h2>Choose a mirror</h2>
+        <h2>{t("catalog.title")}</h2>
         <span className="catalog-count mono">{PRESET_COUNT}</span>
-        <InfoButton label="How to edit a shape">
-          Pick a shape, then drag the dots on the canvas to refine it.
-          Double-tap the outline to add a point; select one and use the Delete
-          point button (or the Delete key) to remove it.
-        </InfoButton>
+        <InfoButton label={t("catalog.infoLabel")}>{t("catalog.infoBody")}</InfoButton>
       </div>
       <PresetPicker />
       <button className="ghost" style={{ width: "100%", marginTop: 12 }} onClick={resetPreset}>
-        Reset this shape
+        {t("catalog.reset")}
       </button>
     </div>
   );

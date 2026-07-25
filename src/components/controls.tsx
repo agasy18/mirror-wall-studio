@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { ViewToggles } from "../state/useShapeStore";
 
 /**
  * A compact info (ⓘ) button that reveals a short dismissible tip on click,
  * instead of an always-on hint box taking up space.
  */
-export function InfoButton({ children, label = "More info" }: { children: React.ReactNode; label?: string }) {
+export function InfoButton({ children, label }: { children: React.ReactNode; label?: string }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -24,7 +26,13 @@ export function InfoButton({ children, label = "More info" }: { children: React.
   }, [open]);
   return (
     <span className="info-wrap" ref={ref}>
-      <button className="info-btn" aria-label={label} onClick={() => setOpen((v) => !v)}>ⓘ</button>
+      <button
+        className="info-btn"
+        aria-label={label ?? t("actions.moreInfo")}
+        onClick={() => setOpen((v) => !v)}
+      >
+        ⓘ
+      </button>
       {open && <span className="info-pop">{children}</span>}
     </span>
   );

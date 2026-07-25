@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "title": "Desenhe seu espelho — molde 1:1 grátis para imprimir",
+    "description": "Desenhe um espelho orgânico e irregular sobre a foto da sua parede e exporte um molde de corte 1:1 grátis em papel comum. Tudo roda no navegador."
+  },
+  "lang": {
+    "label": "Idioma",
+    "choose": "Escolha um idioma"
+  },
+  "cta": {
+    "start": "Começar a desenhar",
+    "resume": "Retomar seu projeto"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Espelho sob medida · molde de papel 1:1",
+      "title": "Desenhe o espelho.<br/>Imprima a <em>forma exata.</em>",
+      "lead": "Modele um espelho orgânico e irregular direto na foto da sua parede e exporte um molde de corte em tamanho real, dividido em folhas de papel comum. Una as folhas com fita, trace a linha, corte o vidro — um molde 1:1 de verdade para a vidraçaria ou para o corte que você mesmo faz.",
+      "ctaNote": "Grátis · roda no navegador · nada para instalar",
+      "figureAlt": "Desenho técnico de um espelho ondulado sob medida com a borda iluminada por trás",
+      "rulerEnd": "173 cm",
+      "caption": "onda · 68 × 173 cm"
+    },
+    "story": {
+      "eyebrow": "Hoje papel, amanhã espelho",
+      "title": "O molde vira o espelho",
+      "intro": "Uma forma orgânica, duas versões do mesmo contorno de 64 × 163 cm: as folhas que você imprime e cola, e o espelho pronto na parede.",
+      "paperAlt": "Folhas impressas unidas com fita formando um contorno de corte em tamanho real de 64 por 163 cm, com rótulos de página, linhas tracejadas de sobreposição e uma régua de 10 cm",
+      "paperCaption": "impresso · 3 × 5 folhas · 1:1",
+      "rule": "64 × 163 cm",
+      "roomAlt": "O espelho orgânico pronto instalado na parede do quarto",
+      "roomCaption": "instalado · na sua parede",
+      "beforeAlt": "Parede vazia do quarto fotografada antes de desenhar o espelho sob medida",
+      "before": "Antes",
+      "designingAlt": "Desenhando a forma do espelho na foto da parede com perspectiva corrigida, com pontos de controle arrastáveis",
+      "designing": "Desenhando",
+      "afterAlt": "Espelho de parede orgânico sob medida, pronto, cortado a partir do molde 1:1 impresso",
+      "after": "Depois"
+    },
+    "features": {
+      "eyebrow": "O que tem aqui",
+      "title": "Feito para um resultado exato",
+      "exact": {
+        "title": "Exportação 1:1 de verdade",
+        "body": "Cada folha traz marcas de registro, guias de sobreposição e uma régua de 10 cm para você confirmar a escala antes de cortar."
+      },
+      "templates": {
+        "title_one": "{{count}} forma pronta",
+        "title_many": "{{count}} formas prontas",
+        "title_other": "{{count}} formas prontas",
+        "body": "Ondas orgânicas, seixos, cápsulas e mais — ou desenhe a sua arrastando pontos de controle suaves."
+      },
+      "perspective": {
+        "title": "Calibração de perspectiva",
+        "body": "A foto da parede tirada de lado é endireitada para uma vista frontal, então o espelho que você posiciona é o espelho que você recebe."
+      },
+      "paper": {
+        "title": "Qualquer tamanho de papel",
+        "body": "Divida em A4, Letter, A3, Legal ou A2 — a contagem de páginas se atualiza na hora, conforme você escolhe."
+      },
+      "preview": {
+        "title": "Prévia no ambiente",
+        "body": "Veja o espelho pronto na sua parede com o brilho quente da luz por trás e baixe a imagem para compartilhar."
+      },
+      "saved": {
+        "title": "Seu trabalho fica salvo",
+        "body": "Foto, calibração e forma ficam salvas no seu navegador — volte quando quiser e continue de onde parou."
+      }
+    },
+    "how": {
+      "eyebrow": "Como funciona",
+      "title": "Quatro passos para um espelho que cabe na sua parede",
+      "intro": "Tudo é ancorado em centímetros reais: o que você imprime é o que você corta — sem chute e sem surpresa de escala.",
+      "s1": {
+        "title": "Fotografe a parede",
+        "body": "Fotografe o ponto onde o espelho vai ficar. Qualquer foto de celular serve."
+      },
+      "s2": {
+        "title": "Calibre a escala",
+        "body": "Marque um retângulo cujo tamanho real você conhece e digite as medidas em centímetros. A foto é endireitada para uma vista frontal em escala real."
+      },
+      "s3": {
+        "title": "Desenhe a forma",
+        "body": "Comece por uma das {{count}} formas prontas, depois arraste a curva, mova e redimensione até ficar exatamente certo na sua parede."
+      },
+      "s4": {
+        "title": "Imprima em 1:1",
+        "body": "Exporte um PDF em tamanho real dividido em A4, A3 ou Letter. Imprima em 100%, cole as folhas, trace o contorno."
+      }
+    },
+    "faq": {
+      "eyebrow": "Perguntas",
+      "title": "Antes de imprimir",
+      "q1": {
+        "q": "Como imprimo o molde exatamente na escala 1:1?",
+        "a": "Na janela de impressão, desligue “ajustar à página” / “reduzir páginas grandes” e defina a escala em 100%. A página 1 traz uma régua de 10 cm — meça com uma régua de verdade antes de cortar qualquer coisa. Se der 10 cm, todas as outras folhas também estão certas."
+      },
+      "q2": {
+        "q": "Posso fazer uma forma irregular ou assimétrica?",
+        "a": "Sim — é justamente essa a ideia. Comece por uma das {{count}} formas prontas, depois arraste qualquer ponto de controle, dê dois cliques no contorno para adicionar um ou apague os pontos que não quiser. Nada fica preso a um eixo de simetria."
+      },
+      "q3": {
+        "q": "Quais tamanhos de papel posso usar?",
+        "a": "A4, Letter, A3, Legal e A2, em retrato. A contagem de páginas muda conforme você troca, então dá para equilibrar o tamanho da folha e o número de páginas que você vai colar. As folhas se sobrepõem 10 mm, com cruzes de registro para alinhar."
+      },
+      "q4": {
+        "q": "Como faço para cortar o vidro a partir do molde?",
+        "a": "Cole as folhas impressas em um único molde em tamanho real, corte pelo contorno e entregue essa forma de papel a um vidraceiro — é o gabarito físico com que ele trabalha. O tamanho final vem impresso na página 1, então dá para pedir o orçamento sem medir de novo."
+      },
+      "q5": {
+        "q": "Minha foto é enviada para algum lugar?",
+        "a": "Não. Tudo roda no seu navegador — a foto, a calibração e o PDF são gerados no seu próprio dispositivo e ficam guardados só ali. Não existe conta nem servidor para onde enviar."
+      }
+    },
+    "closing": {
+      "title": "Pronto para encaixar um espelho na sua parede?",
+      "body": "Desenhe em minutos e saia com um molde pronto para cortar."
+    },
+    "footer": {
+      "note": "1 unidade = 1 cm · imprima em 100%"
+    }
+  },
+  "steps": {
+    "calibrate": "1 · Calibrar parede",
+    "design": "2 · Desenhar e imprimir"
+  },
+  "actions": {
+    "downloadImage": "Baixar imagem",
+    "backToEditing": "Voltar a editar",
+    "getPdf": "Obter PDF",
+    "getPdfAria": "Baixar PDF para impressão",
+    "createNew": "Criar novo",
+    "calibration": "Calibração",
+    "preview": "Prévia",
+    "shapes": "Formas",
+    "moreInfo": "Mais informações",
+    "close": "Fechar"
+  },
+  "confirm": {
+    "startOver": "Começar de novo? Isso apaga sua foto, calibração e forma."
+  },
+  "calibrate": {
+    "dropTitle": "Carregue a foto da sua parede",
+    "dropBody": "Escolha uma foto da parede onde o espelho vai ficar.",
+    "choosePhoto": "Escolher foto…",
+    "hintTitle": "Coloque o retângulo dentro da área que você quer espelhar.",
+    "hintSub": "Arraste os 4 cantos até um retângulo real na parede e digite o tamanho verdadeiro dele. Em <b>Pronto</b>, a foto é endireitada para você desenhar sobre uma parede vista de frente.",
+    "dismissHint": "Fechar dica",
+    "panelTitle": "Calibrar parede",
+    "panelHint": "Digite o tamanho real do retângulo que você marcou. É isso que ancora todo o projeto em centímetros.",
+    "width": "Largura do retângulo",
+    "height": "Altura do retângulo",
+    "done": "Pronto — endireitar e desenhar →",
+    "quadInvalid": "Ajuste os cantos — o retângulo precisa ser uma forma válida (convexa).",
+    "differentPhoto": "Escolher outra foto",
+    "errImage": "Não foi possível ler essa imagem. Escolha outra foto.",
+    "errFile": "Não foi possível ler esse arquivo. Escolha outra foto."
+  },
+  "editor": {
+    "canvasAria": "Editor da forma do espelho: arraste o contorno ou seus pontos de controle",
+    "sizeAria": "Tamanho do espelho",
+    "unit": "cm",
+    "viewSettings": "Configurações de visualização",
+    "viewTitle": "Visualização",
+    "toggles": {
+      "mirror": "Efeito espelho",
+      "grid": "Grade em cm (10 cm)",
+      "photo": "Fundo da parede",
+      "pageOverlay": "Sobreposição de páginas",
+      "watermark": "Marca d’água nas exportações"
+    },
+    "safeMargin": "Margem de segurança",
+    "marginUnit": "cm de cada borda",
+    "moveScaleAria": "Mover e redimensionar",
+    "scale": "Escala",
+    "move": "Mover",
+    "larger": "Maior",
+    "smaller": "Menor",
+    "up": "Cima",
+    "down": "Baixo",
+    "left": "Esquerda",
+    "right": "Direita",
+    "resetView": "Redefinir a vista para encaixar",
+    "resetViewLabel": "{{zoom}}× · redefinir vista",
+    "deletePoint": "Apagar ponto",
+    "deletePointAria": "Apagar o ponto de controle selecionado"
+  },
+  "catalog": {
+    "title": "Escolha um espelho",
+    "infoLabel": "Como editar uma forma",
+    "infoBody": "Escolha uma forma e arraste os pontos na tela para ajustá-la. Toque duas vezes no contorno para adicionar um ponto; selecione um e use o botão Apagar ponto (ou a tecla Delete) para removê-lo.",
+    "reset": "Redefinir esta forma",
+    "useShape": "Usar a forma {{name}}"
+  },
+  "shapes": {
+    "wave": "Onda",
+    "pebble": "Seixo",
+    "peanut": "Amendoim",
+    "leaf": "Folha",
+    "pill": "Cápsula",
+    "boulder": "Rocha",
+    "generated": "Forma {{number}}"
+  },
+  "print": {
+    "title": "Imprima seu molde 1:1",
+    "sub": "Seu espelho tem <b>{{size}}</b>. Escolha um tamanho de papel — a impressão sai em várias folhas que você cola com fita.",
+    "pages_one": "{{count}} página",
+    "pages_many": "{{count}} páginas",
+    "pages_other": "{{count}} páginas",
+    "readout_one": "Exporta <b>{{count}}</b> página {{paper}} ({{cols}} × {{rows}}) · sobreposição de {{overlap}} mm · Retrato",
+    "readout_many": "Exporta <b>{{count}}</b> páginas {{paper}} ({{cols}} × {{rows}}) · sobreposição de {{overlap}} mm · Retrato",
+    "readout_other": "Exporta <b>{{count}}</b> páginas {{paper}} ({{cols}} × {{rows}}) · sobreposição de {{overlap}} mm · Retrato",
+    "noArea": "A forma não tem área para imprimir.",
+    "download": "Baixar PDF",
+    "generating": "Gerando…",
+    "error": "Não foi possível gerar o PDF. Verifique sua conexão e tente de novo.",
+    "fineprint": "Imprima em 100% — desligue “ajustar à página”. A página 1 tem uma régua de 10 cm para conferir a escala.",
+    "watermarkLabel": "Adicionar um QR do {{app}} na folha de capa",
+    "watermarkSub": "Assim quem vir seu molde consegue achar o app. Também marca o nome do app nas imagens baixadas.",
+    "pdfLanguageNote": "O PDF em si está em inglês."
+  }
+}

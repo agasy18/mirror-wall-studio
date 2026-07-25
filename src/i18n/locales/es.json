@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "title": "Espejos a medida: plantilla 1:1 imprimible gratis",
+    "description": "Diseña un espejo orgánico e irregular sobre una foto de tu pared y exporta gratis una plantilla de corte 1:1 en papel normal. Todo en tu navegador."
+  },
+  "lang": {
+    "label": "Idioma",
+    "choose": "Elige un idioma"
+  },
+  "cta": {
+    "start": "Empezar a diseñar",
+    "resume": "Retomar tu diseño"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Espejo a medida · plantilla en papel 1:1",
+      "title": "Diseña el espejo.<br/>Imprime la <em>forma exacta.</em>",
+      "lead": "Modela un espejo orgánico e irregular directamente sobre una foto de tu pared y exporta una plantilla de corte imprimible a tamaño real en papel de impresora normal. Une las hojas con cinta, traza la línea y corta el cristal: una plantilla 1:1 de verdad para la cristalería o para cortarlo tú mismo.",
+      "ctaNote": "Gratis · funciona en tu navegador · sin instalar nada",
+      "figureAlt": "Plano de taller de un espejo ondulado a medida con el borde retroiluminado",
+      "rulerEnd": "173 cm",
+      "caption": "onda · 68 × 173 cm"
+    },
+    "story": {
+      "eyebrow": "Hoy papel, mañana espejo",
+      "title": "La plantilla se convierte en el espejo",
+      "intro": "Una forma orgánica, dos versiones del mismo contorno de 64 × 163 cm: las hojas que imprimes y unes con cinta, y el espejo acabado en la pared.",
+      "paperAlt": "Hojas impresas unidas con cinta formando un contorno de corte de 64 por 163 cm a tamaño real, con etiquetas de página, líneas discontinuas de solape y una regla de 10 cm",
+      "paperCaption": "impreso · 3 × 5 hojas · 1:1",
+      "rule": "64 × 163 cm",
+      "roomAlt": "El espejo orgánico acabado instalado en la pared del dormitorio",
+      "roomCaption": "instalado · en tu pared",
+      "beforeAlt": "Pared vacía del dormitorio fotografiada antes de diseñar el espejo a medida",
+      "before": "Antes",
+      "designingAlt": "Diseño de la forma del espejo sobre la foto de la pared con la perspectiva corregida, con puntos de control arrastrables",
+      "designing": "Diseñando",
+      "afterAlt": "Espejo de pared orgánico a medida terminado, cortado con la plantilla 1:1 impresa",
+      "after": "Después"
+    },
+    "features": {
+      "eyebrow": "Qué incluye",
+      "title": "Hecho para un resultado exacto",
+      "exact": {
+        "title": "Exportación 1:1 real",
+        "body": "Cada hoja lleva marcas de registro, guías de solape y una regla de 10 cm para que compruebes la escala antes de cortar."
+      },
+      "templates": {
+        "title_one": "{{count}} plantilla de forma",
+        "title_many": "{{count}} de plantillas de forma",
+        "title_other": "{{count}} plantillas de forma",
+        "body": "Ondas orgánicas, guijarros, cápsulas y más, o dibuja la tuya arrastrando puntos de control suaves."
+      },
+      "perspective": {
+        "title": "Calibración de perspectiva",
+        "body": "Tu foto en ángulo se endereza a una vista frontal, así el espejo que colocas es el espejo que obtienes."
+      },
+      "paper": {
+        "title": "Cualquier tamaño de papel",
+        "body": "Reparte el diseño en A4, Letter, A3, Legal o A2: el número de páginas se actualiza al instante mientras eliges."
+      },
+      "preview": {
+        "title": "Vista previa en tu pared",
+        "body": "Mira el espejo acabado en tu pared con su cálido brillo retroiluminado y descarga la imagen para compartirla."
+      },
+      "saved": {
+        "title": "Tu trabajo se guarda",
+        "body": "La foto, la calibración y la forma se guardan en tu navegador: vuelve cuando quieras y sigue donde lo dejaste."
+      }
+    },
+    "how": {
+      "eyebrow": "Cómo funciona",
+      "title": "Cuatro pasos hacia un espejo hecho para tu pared",
+      "intro": "Todo se basa en centímetros reales, así que lo que imprimes es lo que cortas: sin cálculos a ojo ni sorpresas de escala.",
+      "s1": {
+        "title": "Fotografía la pared",
+        "body": "Haz una foto del sitio donde colgará el espejo. Sirve cualquier foto de móvil."
+      },
+      "s2": {
+        "title": "Calibra la escala",
+        "body": "Marca un rectángulo cuyo tamaño real conozcas y escríbelo en centímetros. La foto se endereza a una vista frontal a escala real."
+      },
+      "s3": {
+        "title": "Diseña la forma",
+        "body": "Parte de {{count}} plantillas y luego arrastra la curva, muévela y escálala hasta que encaje exactamente en tu pared."
+      },
+      "s4": {
+        "title": "Imprime a 1:1",
+        "body": "Exporta un PDF a tamaño real repartido en A4, A3 o Letter. Imprime al 100%, une las hojas con cinta y traza el contorno."
+      }
+    },
+    "faq": {
+      "eyebrow": "Preguntas",
+      "title": "Antes de imprimir",
+      "q1": {
+        "q": "¿Cómo imprimo una plantilla exactamente a escala 1:1?",
+        "a": "En el diálogo de impresión desactiva «ajustar a la página» / «reducir páginas grandes» y pon la escala al 100%. La página 1 lleva una regla de 10 cm: mídela con una regla de verdad antes de cortar nada. Si mide 10 cm, el resto de las hojas también está bien."
+      },
+      "q2": {
+        "q": "¿Puedo hacer una forma irregular o asimétrica?",
+        "a": "Sí, de eso se trata. Parte de una de las {{count}} plantillas y luego arrastra cualquier punto de control, haz doble clic en el contorno para añadir uno o borra los puntos que no quieras. Nada está sujeto a un eje de simetría."
+      },
+      "q3": {
+        "q": "¿Qué tamaños de papel puedo usar?",
+        "a": "A4, Letter, A3, Legal y A2, en vertical. El número de páginas se actualiza al cambiar, así que puedes equilibrar el tamaño de la hoja con la cantidad de páginas que unes con cinta. Las hojas se solapan 10 mm e incluyen cruces de registro para alinearlas."
+      },
+      "q4": {
+        "q": "¿Cómo consigo que corten el cristal con la plantilla?",
+        "a": "Une las hojas impresas con cinta hasta formar una sola plantilla a tamaño real, corta por el contorno y entrega esa forma de papel a un cristalero: es el patrón físico con el que trabaja. El tamaño final va impreso en la página 1, así puedes pedir presupuesto sin volver a medir."
+      },
+      "q5": {
+        "q": "¿Mi foto se sube a algún sitio?",
+        "a": "No. Todo funciona en tu navegador: la foto, la calibración y el PDF se generan en tu propio dispositivo y solo se guardan ahí. No hay cuenta ni servidor al que subir nada."
+      }
+    },
+    "closing": {
+      "title": "¿Preparado para ajustar un espejo a tu pared?",
+      "body": "Diséñalo en unos minutos y llévate una plantilla por la que cortar."
+    },
+    "footer": {
+      "note": "1 unidad = 1 cm · imprime al 100%"
+    }
+  },
+  "steps": {
+    "calibrate": "1 · Calibrar pared",
+    "design": "2 · Diseñar e imprimir"
+  },
+  "actions": {
+    "downloadImage": "Descargar imagen",
+    "backToEditing": "Volver a editar",
+    "getPdf": "Obtener PDF",
+    "getPdfAria": "Descargar el PDF imprimible",
+    "createNew": "Crear nuevo",
+    "calibration": "Calibración",
+    "preview": "Vista previa",
+    "shapes": "Formas",
+    "moreInfo": "Más info",
+    "close": "Cerrar"
+  },
+  "confirm": {
+    "startOver": "¿Empezar de nuevo? Se borrarán tu foto, la calibración y la forma."
+  },
+  "calibrate": {
+    "dropTitle": "Carga la foto de tu pared",
+    "dropBody": "Elige una foto de la pared donde irá el espejo.",
+    "choosePhoto": "Elegir foto…",
+    "hintTitle": "Coloca el rectángulo en la zona donde quieres el espejo.",
+    "hintSub": "Arrastra las 4 esquinas hasta un rectángulo real de la pared y escribe su tamaño verdadero. Al pulsar <b>Listo</b>, la foto se endereza para que diseñes sobre una pared vista de frente.",
+    "dismissHint": "Descartar el aviso",
+    "panelTitle": "Calibrar pared",
+    "panelHint": "Escribe el tamaño real del rectángulo que has marcado. Esto ancla todo el diseño en centímetros.",
+    "width": "Ancho del rectángulo",
+    "height": "Alto del rectángulo",
+    "done": "Listo — endereza y diseña →",
+    "quadInvalid": "Corrige las esquinas: el rectángulo debe ser una forma válida (convexa).",
+    "differentPhoto": "Elegir otra foto",
+    "errImage": "No se pudo leer esa imagen. Elige otra foto.",
+    "errFile": "No se pudo leer ese archivo. Elige otra foto."
+  },
+  "editor": {
+    "canvasAria": "Editor de la forma del espejo: arrastra el contorno o sus puntos de control",
+    "sizeAria": "Tamaño del espejo",
+    "unit": "cm",
+    "viewSettings": "Ajustes de vista",
+    "viewTitle": "Vista",
+    "toggles": {
+      "mirror": "Efecto espejo",
+      "grid": "Cuadrícula en cm (10 cm)",
+      "photo": "Fondo de pared",
+      "pageOverlay": "Cuadrícula de páginas",
+      "watermark": "Marca de agua al exportar"
+    },
+    "safeMargin": "Margen de seguridad",
+    "marginUnit": "cm desde cada borde",
+    "moveScaleAria": "Mover y escalar",
+    "scale": "Escala",
+    "move": "Mover",
+    "larger": "Más grande",
+    "smaller": "Más pequeño",
+    "up": "Arriba",
+    "down": "Abajo",
+    "left": "Izquierda",
+    "right": "Derecha",
+    "resetView": "Restablecer la vista para que encaje",
+    "resetViewLabel": "{{zoom}}× · restablecer vista",
+    "deletePoint": "Borrar punto",
+    "deletePointAria": "Borrar el punto de control seleccionado"
+  },
+  "catalog": {
+    "title": "Elige un espejo",
+    "infoLabel": "Cómo editar una forma",
+    "infoBody": "Elige una forma y luego arrastra los puntos del lienzo para afinarla. Toca dos veces el contorno para añadir un punto; selecciona uno y usa el botón Borrar punto (o la tecla Supr) para eliminarlo.",
+    "reset": "Restablecer esta forma",
+    "useShape": "Usar la forma {{name}}"
+  },
+  "shapes": {
+    "wave": "Onda",
+    "pebble": "Guijarro",
+    "peanut": "Cacahuete",
+    "leaf": "Hoja",
+    "pill": "Cápsula",
+    "boulder": "Roca",
+    "generated": "Forma {{number}}"
+  },
+  "print": {
+    "title": "Imprime tu plantilla 1:1",
+    "sub": "Tu espejo mide <b>{{size}}</b>. Elige un tamaño de papel: se imprime en varias hojas que unes con cinta.",
+    "pages_one": "{{count}} página",
+    "pages_many": "{{count}} de páginas",
+    "pages_other": "{{count}} páginas",
+    "readout_one": "Exporta <b>{{count}}</b> página {{paper}} ({{cols}} × {{rows}}) · {{overlap}} mm de solape · Vertical",
+    "readout_many": "Exporta <b>{{count}}</b> de páginas {{paper}} ({{cols}} × {{rows}}) · {{overlap}} mm de solape · Vertical",
+    "readout_other": "Exporta <b>{{count}}</b> páginas {{paper}} ({{cols}} × {{rows}}) · {{overlap}} mm de solape · Vertical",
+    "noArea": "La forma no tiene área que imprimir.",
+    "download": "Descargar PDF",
+    "generating": "Generando…",
+    "error": "No se pudo generar el PDF. Comprueba tu conexión e inténtalo de nuevo.",
+    "fineprint": "Imprime al 100% y desactiva «ajustar a la página». La página 1 tiene una regla de 10 cm para comprobar la escala.",
+    "watermarkLabel": "Añadir un QR a {{app}} en la hoja de portada",
+    "watermarkSub": "Así cualquiera que vea tu plantilla puede encontrar la app. También estampa el nombre de la app en las imágenes descargadas.",
+    "pdfLanguageNote": "El PDF en sí está en inglés."
+  }
+}

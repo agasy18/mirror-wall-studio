@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useShapeStore } from "../state/useShapeStore";
 import { curveBounds } from "../model/geometry";
 import { DEFAULT_TILE_CONFIG, PAPER_SIZES, paperById, planTiles } from "../model/tiling";
@@ -10,6 +11,7 @@ interface Props {
 
 /** Modal shown when the user clicks Print: choose paper size, then export 1:1. */
 export function PrintDialog({ onClose }: Props) {
+  const { t } = useTranslation();
   const points = useShapeStore((s) => s.points);
   const paperId = useShapeStore((s) => s.paperId);
   const setPaper = useShapeStore((s) => s.setPaper);
@@ -48,7 +50,7 @@ export function PrintDialog({ onClose }: Props) {
     } catch {
       // The PDF code is a lazily-fetched chunk, so this also covers being
       // offline or holding a stale index after a redeploy.
-      setError("Could not build the PDF. Check your connection and try again.");
+      setError(t("print.error"));
       setBusy(false);
     }
   };
@@ -62,11 +64,16 @@ export function PrintDialog({ onClose }: Props) {
         aria-labelledby="print-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="modal-close" aria-label="Close" onClick={onClose}>✕</button>
-        <h2 id="print-title" className="modal-title">Print your 1:1 template</h2>
+        <button className="modal-close" aria-label={t("actions.close")} onClick={onClose}>✕</button>
+        <h2 id="print-title" className="modal-title">{t("print.title")}</h2>
         <p className="modal-sub">
-          Your mirror is <b>{bb.width.toFixed(0)} × {bb.height.toFixed(0)} cm</b>.
-          Choose a paper size — it prints across multiple sheets you tape together.
+          <Trans
+            i18nKey="print.sub"
+            components={{ b: <b /> }}
+            values={{
+              size: `${bb.width.toFixed(0)} × ${bb.height.toFixed(0)} ${t("editor.unit")}`,
+            }}
+          />
         </p>
 
         <div className="paper-grid">
@@ -80,16 +87,33 @@ export function PrintDialog({ onClose }: Props) {
               >
                 <span className="paper-name">{p.name}</span>
                 <span className="paper-dim mono">{p.wmm}×{p.hmm} mm</span>
-                {pl && <span className="paper-pages mono">{pl.pageCount} pages</span>}
+                {pl && (
+                  <span className="paper-pages mono">
+                    {t("print.pages", { count: pl.pageCount })}
+                  </span>
+                )}
               </button>
             );
           })}
         </div>
 
         <div className="modal-readout">
-          {plan
-            ? <>Exports <b>{plan.pageCount}</b> {cfg.paper.name} pages ({plan.cols} × {plan.rows}) · 10 mm overlap · Portrait</>
-            : "Shape has no area to print."}
+          {plan ? (
+            <Trans
+              i18nKey="print.readout"
+              components={{ b: <b /> }}
+              count={plan.pageCount}
+              values={{
+                count: plan.pageCount,
+                paper: cfg.paper.name,
+                cols: plan.cols,
+                rows: plan.rows,
+                overlap: cfg.overlapMm,
+              }}
+            />
+          ) : (
+            t("print.noArea")
+          )}
         </div>
 
         <label className="modal-check">
@@ -99,11 +123,8 @@ export function PrintDialog({ onClose }: Props) {
             onChange={(e) => setToggle("showWatermark", e.target.checked)}
           />
           <span>
-            Add a QR to {APP_NAME} on the cover sheet
-            <span className="modal-check-sub">
-              So anyone who sees your template can find the app. Also stamps the
-              app name on downloaded images.
-            </span>
+            {t("print.watermarkLabel", { app: APP_NAME })}
+            <span className="modal-check-sub">{t("print.watermarkSub")}</span>
           </span>
         </label>
 
@@ -114,11 +135,15 @@ export function PrintDialog({ onClose }: Props) {
           onClick={handleExport}
           autoFocus
         >
-          {busy ? "Generating…" : "Download PDF"}
+          {busy ? t("print.generating") : t("print.download")}
         </button>
         {error && <p className="modal-error" role="alert">{error}</p>}
         <p className="modal-fineprint">
-          Print at 100% — turn off “fit to page”. Page 1 has a 10 cm ruler to check scale.
+          {t("print.fineprint")}
+          {" "}
+          {/* The PDF's own text is English: jsPDF's built-in fonts cannot
+              render Cyrillic, CJK or Arabic without embedding a font file. */}
+          <span className="modal-fineprint-note">{t("print.pdfLanguageNote")}</span>
         </p>
       </div>
     </div>

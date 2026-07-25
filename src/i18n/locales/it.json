@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "title": "Specchi su misura: sagoma 1:1 stampabile gratis",
+    "description": "Progetta uno specchio organico e irregolare sulla foto della tua parete ed esporta gratis una sagoma di taglio 1:1 su carta comune. Tutto nel browser."
+  },
+  "lang": {
+    "label": "Lingua",
+    "choose": "Scegli una lingua"
+  },
+  "cta": {
+    "start": "Inizia a progettare",
+    "resume": "Riprendi il progetto"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Specchio su misura · sagoma su carta 1:1",
+      "title": "Progetta lo specchio.<br/>Stampa la <em>forma esatta.</em>",
+      "lead": "Modella uno specchio organico e irregolare direttamente sulla foto della tua parete, poi esporta una sagoma di taglio stampabile a grandezza naturale su normale carta da stampante. Unisci i fogli con il nastro, ripassa la linea e taglia il vetro: una dima 1:1 vera, per il vetraio o per il taglio fai da te.",
+      "ctaNote": "Gratis · funziona nel browser · nulla da installare",
+      "figureAlt": "Disegno tecnico di uno specchio ondulato su misura con il bordo retroilluminato",
+      "rulerEnd": "173 cm",
+      "caption": "onda · 68 × 173 cm"
+    },
+    "story": {
+      "eyebrow": "Oggi carta, domani specchio",
+      "title": "La sagoma diventa lo specchio",
+      "intro": "Una forma organica, due versioni dello stesso contorno da 64 × 163 cm: i fogli che stampi e unisci con il nastro e lo specchio finito sulla parete.",
+      "paperAlt": "Fogli stampati uniti con il nastro a formare un contorno di taglio da 64 per 163 cm a grandezza naturale, con etichette di pagina, linee tratteggiate di sovrapposizione e un righello da 10 cm",
+      "paperCaption": "stampato · 3 × 5 fogli · 1:1",
+      "rule": "64 × 163 cm",
+      "roomAlt": "Lo specchio organico finito installato sulla parete della camera da letto",
+      "roomCaption": "installato · sulla tua parete",
+      "beforeAlt": "Parete vuota della camera da letto fotografata prima di progettare lo specchio su misura",
+      "before": "Prima",
+      "designingAlt": "Progettazione della forma dello specchio sulla foto della parete con prospettiva corretta, con punti di controllo trascinabili",
+      "designing": "Progettazione",
+      "afterAlt": "Specchio da parete organico su misura finito, tagliato dalla sagoma 1:1 stampata",
+      "after": "Dopo"
+    },
+    "features": {
+      "eyebrow": "Cosa include",
+      "title": "Pensato per un risultato esatto",
+      "exact": {
+        "title": "Esportazione 1:1 reale",
+        "body": "Ogni foglio ha crocini di registro, guide di sovrapposizione e un righello da 10 cm per verificare la scala prima di tagliare."
+      },
+      "templates": {
+        "title_one": "{{count}} forma predefinita",
+        "title_many": "{{count}} di forme predefinite",
+        "title_other": "{{count}} forme predefinite",
+        "body": "Onde organiche, ciottoli, capsule e altro, oppure disegna la tua trascinando punti di controllo morbidi."
+      },
+      "perspective": {
+        "title": "Calibrazione prospettica",
+        "body": "La foto scattata di sbieco viene raddrizzata in vista frontale: lo specchio che posizioni è lo specchio che otterrai."
+      },
+      "paper": {
+        "title": "Qualsiasi formato di carta",
+        "body": "Distribuisci su A4, Letter, A3, Legal o A2: il numero di pagine si aggiorna all’istante mentre scegli."
+      },
+      "preview": {
+        "title": "Anteprima nella stanza",
+        "body": "Guarda lo specchio finito sulla tua parete con il suo caldo alone retroilluminato, poi scarica l’immagine da condividere."
+      },
+      "saved": {
+        "title": "Il lavoro resta salvato",
+        "body": "Foto, calibrazione e forma vengono salvate nel browser: torna quando vuoi e riprendi da dove eri rimasto."
+      }
+    },
+    "how": {
+      "eyebrow": "Come funziona",
+      "title": "Quattro passi verso uno specchio fatto per la tua parete",
+      "intro": "Tutto è ancorato a centimetri reali: quello che stampi è quello che tagli, senza stime a occhio né sorprese di scala.",
+      "s1": {
+        "title": "Fotografa la parete",
+        "body": "Scatta una foto del punto dove appenderai lo specchio. Va bene qualsiasi foto da telefono."
+      },
+      "s2": {
+        "title": "Calibra la scala",
+        "body": "Segna un rettangolo di cui conosci la misura reale e inseriscila in centimetri. La foto viene raddrizzata in vista frontale a scala reale."
+      },
+      "s3": {
+        "title": "Progetta la forma",
+        "body": "Parti da {{count}} forme predefinite, poi trascina la curva, spostala e ridimensionala finché non sta esattamente dove vuoi sulla parete."
+      },
+      "s4": {
+        "title": "Stampa in 1:1",
+        "body": "Esporta un PDF a grandezza naturale distribuito su A4, A3 o Letter. Stampa al 100%, unisci i fogli con il nastro e ripassa il contorno."
+      }
+    },
+    "faq": {
+      "eyebrow": "Domande",
+      "title": "Prima di stampare",
+      "q1": {
+        "q": "Come stampo una sagoma esattamente in scala 1:1?",
+        "a": "Nella finestra di stampa disattiva «adatta alla pagina» / «riduci pagine sovradimensionate» e imposta la scala al 100%. La pagina 1 riporta un righello da 10 cm: misuralo con un righello vero prima di tagliare qualsiasi cosa. Se misura 10 cm, anche tutti gli altri fogli sono giusti."
+      },
+      "q2": {
+        "q": "Posso creare una forma irregolare o asimmetrica?",
+        "a": "Sì, è proprio il punto. Parti da una delle {{count}} forme predefinite, poi trascina qualsiasi punto di controllo, fai doppio clic sul contorno per aggiungerne uno o elimina i punti che non vuoi. Niente è vincolato a un asse di simmetria."
+      },
+      "q3": {
+        "q": "Quali formati di carta posso usare?",
+        "a": "A4, Letter, A3, Legal e A2, in verticale. Il numero di pagine si aggiorna quando cambi formato, così puoi bilanciare la dimensione del foglio con quante pagine devi unire con il nastro. I fogli si sovrappongono di 10 mm e hanno crocini di registro su cui allinearli."
+      },
+      "q4": {
+        "q": "Come faccio tagliare il vetro con la sagoma?",
+        "a": "Unisci con il nastro i fogli stampati in un’unica dima a grandezza naturale, taglia lungo il contorno e consegna quella forma di carta a un vetraio: è il modello fisico su cui lavora. La misura finita è stampata sulla pagina 1, così puoi chiedere il preventivo senza rimisurare."
+      },
+      "q5": {
+        "q": "La mia foto viene caricata da qualche parte?",
+        "a": "No. Tutto funziona nel tuo browser: la foto, la calibrazione e il PDF vengono generati sul tuo dispositivo e restano solo lì. Non c’è nessun account e nessun server a cui caricare qualcosa."
+      }
+    },
+    "closing": {
+      "title": "Pronto a fare uno specchio su misura per la tua parete?",
+      "body": "Progettalo in pochi minuti e portati via una sagoma su cui tagliare."
+    },
+    "footer": {
+      "note": "1 unità = 1 cm · stampa al 100%"
+    }
+  },
+  "steps": {
+    "calibrate": "1 · Calibra parete",
+    "design": "2 · Progetta e stampa"
+  },
+  "actions": {
+    "downloadImage": "Scarica immagine",
+    "backToEditing": "Torna a modificare",
+    "getPdf": "Ottieni PDF",
+    "getPdfAria": "Scarica il PDF stampabile",
+    "createNew": "Crea nuovo",
+    "calibration": "Calibrazione",
+    "preview": "Anteprima",
+    "shapes": "Forme",
+    "moreInfo": "Altre info",
+    "close": "Chiudi"
+  },
+  "confirm": {
+    "startOver": "Ricominciare? Verranno cancellate la foto, la calibrazione e la forma."
+  },
+  "calibrate": {
+    "dropTitle": "Carica la foto della parete",
+    "dropBody": "Scegli una foto della parete dove andrà lo specchio.",
+    "choosePhoto": "Scegli foto…",
+    "hintTitle": "Posiziona il rettangolo nell’area dove vuoi lo specchio.",
+    "hintSub": "Trascina i 4 angoli su un rettangolo reale della parete e inserisci la sua misura vera. Con <b>Fatto</b> la foto viene raddrizzata, così progetti su una parete vista di fronte.",
+    "dismissHint": "Chiudi il suggerimento",
+    "panelTitle": "Calibra parete",
+    "panelHint": "Inserisci la misura reale del rettangolo che hai tracciato. È così che tutto il progetto viene ancorato ai centimetri.",
+    "width": "Larghezza del rettangolo",
+    "height": "Altezza del rettangolo",
+    "done": "Fatto — raddrizza e progetta →",
+    "quadInvalid": "Correggi gli angoli: il rettangolo deve essere una forma valida (convessa).",
+    "differentPhoto": "Scegli un’altra foto",
+    "errImage": "Impossibile leggere quell’immagine. Scegli un’altra foto.",
+    "errFile": "Impossibile leggere quel file. Scegli un’altra foto."
+  },
+  "editor": {
+    "canvasAria": "Editor della forma dello specchio: trascina il contorno o i suoi punti di controllo",
+    "sizeAria": "Dimensioni dello specchio",
+    "unit": "cm",
+    "viewSettings": "Impostazioni vista",
+    "viewTitle": "Vista",
+    "toggles": {
+      "mirror": "Effetto specchio",
+      "grid": "Griglia in cm (10 cm)",
+      "photo": "Sfondo parete",
+      "pageOverlay": "Griglia delle pagine",
+      "watermark": "Filigrana sulle esportazioni"
+    },
+    "safeMargin": "Margine di sicurezza",
+    "marginUnit": "cm da ogni bordo",
+    "moveScaleAria": "Sposta e ridimensiona",
+    "scale": "Scala",
+    "move": "Sposta",
+    "larger": "Più grande",
+    "smaller": "Più piccolo",
+    "up": "Su",
+    "down": "Giù",
+    "left": "Sinistra",
+    "right": "Destra",
+    "resetView": "Reimposta la vista per adattarla",
+    "resetViewLabel": "{{zoom}}× · reimposta vista",
+    "deletePoint": "Elimina punto",
+    "deletePointAria": "Elimina il punto di controllo selezionato"
+  },
+  "catalog": {
+    "title": "Scegli uno specchio",
+    "infoLabel": "Come modificare una forma",
+    "infoBody": "Scegli una forma, poi trascina i punti sulla tela per rifinirla. Tocca due volte il contorno per aggiungere un punto; selezionane uno e usa il pulsante Elimina punto (o il tasto Canc) per rimuoverlo.",
+    "reset": "Reimposta questa forma",
+    "useShape": "Usa la forma {{name}}"
+  },
+  "shapes": {
+    "wave": "Onda",
+    "pebble": "Ciottolo",
+    "peanut": "Arachide",
+    "leaf": "Foglia",
+    "pill": "Capsula",
+    "boulder": "Masso",
+    "generated": "Forma {{number}}"
+  },
+  "print": {
+    "title": "Stampa la tua sagoma 1:1",
+    "sub": "Il tuo specchio misura <b>{{size}}</b>. Scegli un formato di carta: la stampa si distribuisce su più fogli da unire con il nastro.",
+    "pages_one": "{{count}} pagina",
+    "pages_many": "{{count}} di pagine",
+    "pages_other": "{{count}} pagine",
+    "readout_one": "Esporta <b>{{count}}</b> pagina {{paper}} ({{cols}} × {{rows}}) · {{overlap}} mm di sovrapposizione · Verticale",
+    "readout_many": "Esporta <b>{{count}}</b> di pagine {{paper}} ({{cols}} × {{rows}}) · {{overlap}} mm di sovrapposizione · Verticale",
+    "readout_other": "Esporta <b>{{count}}</b> pagine {{paper}} ({{cols}} × {{rows}}) · {{overlap}} mm di sovrapposizione · Verticale",
+    "noArea": "La forma non ha area da stampare.",
+    "download": "Scarica PDF",
+    "generating": "Generazione…",
+    "error": "Impossibile generare il PDF. Controlla la connessione e riprova.",
+    "fineprint": "Stampa al 100% e disattiva «adatta alla pagina». La pagina 1 ha un righello da 10 cm per verificare la scala.",
+    "watermarkLabel": "Aggiungi un QR a {{app}} sul foglio di copertina",
+    "watermarkSub": "Così chi vede la tua sagoma può trovare l’app. Stampa anche il nome dell’app sulle immagini scaricate.",
+    "pdfLanguageNote": "Il PDF è in inglese."
+  }
+}

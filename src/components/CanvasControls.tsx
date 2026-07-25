@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useShapeStore } from "../state/useShapeStore";
 import { curveBounds } from "../model/geometry";
 import { RepeatButton, ToggleRow } from "./controls";
@@ -11,6 +12,7 @@ import { RepeatButton, ToggleRow } from "./controls";
  * The right panel stays catalog-only.
  */
 export function CanvasControls() {
+  const { t } = useTranslation();
   const points = useShapeStore((s) => s.points);
   const scaleAll = useShapeStore((s) => s.scaleAll);
   const moveAll = useShapeStore((s) => s.moveAll);
@@ -39,15 +41,16 @@ export function CanvasControls() {
   return (
     <>
       {/* always-visible mirror size, top-left */}
-      <div className="cc-sizechip mono" aria-label="Mirror size">
-        {bb.width.toFixed(0)} × {bb.height.toFixed(0)} <span className="cc-unit">cm</span>
+      <div className="cc-sizechip mono" aria-label={t("editor.sizeAria")}>
+        {bb.width.toFixed(0)} × {bb.height.toFixed(0)}{" "}
+        <span className="cc-unit">{t("editor.unit")}</span>
       </div>
 
       {/* settings, top-right */}
       <div className="cc-settings-top">
         <button
           className={`cc-btn cc-btn-lg${settingsOpen ? " active" : ""}`}
-          title="View settings"
+          title={t("editor.viewSettings")}
           aria-expanded={settingsOpen}
           onClick={() => setSettingsOpen((v) => !v)}
         >
@@ -55,13 +58,13 @@ export function CanvasControls() {
         </button>
         {settingsOpen && (
           <Popover onClose={() => setSettingsOpen(false)} className="cc-settings-pop">
-            <div className="pop-title">View</div>
-            <ToggleRow k="showMirror" label="Mirror effect" toggles={toggles} set={setToggle} />
-            <ToggleRow k="showGrid" label="Cm grid (10 cm)" toggles={toggles} set={setToggle} />
-            <ToggleRow k="showPhoto" label="Wall backdrop" toggles={toggles} set={setToggle} />
-            <ToggleRow k="showPageOverlay" label="Page overlay" toggles={toggles} set={setToggle} />
-            <ToggleRow k="showWatermark" label="Watermark on exports" toggles={toggles} set={setToggle} />
-            <div className="pop-title" style={{ marginTop: 10 }}>Safe margin</div>
+            <div className="pop-title">{t("editor.viewTitle")}</div>
+            <ToggleRow k="showMirror" label={t("editor.toggles.mirror")} toggles={toggles} set={setToggle} />
+            <ToggleRow k="showGrid" label={t("editor.toggles.grid")} toggles={toggles} set={setToggle} />
+            <ToggleRow k="showPhoto" label={t("editor.toggles.photo")} toggles={toggles} set={setToggle} />
+            <ToggleRow k="showPageOverlay" label={t("editor.toggles.pageOverlay")} toggles={toggles} set={setToggle} />
+            <ToggleRow k="showWatermark" label={t("editor.toggles.watermark")} toggles={toggles} set={setToggle} />
+            <div className="pop-title" style={{ marginTop: 10 }}>{t("editor.safeMargin")}</div>
             <div className="margin-row">
               <input
                 type="number"
@@ -74,23 +77,23 @@ export function CanvasControls() {
                   if (e.key === "Enter") commitMargin();
                 }}
               />
-              <span className="margin-unit">cm from each edge</span>
+              <span className="margin-unit">{t("editor.marginUnit")}</span>
             </div>
           </Popover>
         )}
       </div>
 
       {/* compact scale + move, bottom-right */}
-      <div className="canvas-controls" role="toolbar" aria-label="Move and scale">
-        <div className="cc-scale" aria-label="Scale">
-          <RepeatButton className="cc-btn" title="Larger" onStep={() => scaleAll(1.01)}>+</RepeatButton>
-          <RepeatButton className="cc-btn" title="Smaller" onStep={() => scaleAll(0.99)}>−</RepeatButton>
+      <div className="canvas-controls" role="toolbar" aria-label={t("editor.moveScaleAria")}>
+        <div className="cc-scale" aria-label={t("editor.scale")}>
+          <RepeatButton className="cc-btn" title={t("editor.larger")} onStep={() => scaleAll(1.01)}>+</RepeatButton>
+          <RepeatButton className="cc-btn" title={t("editor.smaller")} onStep={() => scaleAll(0.99)}>−</RepeatButton>
         </div>
-        <div className="cc-nudge" aria-label="Move">
-          <RepeatButton className="cc-btn up" title="Up" onStep={() => moveAll(0, -0.5)}>▲</RepeatButton>
-          <RepeatButton className="cc-btn left" title="Left" onStep={() => moveAll(-0.5, 0)}>◀</RepeatButton>
-          <RepeatButton className="cc-btn right" title="Right" onStep={() => moveAll(0.5, 0)}>▶</RepeatButton>
-          <RepeatButton className="cc-btn down" title="Down" onStep={() => moveAll(0, 0.5)}>▼</RepeatButton>
+        <div className="cc-nudge" aria-label={t("editor.move")}>
+          <RepeatButton className="cc-btn up" title={t("editor.up")} onStep={() => moveAll(0, -0.5)}>▲</RepeatButton>
+          <RepeatButton className="cc-btn left" title={t("editor.left")} onStep={() => moveAll(-0.5, 0)}>◀</RepeatButton>
+          <RepeatButton className="cc-btn right" title={t("editor.right")} onStep={() => moveAll(0.5, 0)}>▶</RepeatButton>
+          <RepeatButton className="cc-btn down" title={t("editor.down")} onStep={() => moveAll(0, 0.5)}>▼</RepeatButton>
         </div>
       </div>
     </>

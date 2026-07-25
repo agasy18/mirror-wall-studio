@@ -162,14 +162,14 @@
 }
 .hero-figure .plate { position: absolute; inset: 0; }
 .hero-figure .ruler {
-  position: absolute; left: 0; top: 0; bottom: 0; width: 34px;
-  border-right: 1px dashed var(--line-strong);
+  position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 34px;
+  border-inline-end: 1px dashed var(--line-strong);
   display: flex; flex-direction: column; justify-content: space-between;
   padding: 10px 0; align-items: flex-end;
 }
-.hero-figure .ruler span { font-size: 9px; color: var(--plaster-dim); padding-right: 5px; }
+.hero-figure .ruler span { font-size: 9px; color: var(--plaster-dim); padding-inline-end: 5px; }
 .hero-figure figcaption {
-  position: absolute; bottom: 12px; right: 14px; font-size: 11px;
+  position: absolute; bottom: 12px; inset-inline-end: 14px; font-size: 11px;
   color: var(--plaster-dim); background: var(--chip-bg);
   padding: 4px 9px; border-radius: 6px; border: 1px solid var(--line);
 }
@@ -309,3 +309,32 @@
 .faq-item:last-child { border-bottom: none; }
 .faq-item h3 { margin: 0 0 8px; font-size: 18px; }
 .faq-item p { margin: 0; color: var(--plaster-dim); line-height: 1.6; font-size: 15px; max-width: 68ch; }
+
+/* The nav picker sits between the wordmark and the CTA; on a narrow screen the
+   CTA is what matters, so the picker gives up its width first. */
+.landing-nav .lang-picker {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--plaster);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 7px 10px;
+  cursor: pointer;
+  max-width: 160px;
+}
+.landing-nav .lang-picker option { color: #1a1a1a; background: #fff; }
+@media (max-width: 640px) {
+  .landing-nav .lang-picker { max-width: 68px; padding: 6px 6px; font-size: 12px; }
+}
+
+/* Latin display type is happy in a sub-1 line-height; Arabic and Devanagari are
+   not. Their glyphs stack diacritics above and below the baseline, so 0.98
+   makes consecutive lines collide — and the tighter the display size, the worse.
+   Give those scripts room; the headline still reads as one tight block. */
+:lang(ar) .hero h1,
+:lang(hi) .hero h1 { line-height: 1.35; }
+:lang(ar) .section-title,
+:lang(hi) .section-title { line-height: 1.4; }
+:lang(ar) .closing h2,
+:lang(hi) .closing h2 { line-height: 1.35; }

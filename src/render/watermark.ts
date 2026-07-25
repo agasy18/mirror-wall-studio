@@ -69,11 +69,12 @@ export function drawWatermark(
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    // Engraved, not pasted on: a light offset under a dark face keeps the name
-    // legible whether it lands on bright glass or a dark reflection.
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    // Etched, not stamped: kept barely visible on purpose, so it credits the app
+    // without competing with the mirror it sits on. The faint light offset is
+    // what keeps it readable at this opacity instead of dissolving entirely.
+    ctx.fillStyle = "rgba(255,255,255,0.16)";
     ctx.fillText(APP_NAME, cx, cy + Math.max(1, size * 0.07));
-    ctx.fillStyle = "rgba(18,24,34,0.62)";
+    ctx.fillStyle = "rgba(18,24,34,0.17)";
     ctx.fillText(APP_NAME, cx, cy);
     return true;
   } finally {

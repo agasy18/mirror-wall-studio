@@ -1,0 +1,219 @@
+{
+  "meta": {
+    "title": "Custom Mirror Shape Designer — Free 1:1 Printable Template",
+    "description": "Design an organic, irregular mirror on a photo of your wall and export a free 1:1 printable cutting template across ordinary paper. Runs entirely in your browser."
+  },
+  "lang": {
+    "label": "Language",
+    "choose": "Choose a language"
+  },
+  "cta": {
+    "start": "Start designing",
+    "resume": "Resume your design"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Custom mirror · 1:1 paper template",
+      "title": "Design the mirror.<br/>Print the <em>exact shape.</em>",
+      "lead": "Shape an organic, irregular mirror right on a photo of your wall, then export a full-size printable cutting template across ordinary printer paper. Tape the sheets, trace the line, cut the glass — a true 1:1 DIY stencil for the glass shop or your own cut.",
+      "ctaNote": "Free · runs in your browser · nothing to install",
+      "figureAlt": "Shop drawing of a custom wavy mirror with a backlit edge",
+      "rulerEnd": "173 cm",
+      "caption": "wave · 68 × 173 cm"
+    },
+    "story": {
+      "eyebrow": "Paper today, mirror tomorrow",
+      "title": "The template becomes the mirror",
+      "intro": "One organic shape, two forms of the same 64 × 163 cm outline: the sheets you print and tape, and the finished mirror on the wall.",
+      "paperAlt": "Printed sheets taped together into a full-size 64 by 163 cm cutting outline, with page labels, dashed overlap lines and a 10 cm ruler",
+      "paperCaption": "printed · 3 × 5 sheets · 1:1",
+      "rule": "64 × 163 cm",
+      "roomAlt": "The finished organic mirror installed on the bedroom wall",
+      "roomCaption": "installed · on your wall",
+      "beforeAlt": "Empty bedroom wall photographed before designing the custom mirror",
+      "before": "Before",
+      "designingAlt": "Designing the mirror shape on the perspective-corrected wall photo, with draggable control points",
+      "designing": "Designing",
+      "afterAlt": "Finished custom organic wall mirror cut from the printed 1:1 template",
+      "after": "After"
+    },
+    "features": {
+      "eyebrow": "What's inside",
+      "title": "Built for an exact result",
+      "exact": {
+        "title": "True 1:1 export",
+        "body": "Every sheet carries registration marks, overlap guides and a 10 cm ruler so you can confirm the scale before you cut."
+      },
+      "templates": {
+        "title_one": "{{count}} shape template",
+        "title_other": "{{count}} shape templates",
+        "body": "Organic waves, pebbles, pills and more — or draw your own by dragging smooth control points."
+      },
+      "perspective": {
+        "title": "Perspective calibration",
+        "body": "Your angled wall photo is straightened to head-on, so the mirror you place is the mirror you get."
+      },
+      "paper": {
+        "title": "Any paper size",
+        "body": "Tile across A4, Letter, A3, Legal or A2 — the page count updates live as you choose."
+      },
+      "preview": {
+        "title": "In-room preview",
+        "body": "See the finished mirror on your wall with its warm backlit glow, then download the image to share."
+      },
+      "saved": {
+        "title": "Your work is kept",
+        "body": "Photo, calibration and shape are saved in your browser — come back any time and pick up where you left off."
+      }
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Four steps to a mirror that fits your wall",
+      "intro": "The whole thing is grounded in real centimeters, so what you print is what you cut — no guesswork, no scaling surprises.",
+      "s1": {
+        "title": "Photograph the wall",
+        "body": "Snap the spot where the mirror will hang. Any phone photo works."
+      },
+      "s2": {
+        "title": "Calibrate the scale",
+        "body": "Mark a rectangle you know the real size of and type it in centimeters. The photo is straightened to a head-on view at true scale."
+      },
+      "s3": {
+        "title": "Design the shape",
+        "body": "Start from {{count}} templates, then drag the curve, move and scale it until it sits exactly right on your wall."
+      },
+      "s4": {
+        "title": "Print at 1:1",
+        "body": "Export a full-size PDF tiled across A4, A3 or Letter. Print at 100%, tape the sheets, trace the outline."
+      }
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "title": "Before you print",
+      "q1": {
+        "q": "How do I print a template at exactly 1:1 scale?",
+        "a": "In the print dialog turn off “fit to page” / “shrink oversized pages” and set the scale to 100%. Page 1 carries a 10 cm ruler — measure it with a real ruler before you cut anything. If it measures 10 cm, every other sheet is right too."
+      },
+      "q2": {
+        "q": "Can I make an irregular or asymmetrical shape?",
+        "a": "Yes — that is the point. Start from one of the {{count}} templates, then drag any control point, double-click the outline to add one, or delete points you don’t want. Nothing is constrained to a symmetry axis."
+      },
+      "q3": {
+        "q": "What paper sizes can I use?",
+        "a": "A4, Letter, A3, Legal and A2, in portrait. The page count updates as you switch, so you can trade sheet size against how many pages you tape together. Sheets overlap by 10 mm with registration crosses to align on."
+      },
+      "q4": {
+        "q": "How do I get the glass cut from the template?",
+        "a": "Tape the printed sheets into one full-size stencil, cut along the outline, and hand that paper shape to a glazier — it is the physical pattern they work from. The finished size is printed on page 1 so you can quote the job without re-measuring."
+      },
+      "q5": {
+        "q": "Does my photo get uploaded anywhere?",
+        "a": "No. Everything runs in your browser — the photo, the calibration and the PDF are all generated on your own device and stored only there. There is no account and no server to upload to."
+      }
+    },
+    "closing": {
+      "title": "Ready to fit a mirror to your wall?",
+      "body": "Design it in minutes and walk away with a template you can cut to."
+    },
+    "footer": {
+      "note": "1 unit = 1 cm · print at 100%"
+    }
+  },
+  "steps": {
+    "calibrate": "1 · Calibrate wall",
+    "design": "2 · Design & print"
+  },
+  "actions": {
+    "downloadImage": "Download image",
+    "backToEditing": "Back to editing",
+    "getPdf": "Get PDF",
+    "getPdfAria": "Download printable PDF",
+    "createNew": "Create new",
+    "calibration": "Calibration",
+    "preview": "Preview",
+    "shapes": "Shapes",
+    "moreInfo": "More info",
+    "close": "Close"
+  },
+  "confirm": {
+    "startOver": "Start over? This clears your photo, calibration and shape."
+  },
+  "calibrate": {
+    "dropTitle": "Load your wall photo",
+    "dropBody": "Choose a photo of the wall where the mirror will go.",
+    "choosePhoto": "Choose photo…",
+    "hintTitle": "Place the rectangle inside the area you want to mirror.",
+    "hintSub": "Drag the 4 corners onto a real rectangle on the wall and type its true size. On <b>Done</b>, the photo is straightened so you design on a head-on wall.",
+    "dismissHint": "Dismiss hint",
+    "panelTitle": "Calibrate wall",
+    "panelHint": "Type the real-world size of the rectangle you drew. This grounds the whole design in centimeters.",
+    "width": "Rectangle width",
+    "height": "Rectangle height",
+    "done": "Done — straighten & design →",
+    "quadInvalid": "Fix the corners — the rectangle must be a proper (convex) shape.",
+    "differentPhoto": "Choose a different photo",
+    "errImage": "Could not read that image. Please choose a different photo.",
+    "errFile": "Could not read that file. Please choose a different photo."
+  },
+  "editor": {
+    "canvasAria": "Mirror shape editor: drag the outline or its control points",
+    "sizeAria": "Mirror size",
+    "unit": "cm",
+    "viewSettings": "View settings",
+    "viewTitle": "View",
+    "toggles": {
+      "mirror": "Mirror effect",
+      "grid": "Cm grid (10 cm)",
+      "photo": "Wall backdrop",
+      "pageOverlay": "Page overlay",
+      "watermark": "Watermark on exports"
+    },
+    "safeMargin": "Safe margin",
+    "marginUnit": "cm from each edge",
+    "moveScaleAria": "Move and scale",
+    "scale": "Scale",
+    "move": "Move",
+    "larger": "Larger",
+    "smaller": "Smaller",
+    "up": "Up",
+    "down": "Down",
+    "left": "Left",
+    "right": "Right",
+    "resetView": "Reset the view to fit",
+    "resetViewLabel": "{{zoom}}× · reset view",
+    "deletePoint": "Delete point",
+    "deletePointAria": "Delete the selected control point"
+  },
+  "catalog": {
+    "title": "Choose a mirror",
+    "infoLabel": "How to edit a shape",
+    "infoBody": "Pick a shape, then drag the dots on the canvas to refine it. Double-tap the outline to add a point; select one and use the Delete point button (or the Delete key) to remove it.",
+    "reset": "Reset this shape",
+    "useShape": "Use {{name}} shape"
+  },
+  "shapes": {
+    "wave": "Wave",
+    "pebble": "Pebble",
+    "peanut": "Peanut",
+    "leaf": "Leaf",
+    "pill": "Pill",
+    "boulder": "Boulder",
+    "generated": "Shape {{number}}"
+  },
+  "print": {
+    "title": "Print your 1:1 template",
+    "sub": "Your mirror is <b>{{size}}</b>. Choose a paper size — it prints across multiple sheets you tape together.",
+    "pages_one": "{{count}} page",
+    "pages_other": "{{count}} pages",
+    "readout_one": "Exports <b>{{count}}</b> {{paper}} page ({{cols}} × {{rows}}) · {{overlap}} mm overlap · Portrait",
+    "readout_other": "Exports <b>{{count}}</b> {{paper}} pages ({{cols}} × {{rows}}) · {{overlap}} mm overlap · Portrait",
+    "noArea": "Shape has no area to print.",
+    "download": "Download PDF",
+    "generating": "Generating…",
+    "error": "Could not build the PDF. Check your connection and try again.",
+    "fineprint": "Print at 100% — turn off “fit to page”. Page 1 has a 10 cm ruler to check scale.",
+    "watermarkLabel": "Add a QR to {{app}} on the cover sheet",
+    "watermarkSub": "So anyone who sees your template can find the app. Also stamps the app name on downloaded images.",
+    "pdfLanguageNote": "The PDF itself is in English."
+  }
+}
