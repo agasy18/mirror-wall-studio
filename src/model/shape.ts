@@ -6,7 +6,13 @@ export interface ShapePoint {
   y: number; // cm
 }
 
-// Physical target size of the mirror, in cm.
+/**
+ * The space presets are normalized into when they are loaded, in cm. It is NOT
+ * the size a mirror ends up: presets are re-placed to fill the safe area of the
+ * wall the user marked, so the finished size and aspect ratio come from that.
+ * These values only survive as the authoring scale and as the fallback used
+ * before any wall has been calibrated.
+ */
 export const TARGET_WIDTH_CM = 68;
 export const TARGET_HEIGHT_CM = 173;
 

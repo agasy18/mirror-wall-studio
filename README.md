@@ -7,7 +7,9 @@ A browser app to design an organic full-length mirror shape and export a
 cutting/tracing template on the wall. Everything runs client-side — your photo
 never leaves your machine.
 
-Target mirror size: **68 × 173 cm** (from the reference photo).
+The mirror is sized by the wall area you mark during calibration: every preset
+is placed to fill that area (minus a safe margin) and takes its proportions, so
+a tall alcove gives tall mirrors and a wide one gives wide mirrors.
 
 ## Run
 
@@ -33,12 +35,15 @@ npm run build    # typecheck + production build
 2. **Step 2 · Design & export** —
    - Drag the control points to reshape the mirror; **double-click** to add a
      point; select a point and press **Delete** to remove it.
+   - Pick a silhouette from the catalog — each is placed to fill the area you
+     marked, so the thumbnails and the mirror share the marked area's
+     proportions.
    - Toggle the glassy backlit **mirror effect**, the **cm grid**, the
-     straightened **wall backdrop**, the **A4 page overlay**, and
-     **Lock to 68×173 cm** (normalizes the bounding box exactly).
-   - **Export tiled PDF** → a 1:1 A4 portrait PDF (~4×7 = 28 pages for
-     68×173 cm) with 10 mm overlap bands, registration crosses, page labels,
-     and a 10 cm verification ruler on page 1.
+     straightened **wall backdrop** and the **A4 page overlay**, or change the
+     **safe margin** kept clear inside the marked area.
+   - **Export tiled PDF** → a 1:1 A4 portrait PDF (~4×7 = 28 pages for a
+     68×173 cm mirror) with 10 mm overlap bands, registration crosses, page
+     labels, and a 10 cm verification ruler on page 1.
 
 ## Printing the template
 
