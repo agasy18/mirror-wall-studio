@@ -28,8 +28,9 @@ npm run build    # typecheck + production build
 ## The flow
 
 1. **Step 1 · Calibrate wall** — load a photo of your wall. Drag the 4 corners
-   of the rectangle ("rack") onto a real rectangular region of the wall, and
-   type that region's true size in cm. Click **Done** — the photo is
+   of the rectangle ("rack") onto a real rectangular region of the wall — or
+   drag from anywhere inside it to slide the whole rectangle without changing
+   its shape — and type that region's true size in cm. Click **Done** — the photo is
    automatically straightened (perspective + rotation corrected via a homography
    → CSS `matrix3d`) so you design on a head-on wall at true scale.
 2. **Step 2 · Design & export** —
@@ -56,6 +57,23 @@ npm run build    # typecheck + production build
 - Measure the 10 cm ruler on page 1 with a real ruler to confirm scale.
 - Trim along the dashed overlap lines and tape sheets together using the
   registration crosses.
+
+The optional QR goes **inside the outline on the template sheets**, not on the
+cover — the cover is read once and binned, while the paper inside the outline is
+cut out and becomes the stencil that gets taped to a wall and photographed. A
+few codes are placed (roughly one per six sheets, capped at four), spread apart
+by farthest-point selection so they do not clump into one column of a tall
+mirror. Each is positioned so its whole block sits inside the curve *and* inside
+one sheet's kept area — never across an overlap band, where it would only scan
+if the tape lined up perfectly. If no such spot exists (a very narrow mirror),
+no code is drawn rather than a clipped one.
+
+## On a phone
+
+The shape catalog is a horizontal strip docked under the canvas rather than a
+bottom sheet behind a FAB: one tap picks a shape and you are looking at the
+result, with nothing to dismiss. The move/scale pad starts collapsed behind a
+single key so the canvas keeps its height, and the wordmark drops to its glyph.
 
 ## Dev shortcuts
 

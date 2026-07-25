@@ -6,6 +6,7 @@ import {
   type Corner,
 } from "../state/useCalibrationStore";
 import { isQuadValid } from "../model/homography";
+import { pointInPolygon } from "../model/geometry";
 import { fitCamera, toCm, toPx, type WorldRect } from "../model/camera";
 
 interface Props {
@@ -30,6 +31,7 @@ export function PhotoCalibration({ onDone }: Props) {
   const setPhoto = useCalibrationStore((s) => s.setPhoto);
   const setCalibrated = useCalibrationStore((s) => s.setCalibrated);
   const moveCorner = useCalibrationStore((s) => s.moveCorner);
+  const moveCorners = useCalibrationStore((s) => s.moveCorners);
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -145,17 +147,18 @@ export function PhotoCalibration({ onDone }: Props) {
     }
   }, [cam, size, corners, imgReady, photoW, photoH]);
 
-  // Drag corners.
-  const dragging = useRef<Corner | null>(null);
+  // Drag a corner, or the whole rack from anywhere inside it.
+  const dragging = useRef<Corner | "rack" | null>(null);
+  const lastRack = useRef<{ x: number; y: number } | null>(null);
   const pointerPx = (e: { clientX: number; clientY: number }) => {
     const rect = canvasRef.current!.getBoundingClientRect();
     return [e.clientX - rect.left, e.clientY - rect.top] as const;
   };
 
-  const onPointerDown = (e: React.PointerEvent) => {
-    const [px, py] = pointerPx(e);
+  /** Nearest corner handle under the pointer, if any. */
+  const cornerAt = (px: number, py: number, radius: number): Corner | null => {
     let best: Corner | null = null;
-    let bestD = 20 * 20;
+    let bestD = radius * radius;
     for (const k of CORNER_ORDER) {
       const [hx, hy] = toPx(cam, corners[k].x, corners[k].y);
       const d = (hx - px) ** 2 + (hy - py) ** 2;
@@ -164,22 +167,62 @@ export function PhotoCalibration({ onDone }: Props) {
         best = k;
       }
     }
-    if (best) {
-      dragging.current = best;
+    return best;
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    const [px, py] = pointerPx(e);
+    // A fingertip covers far more of the canvas than a cursor does.
+    const grab = e.pointerType === "touch" ? 28 : 20;
+    const corner = cornerAt(px, py, grab);
+    if (corner) {
+      dragging.current = corner;
+      canvasRef.current!.setPointerCapture(e.pointerId);
+      return;
+    }
+    // Positioning the rack meant dragging four corners in turn even when the
+    // rectangle was already the right shape. Grabbing anywhere inside it moves
+    // the whole thing, which is what "put it over there" actually is.
+    const [cx, cy] = toCm(cam, px, py);
+    if (pointInPolygon(cornersAsArray(corners), cx, cy)) {
+      dragging.current = "rack";
+      lastRack.current = { x: cx, y: cy };
       canvasRef.current!.setPointerCapture(e.pointerId);
     }
   };
+
   const onPointerMove = (e: React.PointerEvent) => {
-    if (!dragging.current) return;
     const [px, py] = pointerPx(e);
+    if (!dragging.current) {
+      // Say which gesture is available before the press, not after.
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const [hx, hy] = toCm(cam, px, py);
+        canvas.style.cursor = cornerAt(px, py, 20)
+          ? "grab"
+          : pointInPolygon(cornersAsArray(corners), hx, hy)
+            ? "move"
+            : "default";
+      }
+      return;
+    }
     const [cx, cy] = toCm(cam, px, py);
+    if (dragging.current === "rack") {
+      const last = lastRack.current;
+      if (!last) return;
+      moveCorners(cx - last.x, cy - last.y);
+      lastRack.current = { x: cx, y: cy };
+      return;
+    }
     moveCorner(dragging.current, {
       x: Math.max(0, Math.min(photoW, cx)),
       y: Math.max(0, Math.min(photoH, cy)),
     });
   };
+
   const onPointerUp = () => {
     dragging.current = null;
+    lastRack.current = null;
   };
 
   const quadValid = isQuadValid(cornersAsArray(corners));

@@ -144,7 +144,7 @@
     "dropBody": "Elige una foto de la pared donde irá el espejo.",
     "choosePhoto": "Elegir foto…",
     "hintTitle": "Coloca el rectángulo en la zona donde quieres el espejo.",
-    "hintSub": "Arrastra las 4 esquinas hasta un rectángulo real de la pared y escribe su tamaño verdadero. Al pulsar <b>Listo</b>, la foto se endereza para que diseñes sobre una pared vista de frente.",
+    "hintSub": "Arrastra las 4 esquinas hasta un rectángulo real de la pared —o arrástralo desde el centro para moverlo entero— y escribe su tamaño verdadero. Al pulsar <b>Listo</b>, la foto se endereza para que diseñes sobre una pared vista de frente.",
     "dismissHint": "Descartar el aviso",
     "panelTitle": "Calibrar pared",
     "panelHint": "Escribe el tamaño real del rectángulo que has marcado. Esto ancla todo el diseño en centímetros.",

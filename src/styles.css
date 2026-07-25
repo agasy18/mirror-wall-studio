@@ -688,3 +688,84 @@ input:focus { border-color: var(--accent); }
    directions, not reading order. Mirroring it under RTL put the "move left"
    button on the right — pin it to LTR so ◀ always moves the mirror left. */
 [dir="rtl"] .cc-nudge { direction: ltr; }
+
+/* ---------- mobile: shape strip under the canvas, collapsible pad ---------- */
+/* The pad toggle only exists on a phone; on a pointer device the pad is always
+   open and the key would just be a dead control. */
+.cc-pad-toggle { display: none; }
+
+@media (max-width: 767px) {
+  /* Picking a shape used to mean: tap a FAB, wait for a sheet, tap a shape,
+     then dismiss the sheet yourself — and it never dismissed itself. A strip
+     that is always there removes the whole open/close problem: one tap picks a
+     shape and you are looking at the result immediately. */
+  .panel-toggle,
+  .panel-scrim { display: none !important; }
+
+  .sidepanel {
+    position: static;
+    transform: none;
+    flex: none;
+    width: 100%;
+    max-height: none;
+    border-radius: 0;
+    border-inline-start: none;
+    border-top: 1px solid var(--border-strong);
+    box-shadow: none;
+    z-index: auto;
+    overflow: visible;
+    padding: 8px 0 calc(6px + env(safe-area-inset-bottom));
+  }
+  .sidepanel::before { display: none; } /* no drag handle: nothing to drag */
+
+  /* Heading, count and the info popover are panel furniture; a strip is just
+     the shapes. */
+  .catalog-head { display: none; }
+  .catalog-section { padding: 0; gap: 0; }
+  .catalog-section .preset-scroll {
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .catalog-section .preset-scroll::-webkit-scrollbar { display: none; }
+  .catalog-section .preset-grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: 8px;
+    padding: 0 12px;
+  }
+  .catalog-section .preset-cell {
+    flex: 0 0 auto;
+    width: 56px;
+    aspect-ratio: 2 / 3;
+    scroll-snap-align: start;
+  }
+  /* Reset is redundant here — tapping the shape you are already on re-places
+     it, which is exactly what Reset does. */
+  .catalog-section > .ghost { display: none; }
+
+  .cc-pad-toggle { display: block; }
+  .canvas-controls { gap: 8px; }
+  .canvas-controls:not(.open) .cc-scale,
+  .canvas-controls:not(.open) .cc-nudge { display: none; }
+}
+
+@media (max-width: 767px) {
+  /* The wordmark was being ellipsed down to a single character — worse than
+     absent. The mark alone carries the brand at this width. */
+  .topbar h1 { display: none; }
+  .topbar button { white-space: nowrap; }
+  .lang-picker--bar { max-width: 84px; }
+
+  /* Collapsed, the pad is a single key — the floating container around it just
+     drew a second box. */
+  .canvas-controls:not(.open) {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    backdrop-filter: none;
+  }
+}

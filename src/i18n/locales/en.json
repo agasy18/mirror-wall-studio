@@ -143,7 +143,7 @@
     "dropBody": "Choose a photo of the wall where the mirror will go.",
     "choosePhoto": "Choose photo…",
     "hintTitle": "Place the rectangle inside the area you want to mirror.",
-    "hintSub": "Drag the 4 corners onto a real rectangle on the wall and type its true size. On <b>Done</b>, the photo is straightened so you design on a head-on wall.",
+    "hintSub": "Drag the 4 corners onto a real rectangle on the wall — or drag from the middle to move the whole rectangle — and type its true size. On <b>Done</b>, the photo is straightened so you design on a head-on wall.",
     "dismissHint": "Dismiss hint",
     "panelTitle": "Calibrate wall",
     "panelHint": "Type the real-world size of the rectangle you drew. This grounds the whole design in centimeters.",

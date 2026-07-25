@@ -271,3 +271,50 @@ function fmt(v: number): string {
   // Trim to 4 decimals, drop trailing zeros.
   return String(Math.round(v * 1e4) / 1e4);
 }
+
+/**
+ * Is (x, y) inside the closed polygon? Even-odd ray casting.
+ *
+ * Points exactly on an edge are not guaranteed either way, which is fine for
+ * every caller here — they all ask about interiors with margin to spare.
+ */
+export function pointInPolygon(
+  poly: { x: number; y: number }[],
+  x: number,
+  y: number,
+): boolean {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i];
+    const b = poly[j];
+    // Does the edge straddle the horizontal ray, and if so, is the crossing
+    // to the right of the point?
+    if (a.y > y !== b.y > y && x < ((b.x - a.x) * (y - a.y)) / (b.y - a.y) + a.x) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
+/**
+ * Is the whole axis-aligned rectangle inside the polygon?
+ *
+ * Corner tests alone are not enough for a concave outline — an hourglass waist
+ * can cut clean through a rectangle whose four corners all sit inside it — so
+ * the edges are sampled too.
+ */
+export function rectInPolygon(
+  poly: { x: number; y: number }[],
+  rect: { x: number; y: number; w: number; h: number },
+  samplesPerEdge = 6,
+): boolean {
+  const { x, y, w, h } = rect;
+  for (let i = 0; i <= samplesPerEdge; i++) {
+    const t = i / samplesPerEdge;
+    if (!pointInPolygon(poly, x + w * t, y)) return false;
+    if (!pointInPolygon(poly, x + w * t, y + h)) return false;
+    if (!pointInPolygon(poly, x, y + h * t)) return false;
+    if (!pointInPolygon(poly, x + w, y + h * t)) return false;
+  }
+  return pointInPolygon(poly, x + w / 2, y + h / 2);
+}

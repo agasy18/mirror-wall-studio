@@ -143,7 +143,7 @@
     "dropBody": "Wähle ein Foto der Wand, an die der Spiegel soll.",
     "choosePhoto": "Foto wählen…",
     "hintTitle": "Lege das Rechteck in den Bereich, den du spiegeln willst.",
-    "hintSub": "Zieh die 4 Ecken auf ein echtes Rechteck an der Wand und gib dessen wahre Größe ein. Mit <b>Fertig</b> wird das Foto entzerrt, sodass du auf einer frontalen Wand entwirfst.",
+    "hintSub": "Zieh die 4 Ecken auf ein echtes Rechteck an der Wand — oder zieh aus der Mitte, um das ganze Rechteck zu verschieben — und gib dessen wahre Größe ein. Mit <b>Fertig</b> wird das Foto entzerrt, sodass du auf einer frontalen Wand entwirfst.",
     "dismissHint": "Hinweis ausblenden",
     "panelTitle": "Wand kalibrieren",
     "panelHint": "Gib die echte Größe des gezeichneten Rechtecks ein. Das verankert den ganzen Entwurf in Zentimetern.",

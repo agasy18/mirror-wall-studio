@@ -22,6 +22,7 @@ export function CanvasControls() {
   const setMargin = useShapeStore((s) => s.setMargin);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [padOpen, setPadOpen] = useState(false);
   const bb = curveBounds(points);
 
   // Changing the margin re-fits and re-centers the shape, so committing on every
@@ -83,8 +84,24 @@ export function CanvasControls() {
         )}
       </div>
 
-      {/* compact scale + move, bottom-right */}
-      <div className="canvas-controls" role="toolbar" aria-label={t("editor.moveScaleAria")}>
+      {/* compact scale + move, bottom-right.
+          On a phone the pad and the shape strip both want the bottom of the
+          screen, so the pad starts collapsed behind a single key and the canvas
+          keeps its height. On a pointer device it is simply always open. */}
+      <div
+        className={`canvas-controls${padOpen ? " open" : ""}`}
+        role="toolbar"
+        aria-label={t("editor.moveScaleAria")}
+      >
+        <button
+          className="cc-btn cc-pad-toggle"
+          aria-expanded={padOpen}
+          aria-label={t("editor.moveScaleAria")}
+          title={t("editor.moveScaleAria")}
+          onClick={() => setPadOpen((v) => !v)}
+        >
+          {padOpen ? "✕" : "✥"}
+        </button>
         <div className="cc-scale" aria-label={t("editor.scale")}>
           <RepeatButton className="cc-btn" title={t("editor.larger")} onStep={() => scaleAll(1.01)}>+</RepeatButton>
           <RepeatButton className="cc-btn" title={t("editor.smaller")} onStep={() => scaleAll(0.99)}>−</RepeatButton>

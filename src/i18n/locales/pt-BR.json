@@ -144,7 +144,7 @@
     "dropBody": "Escolha uma foto da parede onde o espelho vai ficar.",
     "choosePhoto": "Escolher foto…",
     "hintTitle": "Coloque o retângulo dentro da área que você quer espelhar.",
-    "hintSub": "Arraste os 4 cantos até um retângulo real na parede e digite o tamanho verdadeiro dele. Em <b>Pronto</b>, a foto é endireitada para você desenhar sobre uma parede vista de frente.",
+    "hintSub": "Arraste os 4 cantos até um retângulo real na parede — ou arraste pelo meio para mover o retângulo inteiro — e digite o tamanho verdadeiro dele. Em <b>Pronto</b>, a foto é endireitada para você desenhar sobre uma parede vista de frente.",
     "dismissHint": "Fechar dica",
     "panelTitle": "Calibrar parede",
     "panelHint": "Digite o tamanho real do retângulo que você marcou. É isso que ancora todo o projeto em centímetros.",

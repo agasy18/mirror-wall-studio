@@ -1,5 +1,10 @@
 import { jsPDF } from "jspdf";
-import { clipPolylineToRect, curveBounds, sampleClosedSpline } from "../model/geometry";
+import {
+  clipPolylineToRect,
+  curveBounds,
+  rectInPolygon,
+  sampleClosedSpline,
+} from "../model/geometry";
 import type { ShapePoint } from "../model/shape";
 import { DEFAULT_TILE_CONFIG, planTiles, type TileConfig, type TilePlan } from "../model/tiling";
 import { APP_NAME, APP_URL, APP_URL_LABEL } from "../model/brand";
@@ -14,7 +19,7 @@ const CM_TO_MM = 10;
  * cut line and a label.
  */
 export interface ExportOptions {
-  /** Print a QR to the app, plus a one-line credit, on the cover sheet. */
+  /** Print a QR to the app inside the mirror outline, on the template sheets. */
   watermark?: boolean;
 }
 
@@ -60,8 +65,13 @@ export function exportTiledPdf(
     shapeCm,
     paperName: cfg.paper.name,
     cfg,
-    watermark: opts.watermark ?? false,
   });
+
+  // A few QRs, inside the outline, spread across sheets that can hold one whole.
+  const qrByTile = new Map<number, QrSpot>();
+  if (opts.watermark) {
+    for (const spot of findQrSpots(outline, plan, QR_BLOCK)) qrByTile.set(spot.tile, spot);
+  }
 
   plan.tiles.forEach((tile, i) => {
     doc.addPage([pw, ph], "portrait");
@@ -128,6 +138,10 @@ export function exportTiledPdf(
     doc.setFontSize(7);
     doc.setTextColor(150, 150, 150);
     doc.text(`${tile.label} · sheet ${i + 1} of ${plan.pageCount}`, m + 1.5, m + 3.2);
+
+    // --- QR, if one landed on this sheet ---
+    const qrSpot = qrByTile.get(i);
+    if (qrSpot) drawCredit(doc, qrSpot.x + offsetX, qrSpot.y + offsetY);
   });
 
   doc.save(`mirror-template-${bb.width.toFixed(0)}x${bb.height.toFixed(0)}cm.pdf`);
@@ -148,7 +162,6 @@ function drawCoverPage(
     shapeCm: string;
     paperName: string;
     cfg: TileConfig;
-    watermark: boolean;
   },
 ) {
   const { m, pw, plan, shapeCm, paperName, cfg } = opts;
@@ -238,7 +251,6 @@ function drawCoverPage(
     cellH = availH / plan.rows;
     cellW = cellH / aspect;
   }
-  const mapTop = y;
   doc.setDrawColor(150, 150, 150);
   doc.setLineWidth(0.2);
   doc.setFontSize(7);
@@ -255,46 +267,126 @@ function drawCoverPage(
     }
   }
 
-  // --- credit + QR, in the gutter the sheet map leaves free ---
-  if (opts.watermark) {
-    const mapRight = m + cellW * plan.cols;
-    const gutter = pw - m - mapRight - 6;
-    const block = Math.min(34, gutter);
-    // Only if it genuinely fits beside the map; a cramped, clipped QR that
-    // will not scan is worse than leaving the cover sheet alone.
-    if (block >= 22) {
-      drawCredit(doc, pw - m - block, mapTop, block);
-    }
-  }
 }
 
-/** QR to the app plus a one-line credit, drawn into a `size` mm square block. */
-function drawCredit(doc: jsPDF, x: number, y: number, size: number) {
+/**
+ * Where to put the QR inside the mirror outline, in shape-mm.
+ *
+ * It belongs on a template sheet, not the cover: the cover is read once and
+ * thrown away, while the paper inside the outline is cut out and IS the
+ * stencil — the part that survives, gets taped to a wall and photographed.
+ *
+ * The block must land wholly inside one sheet's kept area, never straddling an
+ * overlap band: a QR split across a seam only scans if the sheets are taped
+ * perfectly, and a code that scans sometimes is worse than one that always does.
+ */
+export interface QrSpot {
+  x: number;
+  y: number;
+  tile: number;
+}
+
+/** Roughly one code per six sheets, and never more than a handful. */
+export function qrCountFor(pageCount: number): number {
+  return Math.min(4, Math.max(1, Math.floor(pageCount / 6)));
+}
+
+export function findQrSpots(
+  outline: { x: number; y: number }[],
+  plan: TilePlan,
+  block: { w: number; h: number },
+): QrSpot[] {
+  const STEP = 6; // mm between candidate positions
+  const candidates: Array<QrSpot & { cx: number; cy: number }> = [];
+
+  for (let index = 0; index < plan.tiles.length; index++) {
+    const tile = plan.tiles[index];
+    // The kept area is the sheet up to its cut line; past that is the overlap
+    // band, which the user trims away. Last row/column has nothing after it.
+    const keptW = tile.col < plan.cols - 1 ? plan.stepXmm : plan.printableWmm;
+    const keptH = tile.row < plan.rows - 1 ? plan.stepYmm : plan.printableHmm;
+    const x1 = tile.contentXmm + keptW - block.w;
+    const y1 = tile.contentYmm + keptH - block.h;
+    // Prefer the middle of the sheet, so a code is never crowded against a seam.
+    const midX = tile.contentXmm + keptW / 2 - block.w / 2;
+    const midY = tile.contentYmm + keptH / 2 - block.h / 2;
+
+    let best: (QrSpot & { cx: number; cy: number; d: number }) | null = null;
+    for (let x = tile.contentXmm; x <= x1; x += STEP) {
+      for (let y = tile.contentYmm; y <= y1; y += STEP) {
+        const d = Math.hypot(x - midX, y - midY);
+        if (best && d >= best.d) continue; // cheaper than the polygon test
+        if (!rectInPolygon(outline, { x, y, w: block.w, h: block.h })) continue;
+        best = { x, y, tile: index, cx: x + block.w / 2, cy: y + block.h / 2, d };
+      }
+    }
+    if (best) candidates.push({ x: best.x, y: best.y, tile: best.tile, cx: best.cx, cy: best.cy });
+  }
+
+  if (candidates.length === 0) return [];
+
+  // Spread them out: start at the middle of the mirror, then repeatedly take
+  // whichever remaining sheet is farthest from everything already chosen. A
+  // simple "every Nth sheet" would clump them down one column on a tall mirror.
+  const mx = outline.reduce((a, p) => a + p.x, 0) / outline.length;
+  const my = outline.reduce((a, p) => a + p.y, 0) / outline.length;
+  const pool = [...candidates];
+  const chosen: typeof candidates = [];
+  const wanted = Math.min(qrCountFor(plan.pageCount), pool.length);
+
+  let seed = 0;
+  for (let i = 1; i < pool.length; i++) {
+    if (Math.hypot(pool[i].cx - mx, pool[i].cy - my) < Math.hypot(pool[seed].cx - mx, pool[seed].cy - my)) {
+      seed = i;
+    }
+  }
+  chosen.push(...pool.splice(seed, 1));
+
+  while (chosen.length < wanted) {
+    let bestIdx = 0;
+    let bestDist = -1;
+    for (let i = 0; i < pool.length; i++) {
+      const nearest = Math.min(
+        ...chosen.map((c) => Math.hypot(pool[i].cx - c.cx, pool[i].cy - c.cy)),
+      );
+      if (nearest > bestDist) {
+        bestDist = nearest;
+        bestIdx = i;
+      }
+    }
+    chosen.push(...pool.splice(bestIdx, 1));
+  }
+
+  return chosen.map(({ x, y, tile }) => ({ x, y, tile }));
+}
+
+const QR_SIDE_MM = 30;
+const QR_CAPTION_MM = 8;
+export const QR_BLOCK = { w: QR_SIDE_MM, h: QR_SIDE_MM + QR_CAPTION_MM };
+
+/** QR to the app plus a one-line credit, drawn into the block at (x, y). */
+function drawCredit(doc: jsPDF, x: number, y: number) {
   const code = encodeQr(APP_URL);
   // 4 modules of quiet zone, as the QR spec requires — scanners use it to find
   // the code's edge, and printed on a busy sheet it is not optional.
   const QUIET = 4;
-  const mod = size / (code.size + QUIET * 2);
+  const mod = QR_SIDE_MM / (code.size + QUIET * 2);
 
   doc.setFillColor(255, 255, 255);
-  doc.rect(x, y, size, size, "F");
+  doc.rect(x, y, QR_SIDE_MM, QR_SIDE_MM, "F");
   doc.setFillColor(0, 0, 0);
   for (const run of qrRuns(code)) {
     doc.rect(x + (run.col + QUIET) * mod, y + (run.row + QUIET) * mod, run.len * mod, mod, "F");
   }
 
-  let ty = y + size + 3.5;
-  doc.setFontSize(7.5);
-  doc.setTextColor(90, 90, 90);
-  doc.text("Made with", x, ty);
-  ty += 3.6;
-  doc.setFontSize(8.5);
-  doc.setTextColor(0, 0, 0);
-  doc.text(APP_NAME, x, ty);
-  ty += 3.6;
-  doc.setFontSize(6.5);
+  // Sits on the stencil the user traces around, so the caption stays light —
+  // readable if the code is scuffed, never mistaken for a cut line.
+  doc.setFontSize(7);
   doc.setTextColor(120, 120, 120);
-  doc.text(APP_URL_LABEL, x, ty);
+  doc.text(APP_NAME, x + QR_SIDE_MM / 2, y + QR_SIDE_MM + 3.4, { align: "center" });
+  doc.setFontSize(5.5);
+  doc.setTextColor(150, 150, 150);
+  doc.text(APP_URL_LABEL, x + QR_SIDE_MM / 2, y + QR_SIDE_MM + 7, { align: "center" });
 }
 
 function cross(doc: jsPDF, x: number, y: number, size: number) {

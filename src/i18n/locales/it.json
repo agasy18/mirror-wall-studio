@@ -144,7 +144,7 @@
     "dropBody": "Scegli una foto della parete dove andrà lo specchio.",
     "choosePhoto": "Scegli foto…",
     "hintTitle": "Posiziona il rettangolo nell’area dove vuoi lo specchio.",
-    "hintSub": "Trascina i 4 angoli su un rettangolo reale della parete e inserisci la sua misura vera. Con <b>Fatto</b> la foto viene raddrizzata, così progetti su una parete vista di fronte.",
+    "hintSub": "Trascina i 4 angoli su un rettangolo reale della parete — oppure trascinalo dal centro per spostarlo tutto — e inserisci la sua misura vera. Con <b>Fatto</b> la foto viene raddrizzata, così progetti su una parete vista di fronte.",
     "dismissHint": "Chiudi il suggerimento",
     "panelTitle": "Calibra parete",
     "panelHint": "Inserisci la misura reale del rettangolo che hai tracciato. È così che tutto il progetto viene ancorato ai centimetri.",

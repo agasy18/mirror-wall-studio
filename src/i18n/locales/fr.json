@@ -144,7 +144,7 @@
     "dropBody": "Choisissez une photo du mur où ira le miroir.",
     "choosePhoto": "Choisir une photo…",
     "hintTitle": "Placez le rectangle dans la zone où ira le miroir.",
-    "hintSub": "Amenez les 4 coins sur un vrai rectangle du mur et saisissez sa taille réelle. Avec <b>Terminé</b>, la photo est redressée pour que vous dessiniez sur un mur vu de face.",
+    "hintSub": "Amenez les 4 coins sur un vrai rectangle du mur — ou faites-le glisser par le milieu pour le déplacer en entier — et saisissez sa taille réelle. Avec <b>Terminé</b>, la photo est redressée pour que vous dessiniez sur un mur vu de face.",
     "dismissHint": "Masquer l’astuce",
     "panelTitle": "Calibrer le mur",
     "panelHint": "Saisissez la taille réelle du rectangle que vous avez tracé. C’est ce qui ancre toute la conception en centimètres.",

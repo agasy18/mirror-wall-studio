@@ -21,6 +21,8 @@ interface CalibrationState {
 
   setPhoto: (src: string, w: number, h: number) => void;
   moveCorner: (corner: Corner, p: Pt) => void;
+  /** Slide the whole rack, keeping its shape. Clamped to the photo. */
+  moveCorners: (dx: number, dy: number) => void;
   setRealSize: (widthCm: number, heightCm: number) => void;
   setCalibrated: (v: boolean) => void;
   clearPhoto: () => void;
@@ -63,6 +65,22 @@ export const useCalibrationStore = create<CalibrationState>()(
     moveCorner: (corner, p) =>
       set((state) => {
         state.corners[corner] = p;
+      }),
+
+    // One action rather than four moveCorner calls: dragging the rack fires on
+    // every pointermove, and four store writes per frame is four renders.
+    moveCorners: (dx, dy) =>
+      set((state) => {
+        const pts = CORNER_ORDER.map((k) => state.corners[k]);
+        const xs = pts.map((p) => p.x);
+        const ys = pts.map((p) => p.y);
+        // Clamp the whole rack as one object, so it slides along the photo edge
+        // instead of deforming or escaping when the pointer runs past it.
+        const ddx = Math.max(-Math.min(...xs), Math.min(dx, state.photoW - Math.max(...xs)));
+        const ddy = Math.max(-Math.min(...ys), Math.min(dy, state.photoH - Math.max(...ys)));
+        for (const k of CORNER_ORDER) {
+          state.corners[k] = { x: state.corners[k].x + ddx, y: state.corners[k].y + ddy };
+        }
       }),
 
     setRealSize: (widthCm, heightCm) =>
