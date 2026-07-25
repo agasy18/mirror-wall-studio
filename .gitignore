@@ -8,3 +8,6 @@ dist/
 # internal planning notes — kept local, not published
 backlog.html
 docs/superpowers/
+
+# build-time prerender bundle
+.prerender/

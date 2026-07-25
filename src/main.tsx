@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { AppFlow } from "./screens/AppFlow";
 import { useShapeStore } from "./state/useShapeStore";
 import { useCalibrationStore } from "./state/useCalibrationStore";
@@ -11,8 +11,18 @@ if (import.meta.env.DEV) {
   (window as unknown as Record<string, unknown>).__calibStore = useCalibrationStore;
 }
 
-createRoot(document.getElementById("root")!).render(
+const container = document.getElementById("root")!;
+const app = (
   <StrictMode>
     <AppFlow />
-  </StrictMode>,
+  </StrictMode>
 );
+
+// The landing is prerendered into index.html at build time, so adopt that
+// markup instead of throwing it away and repainting. Falls back to a plain
+// render if the prerender step was skipped.
+if (container.firstElementChild) {
+  hydrateRoot(container, app);
+} else {
+  createRoot(container).render(app);
+}

@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npm run prerender",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prerender": "vite build --ssr src/prerender-entry.tsx --outDir .prerender && node scripts/inject-prerender.mjs"
   },
   "dependencies": {
     "immer": "^10.1.1",

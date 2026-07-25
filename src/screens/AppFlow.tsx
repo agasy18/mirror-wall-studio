@@ -23,6 +23,11 @@ export function AppFlow() {
     () => new URLSearchParams(location.search).has("panel"),
   );
   const [printOpen, setPrintOpen] = useState(false);
+  // Read after mount, never during render: the prerendered HTML is built with
+  // no saved work, so deriving this from localStorage on the first client
+  // render would change the CTA label and break hydration.
+  const [savedWork, setSavedWork] = useState(false);
+  useEffect(() => setSavedWork(hasSavedWork()), []);
   const previewMode = useShapeStore((s) => s.previewMode);
   const setPreviewMode = useShapeStore((s) => s.setPreviewMode);
   const requestDownload = useShapeStore((s) => s.requestDownload);
@@ -69,7 +74,7 @@ export function AppFlow() {
   }, []);
 
   if (screen === "landing") {
-    return <Landing onLaunch={launch} hasSavedWork={hasSavedWork()} />;
+    return <Landing onLaunch={launch} hasSavedWork={savedWork} />;
   }
 
   return (
