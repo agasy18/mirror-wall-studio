@@ -77,3 +77,16 @@ but 404s on Pages.
 ## License
 
 [MIT](LICENSE) © 2026 Aghasi Poghosyan
+
+## Search engines
+
+`public/sitemap.xml` lists the single canonical URL. There is deliberately no
+`robots.txt`: it is a per-origin file, so one served from
+`/mirror-wall-studio/` would be ignored by every crawler — it would have to live
+at the `agasy18.github.io` root. A missing `robots.txt` means "allow all", so
+nothing is blocked.
+
+`public/<key>.txt` is an [IndexNow](https://www.indexnow.org/) key, which lets
+Bing, Yandex, Seznam and Naver be notified of changes without an account.
+Google retired its sitemap ping endpoint in 2023 and needs the sitemap submitted
+through Search Console by hand.
