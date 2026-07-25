@@ -458,6 +458,16 @@ input:focus { border-color: var(--accent); }
 }
 .point-delete:hover { color: var(--danger); border-color: var(--danger); }
 
+/* zoom indicator + escape hatch, only present while zoomed */
+.view-reset {
+  position: absolute; left: 50%; top: 16px; transform: translateX(-50%); z-index: 31;
+  height: 36px; min-height: 36px; padding: 0 14px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; color: var(--text);
+  background: var(--float); border: 1px solid var(--border-strong);
+  backdrop-filter: blur(10px); box-shadow: 0 8px 26px var(--float-shadow);
+  white-space: nowrap;
+}
+
 /* generic popover */
 .popover {
   min-width: 190px; padding: 8px; border-radius: 12px; z-index: 60;
@@ -574,6 +584,10 @@ input:focus { border-color: var(--accent); }
     bottom: calc(12px + env(safe-area-inset-bottom));
   }
   .panel-toggle { bottom: calc(16px + env(safe-area-inset-bottom)); }
+
+  /* the top row is already size-chip + gear; drop the zoom pill below them
+     rather than let it collide on narrow phones */
+  .view-reset { top: 62px; }
   /* ...which is where the delete-point button lived; stack it above. */
   .point-delete {
     left: 12px;

@@ -3,7 +3,17 @@ import { useShapeStore } from "../state/useShapeStore";
 import { useCalibrationStore, cornersAsArray } from "../state/useCalibrationStore";
 import { boundingBox, nearestSegmentIndex } from "../model/geometry";
 import { isQuadValid } from "../model/homography";
-import { fitCamera, toCm, type WorldRect } from "../model/camera";
+import {
+  applyView,
+  clampPan,
+  clampZoom,
+  fitCamera,
+  IDENTITY_VIEW,
+  toCm,
+  zoomAbout,
+  type ViewTransform,
+  type WorldRect,
+} from "../model/camera";
 import { DEFAULT_TILE_CONFIG, paperById, planTiles } from "../model/tiling";
 import { warpRoom, type WarpedRoom } from "../render/warpPhoto";
 import { drawHandles, drawMirror, hitHandle, shapePath } from "../render/drawShape";
@@ -135,7 +145,14 @@ export function ShapeEditor() {
     return () => ro.disconnect();
   }, []);
 
-  const cam = useMemo(() => fitCamera(world, size.w, size.h), [world, size]);
+  // User zoom/pan sits on top of the fit, so a resize re-fits without losing it.
+  const [view, setView] = useState<ViewTransform>(IDENTITY_VIEW);
+  const fitted = useMemo(() => fitCamera(world, size.w, size.h), [world, size]);
+  const cam = useMemo(
+    () => applyView(fitted, view, size.w, size.h),
+    [fitted, view, size],
+  );
+  const zoomed = view.zoom > 1.001;
 
   // Dev-only: expose the live camera for headless interaction testing.
   useEffect(() => {
@@ -304,6 +321,29 @@ export function ShapeEditor() {
     | null
   >(null);
   const lastTap = useRef<{ t: number; x: number; y: number } | null>(null);
+  // Live pointers, so a second finger can promote the gesture to a pinch.
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<
+    | { dist: number; cx: number; cy: number; view: ViewTransform }
+    | null
+  >(null);
+  // Dragging empty space pans; a press that never moves is still a click.
+  const panDrag = useRef<
+    | { x: number; y: number; panX: number; panY: number; moved: boolean }
+    | null
+  >(null);
+
+  const centroid = () => {
+    const pts = [...pointers.current.values()];
+    const x = pts.reduce((a, p) => a + p.x, 0) / pts.length;
+    const y = pts.reduce((a, p) => a + p.y, 0) / pts.length;
+    return { x, y };
+  };
+  const spread = () => {
+    const pts = [...pointers.current.values()];
+    return Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+  };
+  const resetView = () => setView(IDENTITY_VIEW);
 
   const pointerCm = (e: { clientX: number; clientY: number }) => {
     const rect = canvasRef.current!.getBoundingClientRect();
@@ -317,6 +357,18 @@ export function ShapeEditor() {
   const onPointerDown = (e: React.PointerEvent) => {
     const [px, py] = pointerPx(e);
     canvasRef.current!.setPointerCapture(e.pointerId);
+    pointers.current.set(e.pointerId, { x: px, y: py });
+
+    // Second finger down: abandon whatever single-pointer gesture was running
+    // and pinch instead, so a shape drag never fights a zoom.
+    if (pointers.current.size === 2) {
+      drag.current = null;
+      panDrag.current = null;
+      const c = centroid();
+      pinch.current = { dist: spread(), cx: c.x, cy: c.y, view };
+      return;
+    }
+    if (pointers.current.size > 2) return;
 
     // Touch has no dblclick worth relying on (iOS Safari synthesizes it
     // inconsistently, and the stray second pointerdown can exit edit mode), so
@@ -361,12 +413,52 @@ export function ShapeEditor() {
       return;
     }
 
-    // Clicking outside the mirror exits edit mode and hides the handles.
-    if (editCurve) setEditCurve(false);
-    select(null);
+    // Outside the mirror: start a pan. Whether this was a "click outside"
+    // (which exits edit mode) is decided on release, by whether it moved.
+    panDrag.current = { x: px, y: py, panX: view.panX, panY: view.panY, moved: false };
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
+    if (pointers.current.has(e.pointerId)) {
+      const [mx, my] = pointerPx(e);
+      pointers.current.set(e.pointerId, { x: mx, y: my });
+    }
+
+    // Pinch: scale about the gesture centroid, and let the centroid drag too.
+    if (pinch.current && pointers.current.size >= 2) {
+      const start = pinch.current;
+      const c = centroid();
+      const nextZoom = clampZoom((start.view.zoom * spread()) / (start.dist || 1));
+      const zoomedView = zoomAbout(start.view, start.cx, start.cy, nextZoom, size.w, size.h);
+      setView(
+        clampPan(
+          {
+            zoom: zoomedView.zoom,
+            panX: zoomedView.panX + (c.x - start.cx),
+            panY: zoomedView.panY + (c.y - start.cy),
+          },
+          size.w,
+          size.h,
+        ),
+      );
+      return;
+    }
+
+    if (panDrag.current) {
+      const [mx, my] = pointerPx(e);
+      const dx = mx - panDrag.current.x;
+      const dy = my - panDrag.current.y;
+      if (Math.hypot(dx, dy) > 4) panDrag.current.moved = true;
+      setView((v) =>
+        clampPan(
+          { zoom: v.zoom, panX: panDrag.current!.panX + dx, panY: panDrag.current!.panY + dy },
+          size.w,
+          size.h,
+        ),
+      );
+      return;
+    }
+
     if (!drag.current) return;
     const [cx, cy] = pointerCm(e);
     if (drag.current.kind === "point") {
@@ -378,7 +470,18 @@ export function ShapeEditor() {
     }
   };
 
-  const onPointerUp = () => {
+  const onPointerUp = (e: React.PointerEvent) => {
+    pointers.current.delete(e.pointerId);
+    if (pointers.current.size < 2) pinch.current = null;
+
+    if (panDrag.current) {
+      // A press on empty space that never moved is a click: leave edit mode.
+      if (!panDrag.current.moved) {
+        if (editCurve) setEditCurve(false);
+        select(null);
+      }
+      panDrag.current = null;
+    }
     drag.current = null;
   };
 
@@ -412,6 +515,29 @@ export function ShapeEditor() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedId, deletePoint]);
 
+  // Wheel zoom for pointer devices. Registered manually because it must be
+  // non-passive to preventDefault, which React's onWheel cannot guarantee.
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const onWheel = (ev: WheelEvent) => {
+      ev.preventDefault();
+      const rect = el.getBoundingClientRect();
+      setView((v) =>
+        zoomAbout(
+          v,
+          ev.clientX - rect.left,
+          ev.clientY - rect.top,
+          v.zoom * Math.exp(-ev.deltaY * 0.0015),
+          size.w,
+          size.h,
+        ),
+      );
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [size.w, size.h]);
+
   return (
     <div className="stage" ref={wrapRef}>
       <canvas
@@ -422,8 +548,14 @@ export function ShapeEditor() {
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
         onDoubleClick={onDoubleClick}
       />
+      {zoomed && !previewMode && (
+        <button className="view-reset mono" onClick={resetView} aria-label="Reset the view to fit">
+          {view.zoom.toFixed(1)}× · reset view
+        </button>
+      )}
       {editCurve && !previewMode && selectedId && (
         <button
           className="point-delete"
