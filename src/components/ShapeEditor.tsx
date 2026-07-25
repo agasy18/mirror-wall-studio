@@ -39,6 +39,7 @@ export function ShapeEditor() {
   const showWatermark = useShapeStore((s) => s.toggles.showWatermark);
   const paperId = useShapeStore((s) => s.paperId);
   const previewMode = useShapeStore((s) => s.previewMode);
+  const setPreviewMode = useShapeStore((s) => s.setPreviewMode);
   const editCurve = useShapeStore((s) => s.editCurve);
   const setEditCurve = useShapeStore((s) => s.setEditCurve);
   const marginCm = useShapeStore((s) => s.marginCm);
@@ -239,6 +240,10 @@ export function ShapeEditor() {
       });
       path.closePath();
 
+      // Kept so a tap can be hit-tested against the mirror as it is actually
+      // drawn here — in perspective, not the cm-space path the editor uses.
+      previewPath.current = path;
+
       if (maxX > minX && maxY > minY) {
         const bboxPx = { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
         drawMirror(ctx, path, {
@@ -409,6 +414,12 @@ export function ShapeEditor() {
     | null
   >(null);
   const lastTap = useRef<{ t: number; x: number; y: number } | null>(null);
+  // Touch browsers synthesize a dblclick after a double-tap, on top of the
+  // double-tap we detect ourselves — so a single gesture added two points.
+  const lastPointerType = useRef<string>("mouse");
+  // The mirror as drawn in preview, so a tap there can send you back to editing.
+  const previewPath = useRef<Path2D | null>(null);
+  const previewTapInside = useRef(false);
   // Live pointers, so a second finger can promote the gesture to a pinch.
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<
@@ -444,17 +455,27 @@ export function ShapeEditor() {
 
   const onPointerDown = (e: React.PointerEvent) => {
     const [px, py] = pointerPx(e);
+    lastPointerType.current = e.pointerType;
     canvasRef.current!.setPointerCapture(e.pointerId);
     pointers.current.set(e.pointerId, { x: px, y: py });
 
-    // Preview is a picture, not an editor. Pinch and pan still work so the
-    // room can be inspected, but nothing here may reshape or move the mirror —
-    // in perspective the pointer no longer maps to centimetres anyway.
+    // Preview is a picture, not an editor: nothing here may reshape or move the
+    // mirror, because in perspective the pointer no longer maps to centimetres.
+    // Tapping the mirror does the one thing you would expect it to — takes you
+    // back to editing it. Pinch and pan still work for looking around.
     if (previewMode) {
       if (pointers.current.size === 2) {
         const c = centroid();
         pinch.current = { dist: spread(), cx: c.x, cy: c.y, view };
         return;
+      }
+      previewTapInside.current = false;
+      if (previewPath.current) {
+        const ctx = canvasRef.current!.getContext("2d")!;
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        previewTapInside.current = ctx.isPointInPath(previewPath.current, px, py);
+        ctx.restore();
       }
       panDrag.current = { x: px, y: py, panX: view.panX, panY: view.panY, moved: false };
       return;
@@ -576,13 +597,17 @@ export function ShapeEditor() {
     if (pointers.current.size < 2) pinch.current = null;
 
     if (panDrag.current) {
-      // A press on empty space that never moved is a click: leave edit mode.
-      // In preview there is no edit mode to leave.
-      if (!panDrag.current.moved && !previewMode) {
+      const tapped = !panDrag.current.moved;
+      if (tapped && previewMode) {
+        // Tapping the mirror in preview is a request to edit it again.
+        if (previewTapInside.current) setPreviewMode(false);
+      } else if (tapped) {
+        // A press on empty space that never moved is a click: leave edit mode.
         if (editCurve) setEditCurve(false);
         select(null);
       }
       panDrag.current = null;
+      previewTapInside.current = false;
     }
     drag.current = null;
   };
@@ -598,6 +623,10 @@ export function ShapeEditor() {
 
   const onDoubleClick = (e: React.MouseEvent) => {
     if (!editCurve) return; // adding points only while editing the curve
+    // A touch double-tap is already handled in onPointerDown; the browser then
+    // synthesizes a dblclick on top of it, and a single gesture added two
+    // points. Whichever handler runs, exactly one point gets added.
+    if (lastPointerType.current === "touch") return;
     const [cx, cy] = pointerCm(e);
     addPointOnCurve(cx, cy);
   };
