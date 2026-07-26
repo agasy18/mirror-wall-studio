@@ -123,6 +123,43 @@ function asText(raw: ArrayBuffer): string {
   return out;
 }
 
+export interface PdfText {
+  /** Left edge of the drawn string, mm from the page's left. */
+  x: number;
+  /** Baseline, mm from the page's top. */
+  y: number;
+  /** Point size, needed to measure the string's width. */
+  size: number;
+  s: string;
+}
+
+/**
+ * The text on every page, in mm from the page's top-left. jsPDF resolves
+ * alignment before writing, so `x` is always the left edge of what is drawn.
+ */
+export function pdfPageTexts(raw: ArrayBuffer, pageHeightMm: number): PdfText[][] {
+  const txt = asText(raw);
+  const streams: string[] = [];
+  const re = /stream\r?\n([\s\S]*?)\r?\nendstream/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(txt))) streams.push(m[1]);
+
+  return streams.map((stream) => {
+    const out: PdfText[] = [];
+    const item = /\/F\d+ ([\d.]+) Tf[\s\S]*?([\d.]+) ([\d.]+) Td\s*\((.*?)\) Tj/g;
+    let g: RegExpExecArray | null;
+    while ((g = item.exec(stream))) {
+      out.push({
+        size: parseFloat(g[1]),
+        x: parseFloat(g[2]) / PT_PER_MM,
+        y: pageHeightMm - parseFloat(g[3]) / PT_PER_MM,
+        s: g[4],
+      });
+    }
+    return out;
+  });
+}
+
 export function pdfPageSegments(raw: ArrayBuffer, pageHeightMm: number): PdfSeg[][] {
   const txt = asText(raw);
   const streams: string[] = [];

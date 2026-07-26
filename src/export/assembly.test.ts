@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { buildTiledPdf, keptRect, OUTLINE_MM, sheetsToPrint } from "./tilePdf";
-import { pdfPageSegments, visibleInk, type PdfSeg, type Placed } from "./pdfPages";
+import {
+  buildTiledPdf,
+  keptRect,
+  OUTLINE_MM,
+  readableRect,
+  sheetsToPrint,
+  STRIP_LABEL_PT,
+} from "./tilePdf";
+import { pdfPageSegments, pdfPageTexts, visibleInk, type PdfSeg, type Placed } from "./pdfPages";
 import { DEFAULT_TILE_CONFIG, paperById, planTiles, type TileConfig } from "../model/tiling";
 import { clipPolylineToRect, curveBounds, sampleClosedSpline } from "../model/geometry";
 import type { ShapePoint } from "../model/shape";
@@ -236,9 +243,8 @@ describe("the marks that tell you where a sheet goes", () => {
     }
   });
 
-  it("keeps the hatched strips off the finished stencil", () => {
-    // The hatching says "this part goes underneath", so all of it had better be
-    // under something once the sheets are stacked.
+  /** The hatch on every sheet, in shape mm, plus each sheet's paper rectangle. */
+  function hatchStacked(trimmed: boolean) {
     const cfg = DEFAULT_TILE_CONFIG;
     const built = buildTiledPdf(MIRROR, cfg, { skipBlank: false });
     const pages = pdfPageSegments(built.doc.output("arraybuffer"), cfg.paper.hmm);
@@ -247,22 +253,77 @@ describe("the marks that tell you where a sheet goes", () => {
       const tile = built.plan.tiles[ti];
       const dx = tile.contentXmm - m;
       const dy = tile.contentYmm - m;
+      // Trimmed: the paper starts at the first column of ink. Untrimmed: it
+      // starts a whole margin earlier, which is the mistake worth designing for.
+      const x = trimmed ? tile.contentXmm : dx;
+      const y = trimmed ? tile.contentYmm : dy;
       return {
-        // Trimmed top-left to the far paper edge: the sheet as it lies.
-        paper: {
-          x: tile.contentXmm,
-          y: tile.contentYmm,
-          w: cfg.paper.wmm - m,
-          h: cfg.paper.hmm - m,
-        },
+        paper: { x, y, w: dx + cfg.paper.wmm - x, h: dy + cfg.paper.hmm - y },
         ink: pages[i + 1]
           .filter((s) => Math.abs(s.w - HATCH_MM) < 1e-3)
           .map((s) => ({ ...s, x1: s.x1 + dx, y1: s.y1 + dy, x2: s.x2 + dx, y2: s.y2 + dy })),
       };
     });
-    const totalHatch = placed.reduce((n, p) => n + p.ink.length, 0);
-    expect(totalHatch).toBeGreaterThan(100);
+    return placed;
+  }
+
+  it("hatches exactly what an untrimmed sheet would cover", () => {
+    // The hatching promises "the next sheet covers this". Measured against the
+    // whole footprint, not the overlap band — a sheet laid down without being
+    // trimmed reaches a margin further, and that is what buried the labels.
+    const placed = hatchStacked(false);
+    const total = placed.reduce((n, p) => n + p.ink.length, 0);
+    expect(total).toBeGreaterThan(100);
     expect(visibleInk(placed).length).toBe(0);
+  });
+
+  it("keeps every label out of reach of the next sheet", () => {
+    // The failure this guards against, from a photo of two real sheets: the
+    // neighbour was laid down without being trimmed, so it reached a margin past
+    // the seam and cut the label "R2-C2" down to "R2-". A caption you cannot read
+    // is worse than none, because you only find out after taping it down.
+    const cfg = DEFAULT_TILE_CONFIG;
+    const built = buildTiledPdf(MIRROR, cfg, { watermark: true, skipBlank: true });
+    const raw = built.doc.output("arraybuffer");
+    const texts = pdfPageTexts(raw, cfg.paper.hmm);
+    const m = cfg.pageMarginMm;
+    const printed = new Set(built.printed);
+    let checked = 0;
+
+    built.printed.forEach((ti, i) => {
+      const tile = built.plan.tiles[ti];
+      const hasRight = tile.col < built.plan.cols - 1 && printed.has(ti + 1);
+      const hasBelow = printed.has(ti + built.plan.cols);
+      const r = readableRect(built.plan, tile, m, hasRight, hasBelow);
+      // Page mm, so compare against the readable rect shifted into page space.
+      const limitX = r.x - tile.contentXmm + m + r.w;
+      const limitY = r.y - tile.contentYmm + m + r.h;
+      for (const t of texts[i + 1]) {
+        built.doc.setFontSize(t.size);
+        const w = built.doc.getTextWidth(t.s);
+        if (t.size === STRIP_LABEL_PT) {
+          // The exception, and the only one: a caption naming the strip that is
+          // about to cover it. It has to be inside, or it would be labelling the
+          // wrong piece of paper.
+          expect(
+            t.x + w > limitX || t.y > limitY,
+            `${tile.label} strip label "${t.s}" should be inside the shading`,
+          ).toBe(true);
+          continue;
+        }
+        expect(t.x + w, `${tile.label} "${t.s}" right edge`).toBeLessThanOrEqual(limitX + 0.01);
+        expect(t.y, `${tile.label} "${t.s}" baseline`).toBeLessThanOrEqual(limitY + 0.01);
+        checked++;
+      }
+    });
+    expect(checked).toBeGreaterThan(60);
+  });
+
+  it("reaches a margin past the seam, so it is not just the overlap band", () => {
+    // Trimmed neighbours cover only as far as the seam, so some hatch survives.
+    // That difference IS the margin the old shading was silently missing.
+    const placed = hatchStacked(true);
+    expect(visibleInk(placed).length).toBeGreaterThan(0);
   });
 
   it("puts a matching pair on both sides of every seam", () => {

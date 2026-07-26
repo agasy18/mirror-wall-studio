@@ -7,7 +7,7 @@ import {
 } from "../model/geometry";
 import type { ShapePoint } from "../model/shape";
 import { DEFAULT_TILE_CONFIG, planTiles, type TileConfig, type TilePlan, type Tile } from "../model/tiling";
-import { keptRect, outlineStats, sheetsToPrint } from "./sheets";
+import { keptRect, outlineStats, readableRect, sheetsToPrint } from "./sheets";
 import { APP_NAME, APP_URL, APP_URL_LABEL } from "../model/brand";
 import { encodeQr, qrRuns } from "../model/qr";
 
@@ -101,7 +101,7 @@ export function buildTiledPdf(
   // A few QRs, inside the outline, spread across sheets that can hold one whole.
   const qrByTile = new Map<number, QrSpot>();
   if (opts.watermark) {
-    for (const spot of findQrSpots(outline, plan, QR_BLOCK, printed)) qrByTile.set(spot.tile, spot);
+    for (const spot of findQrSpots(outline, plan, QR_BLOCK, printed, m)) qrByTile.set(spot.tile, spot);
   }
 
   printed.forEach((tileIndex, i) => {
@@ -174,10 +174,17 @@ export const OUTLINE_MM = 0.4;
 /** Length of one half of a join tick — 8 mm each side of a seam. */
 const JOIN_TICK_MM = 8;
 
-export { keptRect, outlineStats, sheetsToPrint } from "./sheets";
+export { keptRect, outlineStats, readableRect, sheetsToPrint } from "./sheets";
 
 /** Arm length of a corner target, in mm. */
-const CORNER_ARM_MM = 14;
+const CORNER_ARM_MM = 20;
+
+/**
+ * Point size used only for the captions printed inside a shaded strip. They are
+ * the one class of text allowed to be covered — the strip they name is what
+ * covers them — so the size doubles as the marker that says so.
+ */
+export const STRIP_LABEL_PT = 5;
 
 /**
  * Everything that tells you where this sheet goes and what goes on it.
@@ -215,21 +222,33 @@ function drawSheetMarks(
   const seamX = m + plan.stepXmm;
   const seamY = m + plan.stepYmm;
 
-  // --- the strips that end up underneath the next sheets ---
-  // Hatched, not just outlined: "this part is covered" is the one thing about
-  // the overlap that was not obvious. Both strips are hidden once assembled, so
-  // the hatching never reaches the finished stencil.
-  if (hasRight) hatch(doc, { x: seamX, y: m, w: pw - m - seamX, h: ph - 2 * m });
-  if (hasBelow) hatch(doc, { x: m, y: seamY, w: pw - 2 * m, h: ph - m - seamY });
+  // --- the strips the next sheets cover ---
+  // Measured by the next sheet's WHOLE footprint, not by the overlap band: it
+  // arrives carrying its own unprintable margin, so if the trim is skipped — the
+  // first thing that goes wrong — it lands a margin further over than the band
+  // and buries a strip of this sheet. Shading only the band said that strip was
+  // safe when it was not, and the labels sitting in it were cut in half.
+  if (hasRight) hatch(doc, { x: seamX - m, y: m, w: pw - seamX, h: ph - 2 * m });
+  if (hasBelow) hatch(doc, { x: m, y: seamY - m, w: pw - 2 * m, h: ph - seamY });
+  // Named inside the shading, at the one size nothing else uses: these say which
+  // sheet covers the strip, are read once before it is covered, and are gone
+  // afterwards — unlike the corner captions, which have to survive.
+  doc.setFontSize(STRIP_LABEL_PT);
+  doc.setTextColor(165, 165, 165);
+  if (hasRight) doc.text(label(tile.row, tile.col + 1), seamX - m + 1.2, m + 3.4);
+  if (hasBelow) doc.text(`under ${label(tile.row + 1, tile.col)}`, m + 1.5, seamY - m + 3.4);
 
   // --- trim lines: cut along these first, on every sheet ---
-  doc.setLineWidth(0.25);
-  doc.setDrawColor(110, 110, 110);
-  doc.setLineDashPattern([4, 2], 0);
+  // 0.35, not 0.3: the join ticks own 0.3, and the tests tell the two apart by
+  // stroke width alone.
+  doc.setLineWidth(0.35);
+  doc.setDrawColor(80, 80, 80);
+  doc.setLineDashPattern([6, 2], 0);
   doc.line(m, m, m, ph - m);
   doc.line(m, m, pw - m, m);
 
   // --- seam lines: where the next sheet's cut edge lands ---
+  doc.setLineWidth(0.2);
   doc.setDrawColor(175, 175, 175);
   doc.setLineDashPattern([0.7, 1.3], 0);
   if (hasRight) doc.line(seamX, m, seamX, ph - m);
@@ -238,12 +257,14 @@ function drawSheetMarks(
 
   // --- corner targets ---
   // Each neighbour arrives top-left corner first, and lands on a corner of this
-  // sheet's kept area. Arms point into the part that stays visible.
-  cornerTarget(doc, m, m, 1, 1, "this corner", true);
-  if (hasRight) cornerTarget(doc, seamX, m, -1, 1, label(tile.row, tile.col + 1), false);
-  if (hasBelow) cornerTarget(doc, m, seamY, 1, -1, label(tile.row + 1, tile.col), false);
+  // sheet's kept area. Arms point into the part that stays visible, and captions
+  // sit a full margin clear of the shading so an untrimmed sheet cannot eat them.
+  const clear = m + 3;
+  cornerTarget(doc, m, m, 1, 1, "this corner", true, clear);
+  if (hasRight) cornerTarget(doc, seamX, m, -1, 1, label(tile.row, tile.col + 1), false, clear);
+  if (hasBelow) cornerTarget(doc, m, seamY, 1, -1, label(tile.row + 1, tile.col), false, clear);
   if (hasDiagonal) {
-    cornerTarget(doc, seamX, seamY, -1, -1, label(tile.row + 1, tile.col + 1), false);
+    cornerTarget(doc, seamX, seamY, -1, -1, label(tile.row + 1, tile.col + 1), false, clear);
   }
 
   // --- join ticks along each shared edge ---
@@ -272,6 +293,7 @@ function cornerTarget(
   dirY: 1 | -1,
   caption: string,
   own: boolean,
+  clear: number,
 ) {
   doc.setDrawColor(0, 0, 0);
   // Never OUTLINE_MM: the outline has to stay the only thing on a sheet drawn at
@@ -281,10 +303,10 @@ function cornerTarget(
   doc.line(x, y, x, y + dirY * CORNER_ARM_MM);
 
   doc.setFontSize(own ? 6 : 8);
-  doc.setTextColor(own ? 150 : 60, own ? 150 : 60, own ? 150 : 60);
-  // Tucked inside the bracket, on the side the arms point to, so the caption can
-  // never be mistaken for belonging to the neighbouring corner.
-  doc.text(caption, x + dirX * 2.5, y + dirY * (own ? CORNER_ARM_MM + 4 : 4.5), {
+  doc.setTextColor(own ? 150 : 40, own ? 150 : 40, own ? 150 : 40);
+  // Inside the bracket, on the side the arms point to, and offset in BOTH axes by
+  // more than a margin so it stays legible whichever neighbour overhangs.
+  doc.text(caption, x + dirX * clear, y + dirY * (own ? CORNER_ARM_MM + 4 : clear), {
     align: dirX > 0 ? "left" : "right",
   });
 }
@@ -308,22 +330,40 @@ function label(row: number, col: number) {
 }
 
 /**
- * Deliberately small and light: it sits inside the printable area (the margin
- * band is the printer's dead zone, so nothing can go there) and must never be
- * mistaken for the cut line. Offset clear of the corner bracket it shares the
- * top-left of the sheet with.
+ * Sheet name, position in the run, and the one instruction that has to land.
+ *
+ * The cut used to be a 6.5 pt aside at the end of a grey line, and it got
+ * skipped — which puts the sheet a margin out of place and buries the marks on
+ * whatever is underneath. It is the step the whole assembly depends on, so it
+ * gets its own darker line. Everything sits clear of the corner bracket it
+ * shares the top-left of the sheet with.
  */
 function drawSheetLabel(
   doc: jsPDF,
   opts: { m: number; plan: TilePlan; tile: Tile; sheetNo: number; total: number },
 ) {
   const { m, tile, sheetNo, total } = opts;
-  doc.setFontSize(8);
-  doc.setTextColor(110, 110, 110);
-  doc.text(`${tile.label}`, m + CORNER_ARM_MM + 3, m + 4);
+  const x = m + CORNER_ARM_MM + 3;
+  doc.setFontSize(9);
+  doc.setTextColor(60, 60, 60);
+  doc.text(tile.label, x, m + 4.5);
   doc.setFontSize(6.5);
   doc.setTextColor(160, 160, 160);
-  doc.text(`sheet ${sheetNo} of ${total} · cut the two dashed lines`, m + CORNER_ARM_MM + 3, m + 8);
+  doc.text(`sheet ${sheetNo} of ${total}`, x, m + 9);
+  doc.setFontSize(7.5);
+  doc.setTextColor(30, 30, 30);
+  doc.text(
+    "FIRST: cut off the strips beyond the dashed lines at the top and left.",
+    x,
+    m + 14.5,
+  );
+  doc.setFontSize(6);
+  doc.setTextColor(150, 150, 150);
+  doc.text(
+    "Skip that and this sheet sits 5 mm out and hides part of the one beneath.",
+    x,
+    m + 18.5,
+  );
 }
 
 /**
@@ -425,13 +465,15 @@ function drawCoverPage(
   doc.setFontSize(10);
   doc.setTextColor(90, 90, 90);
   for (const line of [
-    "Cut every sheet along the two dashed lines down its left and across its top.",
-    "That cut corner is marked on the sheet itself. Each sheet already on the",
-    "table carries bold corner brackets labelled with a sheet number: lay that",
-    "sheet down with its cut corner in the bracket that has its number, on top of",
-    `what is already there. The hatched ${cfg.overlapMm} mm strips are the parts that end up`,
-    "underneath — that is where the tape goes. Left to right, then row by row.",
-    "Finally cut along the outline: that paper shape is your template.",
+    "1. Cut every sheet along the two dashed lines down its left and across its top.",
+    `   Do this first. A sheet laid down uncut sits ${cfg.pageMarginMm} mm out of place and hides a`,
+    "   strip of the sheet beneath it, including the marks that position it.",
+    "2. The cut corner is marked on the sheet itself. Every sheet already on the",
+    "   table carries bold corner brackets labelled with a sheet number: lay that",
+    "   sheet down with its cut corner in the bracket that has its number.",
+    "3. Shaded strips are covered by the next sheet — the whole of it, margin",
+    "   included. That is where the tape goes. Left to right, then row by row.",
+    "4. Finally cut along the outline: that paper shape is your template.",
   ]) {
     doc.text(line, m, y);
     y += 5;
@@ -549,16 +591,24 @@ export function findQrSpots(
   plan: TilePlan,
   block: { w: number; h: number },
   printed?: number[],
+  marginMm = 0,
 ): QrSpot[] {
   const STEP = 6; // mm between candidate positions
   const candidates: Array<QrSpot & { cx: number; cy: number }> = [];
   const eligible = printed ?? plan.tiles.map((_, i) => i);
+  const set = new Set(eligible);
 
   for (const index of eligible) {
     const tile = plan.tiles[index];
-    // The kept area is the sheet up to its seam; past that the next sheet is
-    // laid on top. Last row/column has nothing after it.
-    const k = keptRect(plan, tile);
+    // The readable area, not merely the kept one: a code flush against a seam
+    // scans until someone forgets to trim the next sheet, and then never again.
+    const k = readableRect(
+      plan,
+      tile,
+      marginMm,
+      set.has(index + 1) && tile.col < plan.cols - 1,
+      set.has(index + plan.cols),
+    );
     const x1 = k.x + k.w - block.w;
     const y1 = k.y + k.h - block.h;
     // Prefer the middle of the sheet, so a code is never crowded against a seam.

@@ -97,7 +97,16 @@ sheet already lying on the table, in the part of it that is still showing — so
 every seam is described from below:
 
 - the strip that will end up hidden is **hatched**, because "this part is
-  covered" is the one thing about an overlap that is not obvious;
+  covered" is the one thing about an overlap that is not obvious. It is measured
+  by the next sheet's *whole footprint*, not by the overlap band: the sheet
+  arrives carrying its own unprintable margin, so if the trim gets skipped — the
+  first thing that goes wrong — it lands a margin further over than the band and
+  buries a strip that the shading claimed was safe;
+- everything that has to stay legible lives inside `readableRect`, the kept area
+  pulled back by one margin wherever a sheet arrives, so an untrimmed neighbour
+  cannot eat it. (It could, and did: in a photo of two real sheets the caption
+  `R2-C2` had been cut down to `R2-`.) The QR obeys the same rule — a code flush
+  against a seam scans until someone forgets to trim, then never again;
 - a dotted line marks where the next sheet's cut edge lands;
 - a **bold L-bracket** marks the exact point its corner goes, labelled with that
   sheet's number. You put the corner of the paper into the bracket that carries
@@ -112,8 +121,15 @@ printable corners: the trailing ones were cut off and the leading ones ended up
 
 `assembly.test.ts` checks each bracket's vertex is exactly where the incoming
 sheet's paper corner lands, that no arm runs into the strip that gets covered,
-and that every hatch line is hidden once the sheets are stacked — hatching that
-survived onto the finished stencil would be a lie about what goes underneath.
+that the hatching covers exactly what an *untrimmed* sheet would hide, and that
+no caption falls inside that footprint. The one exception is the tiny label
+naming the strip itself, which has to be inside it — that is marked by being the
+only text at `STRIP_LABEL_PT`, so the test can tell it apart from a caption that
+was buried by accident.
+
+The trim is the step everything else depends on, so it gets its own dark line at
+the top of each sheet rather than a grey aside: *"FIRST: cut off the strips
+beyond the dashed lines at the top and left."*
 
 ### Blank sheets
 

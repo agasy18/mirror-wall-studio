@@ -21,6 +21,33 @@ export function keptRect(plan: TilePlan, tile: Tile) {
 }
 
 /**
+ * The part of a sheet that is certain to stay readable — the kept area pulled
+ * back by one margin on each side where another sheet arrives.
+ *
+ * A sheet is laid on top of its neighbours after its own leading margin has been
+ * trimmed off, so in theory it covers exactly the overlap band. In practice the
+ * first thing that goes wrong is that the trim gets skipped, and then the sheet
+ * lands a whole margin further over and buries a strip of whatever is underneath
+ * — including the marks put there to position it. Anything that has to be
+ * legible therefore lives inside this rectangle, not merely inside the kept area.
+ */
+export function readableRect(
+  plan: TilePlan,
+  tile: Tile,
+  marginMm: number,
+  hasRight: boolean,
+  hasBelow: boolean,
+) {
+  const k = keptRect(plan, tile);
+  return {
+    x: k.x,
+    y: k.y,
+    w: k.w - (hasRight ? marginMm : 0),
+    h: k.h - (hasBelow ? marginMm : 0),
+  };
+}
+
+/**
  * Which tiles to actually print, as indices into `plan.tiles`.
  *
  * A sheet whose kept area the outline never enters carries no information: on a
