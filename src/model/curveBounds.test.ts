@@ -89,7 +89,7 @@ describe("the exported outline stays on the paper", () => {
 describe("planTiles guards", () => {
   it("rejects an overlap that is not smaller than the printable area", () => {
     expect(() =>
-      planTiles(500, 500, { ...DEFAULT_TILE_CONFIG, overlapMm: 190 }),
+      planTiles(500, 500, { ...DEFAULT_TILE_CONFIG, overlapMm: 200 }),
     ).toThrow(/Overlap/);
   });
 

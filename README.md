@@ -47,9 +47,9 @@ npm run build    # typecheck + production build
      so it sits on the wall at the angle the room was shot from. Editing still
      happens on the straightened wall, because that is the only place
      centimetres are square.
-   - **Export tiled PDF** → a 1:1 portrait PDF (~4×7 = 28 sheets for a
-     68×173 cm mirror, fewer once the blank ones are dropped) with 10 mm
-     overlap bands, join ticks, page labels, and a cover sheet.
+   - **Export tiled PDF** → a 1:1 portrait PDF (19 sheets of A4 for a
+     64×169 cm mirror, once the blank ones are dropped) with 10 mm overlap
+     bands, corner brackets, join ticks and a cover sheet.
    - **Save file / Open file** — the whole design as one JSON: the wall photo,
      the calibration rectangle and its real size, and the outline.
 
@@ -57,16 +57,25 @@ npm run build    # typecheck + production build
 
 - Print at **100%** — turn OFF "fit to page" / "shrink to fit".
 - Measure the 10 cm ruler on the cover sheet with a real ruler to confirm scale.
-- Each sheet names the edges to trim. Cut those, lay the sheet on top of its
-  left and upper neighbours so its cut edge follows their dotted line and the
-  short ticks meet end to end, and tape the seam.
+- Cut every sheet along the two dashed lines down its left and across its top.
+- Each sheet already on the table carries bold corner brackets labelled with a
+  sheet number. Lay each sheet down with its cut corner in the bracket that
+  carries its number, on top of what is already there.
+- The hatched 10 mm strips are the parts that end up underneath — that is where
+  the tape goes.
 
 ### How the sheets join
 
-Each sheet is trimmed on its **leading** edges — left if it has a neighbour to
-the left, top if it has one above — and laid **on top** of those neighbours. Its
-first column of ink starts exactly at the cut, so the outline runs straight off
-one sheet and onto the next.
+Each sheet is trimmed on its **leading** edges — left and top — and laid **on
+top** of its left and upper neighbours. Its first column of ink starts exactly
+at the cut, so the outline runs straight off one sheet and onto the next.
+
+Every sheet is cut on both leading edges whether or not it has a neighbour
+there. That makes the rule uniform, and — the real reason — it makes every
+sheet's **paper corner** be its first corner of ink, which is the thing the
+brackets on the sheet below are pointing at. Leave the first row and column
+untrimmed and their corners sit 10 mm of blank margin away from what they are
+supposed to line up with.
 
 Trimming the *trailing* edge instead, which is what this did originally and what
 it looks like the overlap band is for, quietly destroys the template: the next
@@ -81,22 +90,52 @@ checks the outline is still one unbroken curve. Paper is treated as opaque, so
 a sheet that covers its neighbour's ink fails the test — page-by-page geometry
 was always right, and only stacking the sheets shows the bug.
 
-Every seam carries marks on **both** sheets: a dotted "the next sheet's edge
-goes here" line on the one underneath, a dashed "cut here" line on the one on
-top, and a pair of ticks running up to the seam from each side that form one
-straight line only when the two are aligned. Two ticks per seam pin down
-rotation as well as position. (Before, the only marks were registration crosses
-at each sheet's own printable corners: the trailing ones were cut off and the
-leading ones ended up underneath the next sheet, so there was nothing left to
-line up against.)
+### Marks you can actually use
+
+The governing fact is that **paper is opaque**. A mark only helps if it is on the
+sheet already lying on the table, in the part of it that is still showing — so
+every seam is described from below:
+
+- the strip that will end up hidden is **hatched**, because "this part is
+  covered" is the one thing about an overlap that is not obvious;
+- a dotted line marks where the next sheet's cut edge lands;
+- a **bold L-bracket** marks the exact point its corner goes, labelled with that
+  sheet's number. You put the corner of the paper into the bracket that carries
+  its number. The arms point into the part that stays visible, so after placing
+  it they still point at the corner and you can see whether it drifted.
+- a pair of ticks per seam runs up to it from both sides and forms one straight
+  line only when the sheets are aligned, which pins rotation as well as position.
+
+Before this, the only marks were registration crosses at each sheet's own
+printable corners: the trailing ones were cut off and the leading ones ended up
+*underneath* the next sheet, so nothing was left to line up against.
+
+`assembly.test.ts` checks each bracket's vertex is exactly where the incoming
+sheet's paper corner lands, that no arm runs into the strip that gets covered,
+and that every hatch line is hidden once the sheets are stacked — hatching that
+survived onto the finished stencil would be a lie about what goes underneath.
 
 ### Blank sheets
 
 By default, a sheet whose kept area the outline never crosses is left out — the
-corners of the grid on a rounded mirror, and the middle of a big one. For a
-68×173 cm mirror on A4 that is 28 sheets down to 20. The cover's overview map
+corners of the grid on a rounded mirror, and the middle of a big one. A
+64×169 cm mirror on A4 goes from 28 sheets to 19. The cover's overview map
 shades the ones that were dropped so the grid still reads. Turn the option off
 in the print dialog to get a solid sheet of paper with no holes in the middle.
+
+### Margins
+
+The page margin is 5 mm, not the 10 mm that looks safe. It is dead paper twice
+over — thrown away on the two edges that get trimmed, and subtracted from the
+step every sheet advances by — so halving it grows the step from 180×267 to
+190×277 mm, 7% more usable paper per sheet, and drops a whole row or column
+whenever the shape lands near a boundary (a 163 cm mirror goes 28 → 24 sheets).
+
+5 mm clears the hardware margin of essentially every consumer laser and inkjet
+printing plain A4 outside borderless mode, which is typically 3–4.3 mm. It
+cannot go much lower: unlike "fit to page", a hardware margin does not scale the
+page, it simply drops whatever falls inside it — and what sits closest to the
+edge here is the trim line the whole assembly is aligned from.
 
 The cover sheet opens with what you are about to print: finished size, glass
 area, outline length, paper, sheet count and grid, then the scale ruler, the

@@ -70,10 +70,10 @@ function reassemble(
       .map((s) => ({ ...s, x1: s.x1 + dx, y1: s.y1 + dy, x2: s.x2 + dx, y2: s.y2 + dy }));
 
     // The paper, in shape mm, after cutting. Trimming a leading edge moves it
-    // in to the first column of ink; trimming a trailing edge cuts it back to
-    // the seam. Untrimmed edges keep the full sheet, margin and all.
-    const left = trim === "leading" && tile.col > 0 ? tile.contentXmm : dx;
-    const top = trim === "leading" && tile.row > 0 ? tile.contentYmm : dy;
+    // in to the first column of ink — done on every sheet, so a paper corner is
+    // always a corner of ink; trimming a trailing edge cuts it back to the seam.
+    const left = trim === "leading" ? tile.contentXmm : dx;
+    const top = trim === "leading" ? tile.contentYmm : dy;
     const right =
       trim === "trailing" && tile.col < plan.cols - 1
         ? tile.contentXmm + plan.stepXmm
@@ -160,24 +160,110 @@ describe("a printed template, cut out and taped together", () => {
 describe("the marks that tell you where a sheet goes", () => {
   /** Join ticks are the only 0.3 mm strokes on a template sheet. */
   const TICK_MM = 0.3;
+  /** A corner target for a NEIGHBOUR's sheet; the sheet's own is 0.5. */
+  const TARGET_MM = 0.7;
+  const HATCH_MM = 0.15;
 
-  function sheetsWithTicks() {
+  function sheetsOf(skipBlank = false) {
     const cfg = DEFAULT_TILE_CONFIG;
-    const built = buildTiledPdf(MIRROR, cfg, { skipBlank: false });
+    const built = buildTiledPdf(MIRROR, cfg, { skipBlank });
     const pages = pdfPageSegments(built.doc.output("arraybuffer"), cfg.paper.hmm);
     const m = cfg.pageMarginMm;
     return built.printed.map((ti, i) => {
       const tile = built.plan.tiles[ti];
       const dx = tile.contentXmm - m;
       const dy = tile.contentYmm - m;
+      const at = (w: number) =>
+        pages[i + 1]
+          .filter((s) => Math.abs(s.w - w) < 1e-3)
+          .map((s) => ({ ...s, x1: s.x1 + dx, y1: s.y1 + dy, x2: s.x2 + dx, y2: s.y2 + dy }));
+      return { tile, plan: built.plan, ticks: at(TICK_MM), targets: at(TARGET_MM), hatch: at(HATCH_MM) };
+    });
+  }
+
+  /** Where two arms of a bracket meet. */
+  function vertices(segs: PdfSeg[]) {
+    const seen = new Map<string, number>();
+    for (const s of segs) {
+      for (const p of [[s.x1, s.y1], [s.x2, s.y2]]) {
+        const k = `${round(p[0])},${round(p[1])}`;
+        seen.set(k, (seen.get(k) ?? 0) + 1);
+      }
+    }
+    return [...seen.entries()].filter(([, n]) => n >= 2).map(([k]) => k).sort();
+  }
+
+  it("marks the exact spot each neighbour's paper corner lands on", () => {
+    // This is the whole point: paper is opaque, so the only usable mark is one
+    // printed on the sheet already on the table, at the place you are about to
+    // put a corner. Every sheet is trimmed top and left, so its paper corner IS
+    // its first corner of ink — which is what these brackets aim at.
+    const sheets = sheetsOf();
+    const plan = sheets[0].plan;
+    const printed = new Set(sheets.map((s) => s.tile.row * plan.cols + s.tile.col));
+    let checked = 0;
+
+    for (const s of sheets) {
+      const want: string[] = [];
+      for (const [dr, dc] of [[0, 1], [1, 0], [1, 1]]) {
+        const r = s.tile.row + dr;
+        const c = s.tile.col + dc;
+        if (r >= plan.rows || c >= plan.cols) continue;
+        if (!printed.has(r * plan.cols + c)) continue;
+        // The neighbour's own content origin, in shape mm — where its cut corner
+        // ends up once it is laid down.
+        want.push(`${round(c * plan.stepXmm)},${round(r * plan.stepYmm)}`);
+        checked++;
+      }
+      expect(vertices(s.targets), s.tile.label).toEqual(want.sort());
+    }
+    expect(checked).toBeGreaterThan(50);
+  });
+
+  it("points the bracket arms into the part of the sheet that stays visible", () => {
+    // An arm running into the covered strip would vanish under the sheet it is
+    // meant to position, which is exactly the failure being fixed.
+    for (const s of sheetsOf()) {
+      const k = keptRect(s.plan, s.tile);
+      for (const arm of s.targets) {
+        for (const p of [[arm.x1, arm.y1], [arm.x2, arm.y2]]) {
+          expect(p[0], `${s.tile.label} arm x`).toBeGreaterThanOrEqual(k.x - 1e-6);
+          expect(p[0], `${s.tile.label} arm x`).toBeLessThanOrEqual(k.x + k.w + 1e-6);
+          expect(p[1], `${s.tile.label} arm y`).toBeGreaterThanOrEqual(k.y - 1e-6);
+          expect(p[1], `${s.tile.label} arm y`).toBeLessThanOrEqual(k.y + k.h + 1e-6);
+        }
+      }
+    }
+  });
+
+  it("keeps the hatched strips off the finished stencil", () => {
+    // The hatching says "this part goes underneath", so all of it had better be
+    // under something once the sheets are stacked.
+    const cfg = DEFAULT_TILE_CONFIG;
+    const built = buildTiledPdf(MIRROR, cfg, { skipBlank: false });
+    const pages = pdfPageSegments(built.doc.output("arraybuffer"), cfg.paper.hmm);
+    const m = cfg.pageMarginMm;
+    const placed: Placed[] = built.printed.map((ti, i) => {
+      const tile = built.plan.tiles[ti];
+      const dx = tile.contentXmm - m;
+      const dy = tile.contentYmm - m;
       return {
-        tile,
-        ticks: pages[i + 1]
-          .filter((s) => Math.abs(s.w - TICK_MM) < 1e-3)
+        // Trimmed top-left to the far paper edge: the sheet as it lies.
+        paper: {
+          x: tile.contentXmm,
+          y: tile.contentYmm,
+          w: cfg.paper.wmm - m,
+          h: cfg.paper.hmm - m,
+        },
+        ink: pages[i + 1]
+          .filter((s) => Math.abs(s.w - HATCH_MM) < 1e-3)
           .map((s) => ({ ...s, x1: s.x1 + dx, y1: s.y1 + dy, x2: s.x2 + dx, y2: s.y2 + dy })),
       };
     });
-  }
+    const totalHatch = placed.reduce((n, p) => n + p.ink.length, 0);
+    expect(totalHatch).toBeGreaterThan(100);
+    expect(visibleInk(placed).length).toBe(0);
+  });
 
   it("puts a matching pair on both sides of every seam", () => {
     // The old sheets carried registration crosses only at their own printable
@@ -185,7 +271,7 @@ describe("the marks that tell you where a sheet goes", () => {
     // next sheet's leading edge ended up underneath it. Nothing left to line up
     // against. Each seam now gets ticks that run up to it from both sides and
     // form one straight line when — and only when — the sheets are aligned.
-    const sheets = sheetsWithTicks();
+    const sheets = sheetsOf();
     const plan = planTiles(curveBounds(MIRROR).width * 10, curveBounds(MIRROR).height * 10);
     const at = (r: number, c: number) => sheets.find((s) => s.tile.row === r && s.tile.col === c);
     let seamsChecked = 0;
@@ -224,7 +310,7 @@ describe("the marks that tell you where a sheet goes", () => {
 
   it("leaves the outer edges of the poster unmarked", () => {
     // Nothing joins there, so a tick would just be ink on the finished stencil.
-    const sheets = sheetsWithTicks();
+    const sheets = sheetsOf();
     const first = sheets.find((s) => s.tile.row === 0 && s.tile.col === 0)!;
     expect(first.ticks.some((t) => t.x1 === t.x2 && Math.min(t.y1, t.y2) === 0)).toBe(false);
     expect(first.ticks.some((t) => t.y1 === t.y2 && Math.min(t.x1, t.x2) === 0)).toBe(false);

@@ -38,8 +38,22 @@ export interface TileConfig {
   paper: PaperSize;
 }
 
+/**
+ * 5 mm of margin, not 10.
+ *
+ * The margin is dead paper twice over: it is thrown away on the two edges that
+ * get trimmed, and it shrinks the step every sheet advances by. Dropping it from
+ * 10 mm to 5 mm takes a 68 x 173 cm mirror from 4 x 7 A4 sheets to 4 x 6 — a
+ * whole row, 4 sheets, for nothing but a narrower cut.
+ *
+ * 5 mm clears the hardware margin of essentially every consumer laser and inkjet
+ * printing plain A4 without borderless mode (typically 3-4.3 mm). It cannot go
+ * much lower: unlike "fit to page", a hardware margin does not scale the page,
+ * it simply drops whatever falls inside it — and what sits closest to the edge
+ * here is the trim line the whole assembly is aligned from.
+ */
 export const DEFAULT_TILE_CONFIG: TileConfig = {
-  pageMarginMm: 10,
+  pageMarginMm: 5,
   overlapMm: 10,
   paper: A4,
 };

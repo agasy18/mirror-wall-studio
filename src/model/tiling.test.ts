@@ -5,14 +5,14 @@ describe("planTiles", () => {
   it("tiles the 68x173cm mirror into the expected page grid", () => {
     // 680 x 1730 mm shape.
     const plan = planTiles(680, 1730);
-    // printable = 190 x 277, step = 180 x 267
-    expect(plan.printableWmm).toBe(A4_WIDTH_MM - 20);
-    expect(plan.printableHmm).toBe(A4_HEIGHT_MM - 20);
-    expect(plan.stepXmm).toBe(180);
-    expect(plan.stepYmm).toBe(267);
-    // cols = ceil((680-10)/180) = ceil(3.72) = 4
+    // printable = 200 x 287, step = 190 x 277
+    expect(plan.printableWmm).toBe(A4_WIDTH_MM - 10);
+    expect(plan.printableHmm).toBe(A4_HEIGHT_MM - 10);
+    expect(plan.stepXmm).toBe(190);
+    expect(plan.stepYmm).toBe(277);
+    // cols = ceil((680-10)/190) = ceil(3.53) = 4
     expect(plan.cols).toBe(4);
-    // rows = ceil((1730-10)/267) = ceil(6.44) = 7
+    // rows = ceil((1730-10)/277) = ceil(6.21) = 7
     expect(plan.rows).toBe(7);
     expect(plan.pageCount).toBe(28);
   });
@@ -40,17 +40,17 @@ describe("planTiles", () => {
 
   it("respects a custom overlap", () => {
     const plan = planTiles(680, 1730, { ...DEFAULT_TILE_CONFIG, overlapMm: 20 });
-    expect(plan.stepXmm).toBe(190 - 20);
-    expect(plan.stepYmm).toBe(277 - 20);
+    expect(plan.stepXmm).toBe(200 - 20);
+    expect(plan.stepYmm).toBe(287 - 20);
   });
 
   it("tiles fewer pages on a larger paper (A3)", () => {
     const a3 = { id: "a3", name: "A3", wmm: 297, hmm: 420 };
     const plan = planTiles(680, 1730, { ...DEFAULT_TILE_CONFIG, paper: a3 });
-    // printable = 277 x 400, step = 267 x 390
-    expect(plan.printableWmm).toBe(277);
-    expect(plan.printableHmm).toBe(400);
-    // cols = ceil((680-10)/267)=ceil(2.5)=3; rows=ceil((1730-10)/390)=ceil(4.4)=5
+    // printable = 287 x 410, step = 277 x 400
+    expect(plan.printableWmm).toBe(287);
+    expect(plan.printableHmm).toBe(410);
+    // cols = ceil((680-10)/277)=ceil(2.42)=3; rows=ceil((1730-10)/400)=ceil(4.3)=5
     expect(plan.cols).toBe(3);
     expect(plan.rows).toBe(5);
     expect(plan.pageCount).toBe(15); // vs 28 on A4

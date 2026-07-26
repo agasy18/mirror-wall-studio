@@ -91,6 +91,7 @@ export function buildTiledPdf(
   // Sample once; every tile draws a clipped view of the same polyline.
   const outline = sampleClosedSpline(shifted, 24);
   const printed = sheetsToPrint(outline, plan, opts.skipBlank !== false);
+  const printedSet = new Set(printed);
 
   // jsPDF accepts an explicit [w,h] mm format for any paper size.
   const doc = new jsPDF({ unit: "mm", format: [pw, ph], orientation: "portrait" });
@@ -135,7 +136,24 @@ export function buildTiledPdf(
       }
     }
 
-    drawSheetMarks(doc, { m, pw, ph, plan, tile });
+    // Only mark seams where a sheet actually arrives: with the blank ones left
+    // out, a bracket for a sheet that was never printed is ink on the stencil
+    // pointing at nothing.
+    const printedAt = (row: number, col: number) =>
+      row < plan.rows &&
+      col < plan.cols &&
+      printedSet.has(row * plan.cols + col);
+
+    drawSheetMarks(doc, {
+      m,
+      pw,
+      ph,
+      plan,
+      tile,
+      hasRight: printedAt(tile.row, tile.col + 1),
+      hasBelow: printedAt(tile.row + 1, tile.col),
+      hasDiagonal: printedAt(tile.row + 1, tile.col + 1),
+    });
     drawSheetLabel(doc, { m, plan, tile, sheetNo: i + 1, total: printed.length });
 
     // --- QR, if one landed on this sheet ---
@@ -158,65 +176,130 @@ const JOIN_TICK_MM = 8;
 
 export { keptRect, outlineStats, sheetsToPrint } from "./sheets";
 
+/** Arm length of a corner target, in mm. */
+const CORNER_ARM_MM = 14;
+
 /**
- * Trim lines, seam lines and join ticks.
+ * Everything that tells you where this sheet goes and what goes on it.
  *
- * Every seam gets marks on BOTH of the sheets that meet there: a dotted "the
- * next sheet's edge goes here" line on the one underneath, a dashed "cut here"
- * line on the one on top, and a pair of ticks that run up to the seam from each
- * side so they form one straight line only when the two sheets are aligned. Two
- * ticks per seam pin down rotation as well as position.
+ * The governing fact is that **paper is opaque**. A mark can only help if it is
+ * on the sheet already lying on the table, in the part of it that is still
+ * showing — so every seam is described from below: the strip that will end up
+ * hidden is hatched, the dotted line is where the next sheet's cut edge lands,
+ * and a bold L-bracket marks the exact point its corner goes, labelled with
+ * that sheet's name. You put the corner of the paper into the bracket that
+ * carries its number; the arms stay visible afterwards, pointing at it, so you
+ * can see whether it drifted.
+ *
+ * Every sheet is cut on its top and left, whether or not it has a neighbour
+ * there. That makes the rule uniform — "cut the two solid lines" — and, more
+ * importantly, makes every sheet's paper corner *be* its first corner of ink,
+ * which is what the brackets on the sheet below are pointing at. Leaving the
+ * first row and column untrimmed would have left their corners 10 mm of blank
+ * margin away from the thing they are supposed to line up with.
  */
 function drawSheetMarks(
   doc: jsPDF,
-  opts: { m: number; pw: number; ph: number; plan: TilePlan; tile: Tile },
+  opts: {
+    m: number;
+    pw: number;
+    ph: number;
+    plan: TilePlan;
+    tile: Tile;
+    hasRight: boolean;
+    hasBelow: boolean;
+    hasDiagonal: boolean;
+  },
 ) {
-  const { m, pw, ph, plan, tile } = opts;
+  const { m, pw, ph, plan, tile, hasRight, hasBelow, hasDiagonal } = opts;
   const seamX = m + plan.stepXmm;
   const seamY = m + plan.stepYmm;
-  const trimLeft = tile.col > 0;
-  const trimTop = tile.row > 0;
-  const seamRight = tile.col < plan.cols - 1;
-  const seamBottom = tile.row < plan.rows - 1;
 
-  // --- trim lines: cut along these before laying the sheet down ---
-  doc.setLineWidth(0.2);
-  doc.setDrawColor(120, 120, 120);
-  doc.setLineDashPattern([3, 2], 0);
-  if (trimLeft) doc.line(m, m, m, ph - m);
-  if (trimTop) doc.line(m, m, pw - m, m);
+  // --- the strips that end up underneath the next sheets ---
+  // Hatched, not just outlined: "this part is covered" is the one thing about
+  // the overlap that was not obvious. Both strips are hidden once assembled, so
+  // the hatching never reaches the finished stencil.
+  if (hasRight) hatch(doc, { x: seamX, y: m, w: pw - m - seamX, h: ph - 2 * m });
+  if (hasBelow) hatch(doc, { x: m, y: seamY, w: pw - 2 * m, h: ph - m - seamY });
+
+  // --- trim lines: cut along these first, on every sheet ---
+  doc.setLineWidth(0.25);
+  doc.setDrawColor(110, 110, 110);
+  doc.setLineDashPattern([4, 2], 0);
+  doc.line(m, m, m, ph - m);
+  doc.line(m, m, pw - m, m);
 
   // --- seam lines: where the next sheet's cut edge lands ---
   doc.setDrawColor(175, 175, 175);
   doc.setLineDashPattern([0.7, 1.3], 0);
-  if (seamRight) doc.line(seamX, m, seamX, ph - m);
-  if (seamBottom) doc.line(m, seamY, pw - m, seamY);
+  if (hasRight) doc.line(seamX, m, seamX, ph - m);
+  if (hasBelow) doc.line(m, seamY, pw - m, seamY);
   doc.setLineDashPattern([], 0);
 
-  // --- join ticks, at a quarter and three quarters along each shared edge ---
-  // Both sheets of a seam are in the same row (or column), so these land on the
-  // same page coordinate on each and meet end to end.
+  // --- corner targets ---
+  // Each neighbour arrives top-left corner first, and lands on a corner of this
+  // sheet's kept area. Arms point into the part that stays visible.
+  cornerTarget(doc, m, m, 1, 1, "this corner", true);
+  if (hasRight) cornerTarget(doc, seamX, m, -1, 1, label(tile.row, tile.col + 1), false);
+  if (hasBelow) cornerTarget(doc, m, seamY, 1, -1, label(tile.row + 1, tile.col), false);
+  if (hasDiagonal) {
+    cornerTarget(doc, seamX, seamY, -1, -1, label(tile.row + 1, tile.col + 1), false);
+  }
+
+  // --- join ticks along each shared edge ---
+  // The corners fix where a sheet starts; these confirm it has not rotated. Both
+  // sheets of a seam share a row (or column), so they land on the same page
+  // coordinate on each and meet end to end.
   doc.setDrawColor(70, 70, 70);
   doc.setLineWidth(0.3);
   const ys = [m + plan.printableHmm * 0.25, m + plan.printableHmm * 0.75];
   const xs = [m + plan.printableWmm * 0.25, m + plan.printableWmm * 0.75];
-  if (trimLeft) for (const y of ys) doc.line(m, y, m + JOIN_TICK_MM, y);
-  if (seamRight) for (const y of ys) doc.line(seamX - JOIN_TICK_MM, y, seamX, y);
-  if (trimTop) for (const x of xs) doc.line(x, m, x, m + JOIN_TICK_MM);
-  if (seamBottom) for (const x of xs) doc.line(x, seamY - JOIN_TICK_MM, x, seamY);
+  if (tile.col > 0) for (const y of ys) doc.line(m, y, m + JOIN_TICK_MM, y);
+  if (hasRight) for (const y of ys) doc.line(seamX - JOIN_TICK_MM, y, seamX, y);
+  if (tile.row > 0) for (const x of xs) doc.line(x, m, x, m + JOIN_TICK_MM);
+  if (hasBelow) for (const x of xs) doc.line(x, seamY - JOIN_TICK_MM, x, seamY);
+}
 
-  // --- which sheet joins at each seam ---
-  doc.setFontSize(6);
-  doc.setTextColor(170, 170, 170);
-  if (seamRight) {
-    doc.text(`${label(tile.row, tile.col + 1)}`, seamX - 1.5, m + plan.printableHmm * 0.5, {
-      align: "right",
-    });
-  }
-  if (seamBottom) {
-    doc.text(`${label(tile.row + 1, tile.col)}`, m + plan.printableWmm * 0.5, seamY - 1.5, {
-      align: "center",
-    });
+/**
+ * A bold L at (x, y) with its arms running in (dirX, dirY), and a caption
+ * naming the sheet whose corner belongs in it.
+ */
+function cornerTarget(
+  doc: jsPDF,
+  x: number,
+  y: number,
+  dirX: 1 | -1,
+  dirY: 1 | -1,
+  caption: string,
+  own: boolean,
+) {
+  doc.setDrawColor(0, 0, 0);
+  // Never OUTLINE_MM: the outline has to stay the only thing on a sheet drawn at
+  // that width, or the assembly test cannot tell ink apart from instructions.
+  doc.setLineWidth(own ? 0.5 : 0.7);
+  doc.line(x, y, x + dirX * CORNER_ARM_MM, y);
+  doc.line(x, y, x, y + dirY * CORNER_ARM_MM);
+
+  doc.setFontSize(own ? 6 : 8);
+  doc.setTextColor(own ? 150 : 60, own ? 150 : 60, own ? 150 : 60);
+  // Tucked inside the bracket, on the side the arms point to, so the caption can
+  // never be mistaken for belonging to the neighbouring corner.
+  doc.text(caption, x + dirX * 2.5, y + dirY * (own ? CORNER_ARM_MM + 4 : 4.5), {
+    align: dirX > 0 ? "left" : "right",
+  });
+}
+
+/** Diagonal shading, light enough to read the outline straight through it. */
+function hatch(doc: jsPDF, r: { x: number; y: number; w: number; h: number }, stepMm = 5) {
+  doc.setDrawColor(205, 205, 205);
+  doc.setLineWidth(0.15);
+  for (let d = stepMm; d < r.w + r.h; d += stepMm) {
+    doc.line(
+      r.x + Math.min(d, r.w),
+      r.y + Math.max(0, d - r.w),
+      r.x + Math.max(0, d - r.h),
+      r.y + Math.min(d, r.h),
+    );
   }
 }
 
@@ -227,25 +310,20 @@ function label(row: number, col: number) {
 /**
  * Deliberately small and light: it sits inside the printable area (the margin
  * band is the printer's dead zone, so nothing can go there) and must never be
- * mistaken for the cut line. The second line names the edges to trim, which is
- * the one thing you need to know while holding the scissors.
+ * mistaken for the cut line. Offset clear of the corner bracket it shares the
+ * top-left of the sheet with.
  */
 function drawSheetLabel(
   doc: jsPDF,
   opts: { m: number; plan: TilePlan; tile: Tile; sheetNo: number; total: number },
 ) {
   const { m, tile, sheetNo, total } = opts;
-  doc.setFontSize(7);
-  doc.setTextColor(150, 150, 150);
-  doc.text(`${tile.label} · sheet ${sheetNo} of ${total}`, m + 2, m + 4);
-
-  const edges = [tile.col > 0 ? "left" : null, tile.row > 0 ? "top" : null].filter(Boolean);
-  doc.setFontSize(6);
-  doc.text(
-    edges.length ? `trim ${edges.join(" + ")} edge${edges.length > 1 ? "s" : ""}` : "corner sheet · trim nothing",
-    m + 2,
-    m + 7.5,
-  );
+  doc.setFontSize(8);
+  doc.setTextColor(110, 110, 110);
+  doc.text(`${tile.label}`, m + CORNER_ARM_MM + 3, m + 4);
+  doc.setFontSize(6.5);
+  doc.setTextColor(160, 160, 160);
+  doc.text(`sheet ${sheetNo} of ${total} · cut the two dashed lines`, m + CORNER_ARM_MM + 3, m + 8);
 }
 
 /**
@@ -347,11 +425,13 @@ function drawCoverPage(
   doc.setFontSize(10);
   doc.setTextColor(90, 90, 90);
   for (const line of [
-    "Each sheet says which of its edges to trim. Cut along those dashed lines,",
-    "then lay the sheet ON TOP of the ones left of and above it, so its cut edge",
-    `follows their dotted line and the short ticks meet end to end. The ${cfg.overlapMm} mm`,
-    "underneath is your tape. Work left to right, then row by row.",
-    "Finally cut along the outline — that paper shape is your template.",
+    "Cut every sheet along the two dashed lines down its left and across its top.",
+    "That cut corner is marked on the sheet itself. Each sheet already on the",
+    "table carries bold corner brackets labelled with a sheet number: lay that",
+    "sheet down with its cut corner in the bracket that has its number, on top of",
+    `what is already there. The hatched ${cfg.overlapMm} mm strips are the parts that end up`,
+    "underneath — that is where the tape goes. Left to right, then row by row.",
+    "Finally cut along the outline: that paper shape is your template.",
   ]) {
     doc.text(line, m, y);
     y += 5;
